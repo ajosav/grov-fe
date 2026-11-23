@@ -1,0 +1,206 @@
+/* Copied from design/system/tailwind.css by `yarn sync:tokens`. Do not edit: change tokens.json and re-sync. */
+/* GENERATED from tokens.json by design/tools/gen_tailwind_css.py. Do not edit by hand. */
+/* Tailwind v4 + shadcn/ui. Import design/system/tokens.css first. */
+
+@custom-variant dark (&:is([data-theme="dark"] *, .dark *));
+
+:root {
+  --radius: 16px;
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--glass-strong);
+  --popover-foreground: var(--ink);
+  --primary: var(--action);
+  --primary-foreground: var(--on-action);
+  --secondary: var(--surface-sunken);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface-sunken);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--flame-tint);
+  --accent-foreground: var(--flame-strong);
+  --destructive: var(--danger);
+  --destructive-foreground: #FFFFFF;
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--focus);
+  --chart-1: var(--flame);
+  --chart-2: var(--leaf);
+  --chart-3: var(--palm);
+  --chart-4: var(--sky-strong);
+  --chart-5: var(--danger);
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--action);
+  --sidebar-primary-foreground: var(--on-action);
+  --sidebar-accent: var(--flame-tint);
+  --sidebar-accent-foreground: var(--flame-strong);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--focus);
+}
+[data-theme="dark"], .dark {
+  --destructive-foreground: #0B0B0B;
+}
+
+/* Device-class breakpoints (D40). Mobile-first: phone is the base, extra width adds columns or list+detail. */
+@theme {
+  --breakpoint-sm: 600px;   /* fold inner, large phone landscape */
+  --breakpoint-md: 744px;   /* tablet portrait, Duo dual pane */
+  --breakpoint-lg: 1024px;  /* tablet landscape, small laptop */
+  --breakpoint-xl: 1280px;  /* desktop web */
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 36px;
+  --radius-pill: 999px;
+  --text-display-xl: 40px;
+  --text-display-xl--line-height: 44px;
+  --text-display-xl--font-weight: 800;
+  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-lg: 32px;
+  --text-display-lg--line-height: 35px;
+  --text-display-lg--font-weight: 800;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-title-lg: 24px;
+  --text-title-lg--line-height: 31px;
+  --text-title-lg--font-weight: 700;
+  --text-title-lg--letter-spacing: -0.01em;
+  --text-title-md: 20px;
+  --text-title-md--line-height: 26px;
+  --text-title-md--font-weight: 700;
+  --text-title-sm: 17px;
+  --text-title-sm--line-height: 22px;
+  --text-title-sm--font-weight: 700;
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 24px;
+  --text-body-lg--font-weight: 500;
+  --text-body: 15px;
+  --text-body--line-height: 22px;
+  --text-body--font-weight: 500;
+  --text-body-sm: 13px;
+  --text-body-sm--line-height: 18px;
+  --text-body-sm--font-weight: 500;
+  --text-label: 15px;
+  --text-label--line-height: 20px;
+  --text-label--font-weight: 700;
+  --text-chip: 12px;
+  --text-chip--line-height: 16px;
+  --text-chip--font-weight: 700;
+  --text-chip--letter-spacing: 0.01em;
+  --text-money: 17px;
+  --text-money--line-height: 22px;
+  --text-money--font-weight: 800;
+}
+
+/* inline: utilities read the live var from tokens.css, so light/dark still apply. Shadows and easing are utilities (not theme keys) so no var references itself. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-flame: var(--flame);
+  --color-flame-strong: var(--flame-strong);
+  --color-flame-tint: var(--flame-tint);
+  --color-night: var(--night);
+  --color-on-night: var(--on-night);
+  --color-on-night-muted: var(--on-night-muted);
+  --color-action: var(--action);
+  --color-on-action: var(--on-action);
+  --color-code-ground: var(--code-ground);
+  --color-code-ink: var(--code-ink);
+  --color-leaf: var(--leaf);
+  --color-leaf-strong: var(--leaf-strong);
+  --color-leaf-tint: var(--leaf-tint);
+  --color-palm: var(--palm);
+  --color-palm-strong: var(--palm-strong);
+  --color-palm-tint: var(--palm-tint);
+  --color-sky-strong: var(--sky-strong);
+  --color-sky-tint: var(--sky-tint);
+  --color-danger: var(--danger);
+  --color-danger-tint: var(--danger-tint);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-on-bright: var(--on-bright);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-focus: var(--focus);
+  --color-scrim: var(--scrim);
+  --color-wash-start: var(--wash-start);
+  --color-wash-end: var(--wash-end);
+  --color-glass: var(--glass);
+  --color-glass-strong: var(--glass-strong);
+  --color-glass-stroke: var(--glass-stroke);
+  --color-glass-edge: var(--glass-edge);
+  --color-night-hi: var(--night-hi);
+  --color-action-disabled: var(--action-disabled);
+  --color-on-action-disabled: var(--on-action-disabled);
+  --color-tint-produce: var(--tint-produce);
+  --color-tint-grain: var(--tint-grain);
+  --color-tint-oil: var(--tint-oil);
+  --color-tint-package: var(--tint-package);
+  --color-tint-protein: var(--tint-protein);
+  --color-food-yam: var(--food-yam);
+  --color-map-ground: var(--map-ground);
+  --color-map-road: var(--map-road);
+  --color-map-block: var(--map-block);
+  --color-map-pin: var(--map-pin);
+  --color-map-pin-ring: var(--map-pin-ring);
+  --color-map-pin-dot: var(--map-pin-dot);
+  --color-map-shadow: var(--map-shadow);
+  --color-action-hover: var(--action-hover);
+  --color-action-pressed: var(--action-pressed);
+}
+
+@utility shadow-raised { box-shadow: var(--shadow-raised); }
+@utility shadow-glass { box-shadow: var(--shadow-glass); }
+@utility shadow-flame { box-shadow: var(--shadow-flame); }
+@utility focus-ring { &:focus-visible { outline: 2px solid var(--ring-color, var(--focus)); outline-offset: 2px; } }
+@keyframes grov-fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes grov-sheet { from { transform: translateY(24px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes grov-pop { from { transform: translateY(4px) scale(.98); opacity: 0 } to { transform: none; opacity: 1 } }
+@utility anim-fade { &[data-state="open"], &[data-state="visible"] { animation: grov-fade var(--duration-sheet-in) var(--ease-emphasized) both } &[data-state="closed"], &[data-state="hidden"] { animation: grov-fade var(--duration-sheet-out) ease-in reverse both } }
+@utility anim-sheet { &[data-state="open"] { animation: grov-sheet var(--duration-sheet-in) var(--ease-emphasized) both } &[data-state="closed"] { animation: grov-sheet var(--duration-sheet-out) ease-in reverse both } }
+@utility anim-pop { &[data-state="open"], &[data-state="delayed-open"], &[data-state="instant-open"] { animation: grov-pop var(--duration-state) var(--ease-emphasized) both } &[data-state="closed"] { animation: grov-pop var(--duration-press) ease-in reverse both } }
+@utility ease-emphasized { transition-timing-function: var(--ease-emphasized); }
+
+@layer base {
+  * { border-color: var(--border); outline-color: var(--ring); }
+  body { background: var(--background); color: var(--foreground); font-family: var(--font-sans); }
+  .bg-wash { background: linear-gradient(135deg, var(--wash-start), var(--canvas) 55%, var(--wash-end)); }
+  @media (prefers-reduced-motion: reduce) { * { transition-duration: var(--duration-reduced) !important; animation-duration: var(--duration-reduced) !important; } }
+}

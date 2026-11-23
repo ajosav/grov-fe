@@ -1,0 +1,12 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "store",
+  "sourceRoot": "libs/store/src",
+  "projectType": "library",
+  "tags": ["type:data"],
+  "targets": {
+    "lint": {"command": "eslint libs/store --max-warnings=0"},
+    "typecheck": {"command": "tsc -p libs/store/tsconfig.json"},
+    "test": {"command": "vitest run --config libs/store/vitest.config.ts --passWithNoTests"}
+  }
+}

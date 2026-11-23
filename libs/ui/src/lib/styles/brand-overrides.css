@@ -1,0 +1,17 @@
+/* Plain CSS (no Tailwind directives): also used by the public website. */
+/*
+ * Primary action = flame fill with ink label, as in the Figma "Grov Mobile"
+ * flow (decision F7; Joshua chose Figma over the v3 night pill on 2026-11-23).
+ * Ink on flame passes AA (6.0:1); white on flame does not (DS2).
+ * TODO(design): update tokens.json (`--action`) and the grov-design skill so
+ * this override can be removed.
+ */
+:root,
+[data-theme='light'],
+[data-theme='dark'],
+.dark {
+  --primary: var(--flame);
+  --primary-foreground: var(--on-bright);
+  --sidebar-primary: var(--flame);
+  --sidebar-primary-foreground: var(--on-bright);
+}

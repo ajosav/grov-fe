@@ -1,0 +1,6 @@
+---
+description: Frontend changes in grov-fe — routes and pages, components, styling, tokens and dark mode, forms, API endpoints and query hooks, auth, permissions, stores, the public website, env variables, dependencies, tests.
+alwaysApply: false
+---
+
+Read `.agents/skills/frontend/SKILL.md` and then only the reference file it points to for this change. Follow `AGENTS.md` and `CONTRIBUTING.md`. For anything visual also read `../.claude/skills/grov-design/SKILL.md`.

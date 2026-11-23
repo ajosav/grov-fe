@@ -1,0 +1,12 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "ui",
+  "sourceRoot": "libs/ui/src",
+  "projectType": "library",
+  "tags": ["type:ui"],
+  "targets": {
+    "lint": {"command": "eslint libs/ui --max-warnings=0"},
+    "typecheck": {"command": "tsc -p libs/ui/tsconfig.json"},
+    "test": {"command": "vitest run --config libs/ui/vitest.config.ts --passWithNoTests"}
+  }
+}

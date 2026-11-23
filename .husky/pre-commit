@@ -1,0 +1,2 @@
+# Format and auto-fix the staged files. Typecheck and tests run on pre-push and in CI.
+yarn lint-staged

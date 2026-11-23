@@ -1,0 +1,6 @@
+# Fast gate before code leaves the machine; CI runs the full suite.
+# Do not skip with --no-verify.
+export NX_DAEMON=false
+BASE=origin/qa
+git rev-parse --verify --quiet "$BASE" >/dev/null || BASE=HEAD~1
+yarn check:arch && yarn nx affected -t lint typecheck test --base="$BASE" --head=HEAD

@@ -1,0 +1,12 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "shared",
+  "sourceRoot": "libs/shared/src",
+  "projectType": "library",
+  "tags": ["type:feature"],
+  "targets": {
+    "lint": {"command": "eslint libs/shared --max-warnings=0"},
+    "typecheck": {"command": "tsc -p libs/shared/tsconfig.json"},
+    "test": {"command": "vitest run --config libs/shared/vitest.config.ts --passWithNoTests"}
+  }
+}

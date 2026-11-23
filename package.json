@@ -1,0 +1,147 @@
+{
+  "name": "@grov/source",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "packageManager": "yarn@4.19.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
+  "scripts": {
+    "dev:web": "nx run website:dev",
+    "dev:app": "nx run app:dev",
+    "dev:admin": "nx run admin:dev",
+    "build": "nx run-many -t build",
+    "build:affected": "nx affected -t build",
+    "typecheck": "nx run-many -t typecheck",
+    "typecheck:affected": "nx affected -t typecheck",
+    "lint": "nx run-many -t lint",
+    "lint:affected": "nx affected -t lint",
+    "lint:fix": "eslint . --fix",
+    "test": "nx run-many -t test",
+    "test:affected": "nx affected -t test",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "yarn format:check && yarn check:arch && nx run-many -t lint typecheck test build",
+    "generate:api-types": "openapi-typescript ../grov-be/openapi/openapi.json -o libs/models/src/lib/generated/api.ts",
+    "generate:permissions": "tsx tools/scripts/generate-permissions.ts",
+    "sync:tokens": "node tools/scripts/sync-tokens.mjs",
+    "prepare": "husky",
+    "check:arch": "tsx tools/scripts/check-architecture.ts",
+    "gen:resource": "tsx tools/scripts/new-resource.ts"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "eslint --fix --no-warn-ignored",
+      "prettier --write"
+    ],
+    "*.{json,css,md,html,yml,yaml}": [
+      "prettier --write --ignore-unknown"
+    ]
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.0.0",
+    "@react-oauth/google": "^0.13.0",
+    "@react-router/node": "^7.0.0",
+    "@tanstack/react-query": "^5.0.0",
+    "axios": "^1.0.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "date-fns": "^4.0.0",
+    "input-otp": "^1.0.0",
+    "isbot": "^5.0.0",
+    "libphonenumber-js": "^1.0.0",
+    "lucide-react": "^1.0.0",
+    "radix-ui": "^1.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.0.0",
+    "react-router": "^7.0.0",
+    "sonner": "^2.0.0",
+    "tailwind-merge": "^3.0.0",
+    "tw-animate-css": "^1.0.0",
+    "zod": "^4.0.0",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.0.0",
+    "@commitlint/config-conventional": "^21.0.0",
+    "@eslint/js": "^9.0.0",
+    "@nx/eslint-plugin": "21.6.11",
+    "@react-router/dev": "^7.0.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "@vitest/coverage-v8": "^4.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^10.0.0",
+    "eslint-plugin-jsx-a11y": "^6.0.0",
+    "eslint-plugin-react": "^7.0.0",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "globals": "^17.0.0",
+    "husky": "^9.0.0",
+    "jsdom": "^27.0.0",
+    "lint-staged": "^16.0.0",
+    "nx": "21.6.11",
+    "openapi-typescript": "^7.0.0",
+    "prettier": "^3.0.0",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "~5.9.0",
+    "typescript-eslint": "^8.0.0",
+    "vite": "^7.0.0",
+    "vitest": "^4.0.0"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "scope-enum": [
+        2,
+        "always",
+        [
+          "website",
+          "app",
+          "admin",
+          "ui",
+          "shared",
+          "hooks",
+          "api",
+          "store",
+          "models",
+          "test-utils",
+          "tooling",
+          "ci",
+          "deps",
+          "docs",
+          "repo"
+        ]
+      ],
+      "scope-case": [
+        2,
+        "always",
+        "kebab-case"
+      ],
+      "subject-case": [
+        0
+      ],
+      "body-max-line-length": [
+        0
+      ]
+    }
+  }
+}

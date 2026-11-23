@@ -1,0 +1,30 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "app",
+  "sourceRoot": "apps/app/app",
+  "projectType": "application",
+  "tags": ["type:app"],
+  "targets": {
+    "dev": {
+      "command": "react-router dev --port 4300",
+      "options": {"cwd": "apps/app"},
+      "continuous": true
+    },
+    "build": {
+      "command": "react-router build",
+      "options": {"cwd": "apps/app"},
+      "outputs": ["{projectRoot}/build"]
+    },
+    "preview": {
+      "command": "vite preview --outDir build/client --port 4300",
+      "options": {"cwd": "apps/app"},
+      "dependsOn": ["build"]
+    },
+    "typecheck": {
+      "command": "react-router typegen && tsc -p tsconfig.json",
+      "options": {"cwd": "apps/app"}
+    },
+    "lint": {"command": "eslint apps/app --max-warnings=0"},
+    "test": {"command": "vitest run --config apps/app/vitest.config.ts --passWithNoTests"}
+  }
+}

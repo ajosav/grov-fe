@@ -1,0 +1,12 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "models",
+  "sourceRoot": "libs/models/src",
+  "projectType": "library",
+  "tags": ["type:util"],
+  "targets": {
+    "lint": {"command": "eslint libs/models --max-warnings=0"},
+    "typecheck": {"command": "tsc -p libs/models/tsconfig.json"},
+    "test": {"command": "vitest run --config libs/models/vitest.config.ts --passWithNoTests"}
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "hooks",
+  "sourceRoot": "libs/hooks/src",
+  "projectType": "library",
+  "tags": ["type:data"],
+  "targets": {
+    "lint": {"command": "eslint libs/hooks --max-warnings=0"},
+    "typecheck": {"command": "tsc -p libs/hooks/tsconfig.json"},
+    "test": {"command": "vitest run --config libs/hooks/vitest.config.ts --passWithNoTests"}
+  }
+}

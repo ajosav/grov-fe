@@ -1,0 +1,40 @@
+# dependencies
+node_modules
+.yarn/*
+!.yarn/releases
+!.yarn/patches
+!.yarn/plugins
+
+# build output
+dist
+build
+coverage
+test-output
+out-tsc
+*.tsbuildinfo
+.react-router/
+
+# nx
+.nx/cache
+.nx/workspace-data
+
+# env
+.env
+.env.*
+!.env.example
+
+# editors and OS
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+*.log
+
+# vite
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
+
+# local agent settings (shared rules live in AGENTS.md and .agents/)
+.claude/settings.local.json

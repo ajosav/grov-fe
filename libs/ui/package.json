@@ -1,0 +1,17 @@
+{
+  "name": "@grov/ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles.css",
+    "./tokens.css": "./src/tokens.css"
+  },
+  "dependencies": {
+    "@grov/models": "workspace:*"
+  }
+}

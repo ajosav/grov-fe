@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["dom", "dom.iterable", "es2023"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["vite/client"],
+    "paths": {
+      "@grov/api": ["./libs/api/src/index.ts"],
+      "@grov/hooks": ["./libs/hooks/src/index.ts"],
+      "@grov/models": ["./libs/models/src/index.ts"],
+      "@grov/shared": ["./libs/shared/src/index.ts"],
+      "@grov/store": ["./libs/store/src/index.ts"],
+      "@grov/test-utils": ["./libs/test-utils/src/index.ts"],
+      "@grov/ui": ["./libs/ui/src/index.ts"]
+    }
+  }
+}

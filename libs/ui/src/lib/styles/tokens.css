@@ -1,0 +1,170 @@
+/* Copied from design/system/tokens.css by `yarn sync:tokens`. Do not edit: change tokens.json and re-sync. */
+/* Grov Design System — generated from tokens.json */
+:root, [data-theme="light"] {
+  --flame: #FF550C;
+  --flame-strong: #B83A06;
+  --flame-tint: #FFE9E0;
+  --night: #0B0B0B;
+  --on-night: #F7F5F0;
+  --on-night-muted: rgba(247, 245, 240, 0.72);
+  --action: #0B0B0B;
+  --on-action: #F7F5F0;
+  --code-ground: #FFFFFF;
+  --code-ink: #0B0B0B;
+  --leaf: #2FB36B;
+  --leaf-strong: #1E7A45;
+  --leaf-tint: #E2F3E6;
+  --palm: #FFC72C;
+  --palm-strong: #8A5A00;
+  --palm-tint: #FFF1C7;
+  --sky-strong: #1D5BD8;
+  --sky-tint: #E8EEFB;
+  --danger: #B3123A;
+  --danger-tint: #FCE6EA;
+  --canvas: #F7F5F0;
+  --surface: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-sunken: #F0EEE8;
+  --ink: #0B0B0B;
+  --ink-muted: #5A574E;
+  --on-bright: #0B0B0B;
+  --line: #E8E5DC;
+  --line-strong: #6F6B60;
+  --focus: #0B0B0B;
+  --scrim: rgba(11, 11, 11, 0.5);
+  --wash-start: #FFE9E0;
+  --wash-end: #FFF3ED;
+  --glass: rgba(255, 255, 255, 0.78);
+  --glass-strong: rgba(255, 255, 255, 0.92);
+  --glass-stroke: rgba(255, 255, 255, 0.95);
+  --glass-edge: rgba(11, 11, 11, 0.06);
+  --night-hi: #1A1A1A;
+  --action-hover: #262626;
+  --action-pressed: #000000;
+  --action-disabled: #E8E5DC;
+  --on-action-disabled: #5A574E;
+  --tint-produce: var(--flame-tint);
+  --tint-grain: var(--palm-tint);
+  --tint-oil: var(--palm-tint);
+  --tint-package: var(--leaf-tint);
+  --tint-protein: #FAE3E0;
+  --food-yam: #8A5A00;
+  --map-ground: #F0EEE8;
+  --map-road: #FFFFFF;
+  --map-block: #F7F5F0;
+  --map-pin: #0B0B0B;
+  --map-pin-ring: #FFFFFF;
+  --map-pin-dot: #FF550C;
+  --map-shadow: #0B0B0B;
+  --shadow-raised: 0 12px 40px rgba(11, 11, 11, 0.08), 0 1px 2px rgba(11, 11, 11, 0.04);
+  --shadow-glass: 0 8px 32px rgba(11, 11, 11, 0.06), 0 1px 2px rgba(11, 11, 11, 0.04);
+  --shadow-flame: 0 4px 16px rgba(11, 11, 11, 0.12);
+}
+[data-theme="dark"], .dark {
+  --flame: #FF6A2B;
+  --flame-strong: #FF8A55;
+  --flame-tint: #3A1E10;
+  --night: #1C1C1C;
+  --on-night: #F7F5F0;
+  --on-night-muted: rgba(247, 245, 240, 0.72);
+  --action: #F7F5F0;
+  --on-action: #0B0B0B;
+  --code-ground: #FFFFFF;
+  --code-ink: #0B0B0B;
+  --leaf: #3CCB7A;
+  --leaf-strong: #5FD892;
+  --leaf-tint: #15301F;
+  --palm: #FFD45C;
+  --palm-strong: #FFD45C;
+  --palm-tint: #3A3115;
+  --sky-strong: #8DB3FF;
+  --sky-tint: #1A2846;
+  --danger: #FF7A8F;
+  --danger-tint: #3D1720;
+  --canvas: #0B0B0B;
+  --surface: #161616;
+  --surface-raised: #1A1A1A;
+  --surface-sunken: #111111;
+  --ink: #F7F5F0;
+  --ink-muted: #B8B4A8;
+  --on-bright: #0B0B0B;
+  --line: #2A2A2A;
+  --line-strong: #8A867A;
+  --focus: #F7F5F0;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --wash-start: #241510;
+  --wash-end: #120C09;
+  --glass: rgba(22, 22, 22, 0.72);
+  --glass-strong: rgba(22, 22, 22, 0.88);
+  --glass-stroke: rgba(255, 255, 255, 0.12);
+  --glass-edge: rgba(0, 0, 0, 0.35);
+  --night-hi: #262626;
+  --action-hover: #FFFFFF;
+  --action-pressed: #E8E5DC;
+  --action-disabled: #2A2A2A;
+  --on-action-disabled: #B8B4A8;
+  --tint-protein: #341A19;
+  --map-ground: #111111;
+  --map-road: #262626;
+  --map-block: #161616;
+  --map-pin: #FF6A2B;
+  --map-pin-ring: #0B0B0B;
+  --map-pin-dot: #0B0B0B;
+  --map-shadow: #000000;
+  --shadow-raised: 0 12px 40px rgba(0, 0, 0, 0.45);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.40);
+  --shadow-flame: 0 4px 16px rgba(0, 0, 0, 0.35);
+  color-scheme: dark;
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 36px;
+  --radius-pill: 999px;
+  --touch-min: 48px;
+  --tap-min: 48px;
+  --control-h-on-dark: 48px;
+  --plan-button: 52px;
+  --control-h-sm: 36px;
+  --control-h: 52px;
+  --control-h-lg: 60px;
+  --icon-sm: 16px;
+  --icon-md: 24px;
+  --screen-max: 560px;
+  --blur-glass: 20px;
+  --duration-press: 140ms;
+  --duration-state: 220ms;
+  --duration-sheet-in: 320ms;
+  --duration-sheet-out: 250ms;
+  --duration-moment: 700ms;
+  --duration-reduced: 150ms;
+  --ease-out: ease-out;
+  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+  --font-display: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.display-xl { font-family: var(--font-display); font-size: 40px; line-height: 44px; font-weight: 800; letter-spacing: -0.02em; }
+.display-lg { font-family: var(--font-display); font-size: 32px; line-height: 35px; font-weight: 800; letter-spacing: -0.02em; }
+.title-lg { font-family: var(--font-sans); font-size: 24px; line-height: 31px; font-weight: 700; letter-spacing: -0.01em; }
+.title-md { font-family: var(--font-sans); font-size: 20px; line-height: 26px; font-weight: 700; }
+.title-sm { font-family: var(--font-sans); font-size: 17px; line-height: 22px; font-weight: 700; }
+.body-lg { font-family: var(--font-sans); font-size: 16px; line-height: 24px; font-weight: 500; }
+.body { font-family: var(--font-sans); font-size: 15px; line-height: 22px; font-weight: 500; }
+.body-sm { font-family: var(--font-sans); font-size: 13px; line-height: 18px; font-weight: 500; }
+.label { font-family: var(--font-sans); font-size: 15px; line-height: 20px; font-weight: 700; }
+.chip { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: 0.01em; }
+.money { font-family: var(--font-sans); font-size: 17px; line-height: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+::selection { background: var(--flame-tint); color: var(--ink); }
+:focus-visible { outline-color: var(--focus); }
+* { scrollbar-color: var(--line-strong) transparent; }
+@media (prefers-reduced-motion: reduce) { :root { --duration-press: var(--duration-reduced); --duration-state: var(--duration-reduced); --duration-sheet-in: var(--duration-reduced); --duration-sheet-out: var(--duration-reduced); --duration-moment: var(--duration-reduced); } }

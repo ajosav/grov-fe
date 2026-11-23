@@ -1,0 +1,181 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+    branches:
+      - qa
+      - uat
+      - main
+
+jobs:
+  claude-review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+      actions: read # Required for Claude to read CI results on PRs
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # re-reviews diff against the previously reviewed commit
+
+      - name: Run Claude Code Review
+        id: claude-review
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          # Allows Claude to read CI results on PRs
+          additional_permissions: |
+            actions: read
+
+          # Allow tools for reading PR details, code, and posting comments
+          claude_args: |
+            --allowedTools "mcp__github__*,mcp__github_inline_comment__*,mcp__github_ci__*,Bash(git:*),Bash(gh:*),Read,Glob,Grep,WebFetch"
+
+          # Frontend review against CONTRIBUTING.md, AGENTS.md and the frontend skill
+          prompt: |
+            Review pull request: ${{ github.repository }}#${{ github.event.pull_request.number }}
+
+            ## PR Context
+            **Title:** ${{ github.event.pull_request.title }}
+            **Author:** ${{ github.event.pull_request.user.login }}
+            **Branch:** `${{ github.event.pull_request.head.ref }}` → `${{ github.event.pull_request.base.ref }}`
+            **Size:** +${{ github.event.pull_request.additions }} / -${{ github.event.pull_request.deletions }} lines (${{ github.event.pull_request.changed_files }} files)
+            **URL:** ${{ github.event.pull_request.html_url }}
+
+            **Description:**
+            ${{ github.event.pull_request.body }}
+
+            ---
+
+            You are reviewing the web frontends of a grocery / meal-planning product: an
+            Nx monorepo (Yarn 4) with a prerendered marketing site, a customer SPA and an
+            admin SPA (React 19, React Router 7, Vite, Tailwind 4 on design tokens,
+            TanStack Query, Zustand, react-hook-form + zod). Money and sign-in flow
+            through these screens, so weigh production risk. Be specific and cite `file:line`.
+
+            ## 1. Context
+            - Read `CONTRIBUTING.md` and `AGENTS.md`. They are the source of truth; do
+              not restate or invent rules that are not in them. Where the docs and code
+              disagree, say so instead of picking a side.
+            - Read `.agents/skills/frontend/SKILL.md`, then only the references that match
+              what the PR touches (CONTRIBUTING §3). Cite the reference you rely on.
+            - The review is always of the entire branch against its base, on every run:
+              `git diff origin/${{ github.event.pull_request.base.ref }}...${{ github.event.pull_request.head.sha }}`
+              (or `gh pr diff`). Never limit it to the latest commit.
+            - Read full files, not just the diff; trace route → component → hook →
+              endpoint function, and the tests.
+            - Check CI with `gh pr checks`. Report a CI failure once. Do not re-review
+              what Prettier, ESLint (boundaries, tokens, banned packages), `check:arch`,
+              typecheck, tests, builds or commitlint already cover. Judge from CI results.
+
+            ## 2. Classify every finding (this decides whether the PR is blocked)
+
+            **Blocker** — only for a concrete defect you can point to in the code, in one
+            of these areas:
+            - Correctness bug: wrong data shown, broken flow, stale cache after a mutation,
+              a redirect loop, a crash on an empty or error state.
+            - Security: tokens, tickets or PII in JS storage, logs or `VITE_*`; an
+              open redirect (redirect target not through `safeRedirect`); rendering
+              untrusted HTML; a permission-gated action shown or callable without its
+              permission where the server would not also refuse it.
+            - Money: the client computing totals, prices or balances the server owns;
+              non-integer-kobo money; formatting that changes the amount.
+            - Grov non-negotiables broken on a screen (budget overage shown as an error or
+              blocking checkout, a pre-payment price without its status, white text on flame).
+            - Accessibility regressions that block use: unlabeled controls, keyboard traps,
+              focus lost on navigation or dialogs.
+            - A new runtime dependency with no justification (CONTRIBUTING §5).
+            - Edits to generated files, or to ESLint / `check:arch` / tsconfig / CI config
+              made only to get a check passing.
+            Each blocker must say the rule or reference it breaks, the failing scenario
+            in one or two sentences, and the smallest fix.
+
+            **Suggestion** — everything else that is worth fixing: missing tests for a
+            risky path, duplicated components, needless re-renders, copy that does not
+            follow the design skill, naming/style, docs that should change, drive-by edits.
+
+            **Note** — process items. These are NEVER blockers and must not appear in the
+            Blockers section:
+            - Branch name, commit subject/scope/`!` footer, PR title. Mention them in at
+              most one short line, only if clearly wrong.
+            - PR size: mention only if over ~1500 changed lines or clearly mixing
+              unrelated concerns, and then propose the split in 2–4 lines.
+            - Unfilled PR template sections (including missing screenshots for UI
+              changes). Say which, once.
+            - "Needs a second reviewer" (auth, `@grov/api` client, tooling/CI, money
+              screens): state it once in the Summary.
+
+            Do not report a finding you cannot back with code you read. Do not report the
+            same root cause more than once. If something is a judgement call, make it a
+            Suggestion. Prefer fewer, higher-confidence findings.
+
+            ## 3. Checks to apply (only where the PR touches them)
+            - Non-negotiables in CONTRIBUTING §1 and the AGENTS.md "Always"/"Never" lists.
+            - Product name is config, never a literal (AGENTS.md).
+            - Data: endpoint in `@grov/api`, hook in `@grov/hooks`, types from
+              `@grov/models`, exact cache updates/invalidations, loading/empty/error states.
+            - Routes: guards, `meta`, admin `handle.requires` matching the nav item.
+            - UI: tokens only, works in dark mode and at 360px, 48px targets, labels.
+            - Forms: `<Field>`, zod schema, server `fieldErrors` mapped, submit disabled while pending.
+
+            ## 4. Output
+            Keep it short enough to read in two minutes.
+
+            ### Summary
+            What the PR does, and whether it needs a second reviewer.
+
+            ### Risk Level: [LOW | MEDIUM | HIGH]
+
+            ### Blockers
+            Only items that meet the Blocker definition above, or "None".
+
+            ### Suggestions
+            Non-blocking improvements.
+
+            ### Notes
+            Process items from the Note list, kept to a few lines.
+
+            ### What Looks Good
+            ### Testing Recommendations
+            Specific scenarios (signed-out and gated users, missing permissions, slow or
+            failing API, dark mode, phone width, keyboard only) not already covered by tests.
+
+            ## 5. Posting (IMPORTANT)
+            Post the review as a single PR comment, and update it on later pushes instead
+            of adding a new one:
+            ```
+            gh pr comment ${{ github.event.pull_request.number }} --edit-last --create-if-none --body "YOUR_REVIEW_HERE"
+            ```
+            End every comment with the line
+            `Reviewed commit: ${{ github.event.pull_request.head.sha }}`.
+            Use `mcp__github_inline_comment__create_inline_comment` only for a Blocker
+            or a high-confidence Suggestion on a specific line.
+            On a re-review:
+            - First read your previous comment (`gh pr view --comments`), and say which
+              earlier blockers are resolved and which remain.
+            - Find the `Reviewed commit: <sha>` line at the bottom of your previous
+              comment and run `git diff <sha>..${{ github.event.pull_request.head.sha }}`.
+              This only tells you which parts are new since the last review so you can
+              look closely at them; it does not narrow the review. For every change that
+              fixes an earlier blocker, check for regressions:
+              callers and tests of the touched code, a fix that moves the problem
+              elsewhere (e.g. a cache invalidation that now misses another screen, a
+              guard moved so a route loses its permission check), and removed or
+              weakened tests. If the sha is missing or not in history, review the full PR.
+            - Review the whole PR again, not only the new commits. If you find something
+              that the earlier review missed, report it under its normal tier and mark it
+              "(new in this review)". Do not stay silent because it was not raised before.
+            - A new Blocker is only valid if it meets the Blocker definition. Do not
+              promote earlier Suggestions or Notes to Blockers without new evidence.
+            - Raise everything you find in one pass rather than holding items back for
+              later pushes.
+
+          # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md

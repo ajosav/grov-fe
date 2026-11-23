@@ -1,0 +1,45 @@
+/*
+ * Web decisions layered on the synced tokens. Keep this file small: anything
+ * that is a design decision belongs in tokens.json, not here.
+ */
+
+@theme inline {
+  --color-primary-hover: color-mix(in srgb, var(--flame) 88%, var(--ink));
+  --color-primary-pressed: color-mix(in srgb, var(--flame) 76%, var(--ink));
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--flame-tint);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  /* Money and counts line up (DS4). */
+  .tabular,
+  [data-money] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
+   * iOS Safari zooms the page when a focused field is under 16px. Touch only,
+   * so desktop type stays on the scale and pinch-zoom stays available.
+   */
+  @media (pointer: coarse) {
+    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+    textarea,
+    select {
+      font-size: 16px;
+    }
+  }
+}

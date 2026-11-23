@@ -1,0 +1,11 @@
+.yarn
+dist
+build
+coverage
+.nx
+**/.react-router/
+yarn.lock
+libs/ui/src/lib/styles/tokens.css
+libs/ui/src/lib/styles/theme.css
+libs/models/src/lib/generated/
+apps/website/public/

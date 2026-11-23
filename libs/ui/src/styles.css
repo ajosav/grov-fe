@@ -1,0 +1,24 @@
+/*
+ * @grov/ui styles — import once per app: `@import '@grov/ui/styles.css';`
+ *
+ * Layers, in order:
+ *   tokens.css  design tokens as CSS variables, light + dark   (synced, do not edit)
+ *   theme.css   Tailwind v4 theme + shadcn aliases on tokens   (synced, do not edit)
+ *   brand-overrides.css  token-level web decisions (plain CSS)  (edit here)
+ *   grov.css    Tailwind-level additions on top of the tokens   (edit here)
+ *
+ * Dark mode: `<html data-theme="dark">` (set by ThemeProvider / the no-flash
+ * script). Every colour utility (bg-surface, text-ink, bg-primary …) reads a
+ * variable, so components never need `dark:` variants for colour.
+ */
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './lib/styles/fonts.css';
+@import './lib/styles/tokens.css';
+@import './lib/styles/theme.css';
+@import './lib/styles/brand-overrides.css';
+@import './lib/styles/grov.css';
+
+/* Scan every lib and app for class names. */
+@source '../../';
+@source '../../../apps';

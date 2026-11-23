@@ -1,0 +1,30 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "admin",
+  "sourceRoot": "apps/admin/app",
+  "projectType": "application",
+  "tags": ["type:app"],
+  "targets": {
+    "dev": {
+      "command": "react-router dev --port 4400",
+      "options": {"cwd": "apps/admin"},
+      "continuous": true
+    },
+    "build": {
+      "command": "react-router build",
+      "options": {"cwd": "apps/admin"},
+      "outputs": ["{projectRoot}/build"]
+    },
+    "preview": {
+      "command": "vite preview --outDir build/client --port 4400",
+      "options": {"cwd": "apps/admin"},
+      "dependsOn": ["build"]
+    },
+    "typecheck": {
+      "command": "react-router typegen && tsc -p tsconfig.json",
+      "options": {"cwd": "apps/admin"}
+    },
+    "lint": {"command": "eslint apps/admin --max-warnings=0"},
+    "test": {"command": "vitest run --config apps/admin/vitest.config.ts --passWithNoTests"}
+  }
+}

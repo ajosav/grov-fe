@@ -1,0 +1,17 @@
+{
+  "name": "@grov/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@grov/api": "workspace:*",
+    "@grov/hooks": "workspace:*",
+    "@grov/models": "workspace:*",
+    "@grov/store": "workspace:*",
+    "@grov/ui": "workspace:*"
+  }
+}
