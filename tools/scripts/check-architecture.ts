@@ -99,7 +99,8 @@ const permissionKeys = new Set(
 const ALLOWED_DEEP = new Set(['@grov/ui/styles.css', '@grov/ui/tokens.css']);
 const LIB_BANNED: Record<string, RegExp> = {
   'libs/models': /^(react|react-dom|react-router|@tanstack\/|axios|zustand|radix-ui)/,
-  'libs/ui': /^(react-router|@tanstack\/|axios|zustand)/,
+  // TanStack Table is presentation; TanStack Query is data and stays out of ui.
+  'libs/ui': /^(react-router|@tanstack\/react-query|axios|zustand)/,
   'libs/api': /^(react-router|zustand|radix-ui)/,
   'libs/store': /^(react-router|@tanstack\/|axios|radix-ui)/,
 };

@@ -6,4 +6,5 @@ export const paths = {
   finishAccount: '/finish-account',
   roles: '/access/roles',
   settings: '/settings',
+  designSystem: '/design-system',
 } as const;

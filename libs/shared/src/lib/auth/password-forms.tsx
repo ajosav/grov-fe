@@ -1,3 +1,5 @@
+import {useRef, useState} from 'react';
+
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
@@ -12,6 +14,7 @@ import {type Audience, type AuthResponse} from '@grov/models';
 import {Alert, Button, Field, Input, PasswordInput, Skeleton} from '@grov/ui';
 
 import {errorMessage} from '../errors';
+import {isTurnstileEnabled, Turnstile, type TurnstileHandle} from './turnstile';
 
 /* -------------------------------------------------------------- sign in */
 
@@ -66,6 +69,8 @@ export function PasswordSignInForm({
 
 export function ForgotPasswordForm() {
   const forgot = useForgotPassword();
+  const turnstile = useRef<TurnstileHandle>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const form = useForm({
     resolver: zodResolver(z.object({email: z.email('Enter a valid email address')})),
     defaultValues: {email: ''},
@@ -80,15 +85,26 @@ export function ForgotPasswordForm() {
   }
   return (
     <form
-      onSubmit={form.handleSubmit(values => forgot.mutate(values))}
+      onSubmit={form.handleSubmit(values =>
+        forgot.mutate(
+          {...values, captchaToken: captchaToken ?? undefined},
+          {onSettled: () => turnstile.current?.reset()}
+        )
+      )}
       noValidate
       className="grid gap-4"
     >
       <Field label="Email" error={form.formState.errors.email?.message}>
         <Input type="email" autoComplete="email" autoFocus {...form.register('email')} />
       </Field>
+      <Turnstile ref={turnstile} action="password-reset" onToken={setCaptchaToken} />
       {forgot.isError ? <Alert tone="danger">{errorMessage(forgot.error)}</Alert> : null}
-      <Button type="submit" block loading={forgot.isPending}>
+      <Button
+        type="submit"
+        block
+        loading={forgot.isPending}
+        disabled={isTurnstileEnabled() && !captchaToken}
+      >
         Send reset link
       </Button>
     </form>

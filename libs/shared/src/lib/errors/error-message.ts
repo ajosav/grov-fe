@@ -7,6 +7,8 @@ import {ErrorCode} from '@grov/models';
  */
 const COPY: Partial<Record<string, string>> = {
   [ErrorCode.NETWORK_ERROR]: 'Can’t reach us right now. Check your connection and try again.',
+  [ErrorCode.CAPTCHA_REQUIRED]: 'Finish the quick check above, then try again.',
+  [ErrorCode.CAPTCHA_FAILED]: 'The quick check didn’t go through. Try it again.',
   [ErrorCode.RATE_LIMITED]: 'Too many tries. Wait a moment, then try again.',
   [ErrorCode.OTP_INVALID]: 'That code isn’t right. Check the email and try again.',
   [ErrorCode.OTP_EXPIRED]: 'That code has expired. Send a new one.',

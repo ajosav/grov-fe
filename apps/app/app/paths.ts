@@ -5,5 +5,10 @@ export const paths = {
   signInCode: '/sign-in/code',
   signInProfile: '/sign-in/profile',
   finishAccount: '/finish-account',
+  shop: '/shop',
+  plan: '/plan',
+  orders: '/orders',
+  savings: '/savings',
   account: '/account',
+  designSystem: '/design-system',
 } as const;

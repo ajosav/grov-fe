@@ -23,6 +23,8 @@ export const appConfig = {
   /** Must equal grov-be's `auth.cookiePrefix` (BRAND_NAME slugified with `_`). */
   cookiePrefix: read(env.VITE_COOKIE_PREFIX, slug(brandName)),
   googleClientId: read(env.VITE_GOOGLE_CLIENT_ID, ''),
+  /** Cloudflare Turnstile site key; empty = no widget (grov-be must have TURNSTILE_SECRET_KEY unset too). */
+  turnstileSiteKey: read(env.VITE_TURNSTILE_SITE_KEY, ''),
   appUrl: read(env.VITE_APP_URL, 'http://localhost:4300'),
   /** Public website, for legal links (Terms, Privacy). */
   websiteUrl: read(env.VITE_WEBSITE_URL, 'http://localhost:4200').replace(/\/+$/, ''),

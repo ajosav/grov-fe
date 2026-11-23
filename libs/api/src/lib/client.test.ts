@@ -7,10 +7,10 @@ import {ApiError} from './errors';
 
 type Handler = (config: InternalAxiosRequestConfig) => {status: number; data: unknown};
 
-function clientWith(handler: Handler, onSessionEnded = vi.fn()) {
+function clientWith(handler: Handler, onSessionEnded = vi.fn(), audience: Audience = Audience.APP) {
   const client = createApiClient({
     baseURL: 'http://api.test',
-    audience: Audience.APP,
+    audience,
     cookiePrefix: 'brand',
     onSessionEnded,
   });
@@ -74,6 +74,26 @@ describe('createApiClient', () => {
     });
     await expect(client.request({url: '/v1/me'})).resolves.toEqual({id: 1});
     expect(calls.map(c => c.url)).toEqual(['/v1/me', '/v1/auth/refresh', '/v1/me']);
+  });
+
+  it('names its audience on refresh so the right session cookie is used', async () => {
+    for (const audience of [Audience.APP, Audience.ADMIN]) {
+      let refreshed = false;
+      const {client, calls} = clientWith(
+        config => {
+          if (config.url === '/v1/auth/refresh') {
+            refreshed = true;
+            return ok({tokens: null});
+          }
+          return refreshed ? ok({}) : unauthorized();
+        },
+        vi.fn(),
+        audience
+      );
+      await client.request({url: '/v1/me'});
+      const refresh = calls.find(c => c.url === '/v1/auth/refresh');
+      expect(JSON.parse(String(refresh?.data))).toEqual({audience});
+    }
   });
 
   it('shares one refresh between parallel 401s', async () => {

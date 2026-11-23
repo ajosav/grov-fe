@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
@@ -17,6 +17,7 @@ import {useSignInStore} from '@grov/store';
 import {Alert, Button, Field, Input, OtpInput, PhoneInput, toast, toE164Nigeria} from '@grov/ui';
 
 import {errorMessage} from '../errors';
+import {isTurnstileEnabled, Turnstile, type TurnstileHandle} from './turnstile';
 
 /* ---------------------------------------------------------------- email */
 
@@ -32,6 +33,9 @@ export function EmailStep({redirectTo, onCodeSent}: EmailStepProps) {
   const savedEmail = useSignInStore(s => s.email);
   const start = useSignInStore(s => s.start);
   const requestCode = useRequestCode();
+  const turnstile = useRef<TurnstileHandle>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const waitingForCheck = isTurnstileEnabled() && !captchaToken;
   const form = useForm({
     resolver: zodResolver(emailSchema),
     defaultValues: {email: savedEmail ?? ''},
@@ -39,12 +43,17 @@ export function EmailStep({redirectTo, onCodeSent}: EmailStepProps) {
 
   const submit = form.handleSubmit(({email}) => {
     const normalised = email.trim().toLowerCase();
-    requestCode.mutate(normalised, {
-      onSuccess: challenge => {
-        start(normalised, challenge, redirectTo);
-        onCodeSent();
-      },
-    });
+    requestCode.mutate(
+      {email: normalised, captchaToken: captchaToken ?? undefined},
+      {
+        onSuccess: challenge => {
+          start(normalised, challenge, redirectTo);
+          onCodeSent();
+        },
+        // Turnstile tokens are single use.
+        onSettled: () => turnstile.current?.reset(),
+      }
+    );
   });
 
   return (
@@ -59,8 +68,9 @@ export function EmailStep({redirectTo, onCodeSent}: EmailStepProps) {
           {...form.register('email')}
         />
       </Field>
+      <Turnstile ref={turnstile} action="sign-in-code" onToken={setCaptchaToken} />
       {requestCode.isError ? <Alert tone="danger">{errorMessage(requestCode.error)}</Alert> : null}
-      <Button type="submit" block loading={requestCode.isPending}>
+      <Button type="submit" block loading={requestCode.isPending} disabled={waitingForCheck}>
         Continue
       </Button>
     </form>
@@ -82,6 +92,8 @@ export function CodeStep({onSignedIn, onProfileRequired, onChangeEmail}: CodeSte
   const verify = useVerifyCode();
   const resend = useRequestCode();
   const wait = useCountdown(challenge?.nextSendAt);
+  const turnstile = useRef<TurnstileHandle>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   if (!email) {
     return (
@@ -152,19 +164,24 @@ export function CodeStep({onSignedIn, onProfileRequired, onChangeEmail}: CodeSte
       >
         Continue
       </Button>
+      <Turnstile ref={turnstile} action="sign-in-code" onToken={setCaptchaToken} />
       <Button
         variant="ghost"
         block
-        disabled={wait > 0 || resend.isPending}
+        disabled={wait > 0 || resend.isPending || (isTurnstileEnabled() && !captchaToken)}
         onClick={() =>
-          resend.mutate(email, {
-            onSuccess: next => {
-              setChallenge(next);
-              verify.reset();
-              toast.success('New code sent');
-            },
-            onError: error => toast.error(errorMessage(error)),
-          })
+          resend.mutate(
+            {email, captchaToken: captchaToken ?? undefined},
+            {
+              onSuccess: next => {
+                setChallenge(next);
+                verify.reset();
+                toast.success('New code sent');
+              },
+              onError: error => toast.error(errorMessage(error)),
+              onSettled: () => turnstile.current?.reset(),
+            }
+          )
         }
       >
         {wait > 0 ? `Send a new code in ${wait}s` : 'Send a new code'}

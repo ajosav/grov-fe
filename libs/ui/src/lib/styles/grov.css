@@ -43,3 +43,37 @@
     }
   }
 }
+
+/*
+ * Glass surfaces (design system "Glass", DS11/DS16). Live blur only where it
+ * is cheap: reduced transparency and `.lowend` on <html> fall back to the
+ * denser fill with no blur.
+ */
+@utility glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(160%);
+  backdrop-filter: blur(var(--blur-glass)) saturate(160%);
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--shadow-glass);
+}
+@utility glass-strong {
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(160%);
+  backdrop-filter: blur(var(--blur-glass)) saturate(160%);
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--shadow-raised);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-strong {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--glass-strong);
+  }
+}
+.lowend .glass,
+.lowend .glass-strong {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--glass-strong);
+}

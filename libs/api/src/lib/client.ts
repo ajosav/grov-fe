@@ -80,7 +80,9 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
 
   const refresh = (): Promise<boolean> => {
     refreshing ??= instance
-      .post('/v1/auth/refresh', {})
+      // The audience picks this console's refresh cookie: a browser signed in to
+      // the app and the admin holds both, on the same path.
+      .post('/v1/auth/refresh', {audience: options.audience})
       .then(() => true)
       .catch(() => false)
       .finally(() => {

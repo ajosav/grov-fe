@@ -34,12 +34,12 @@ Internal libraries **[enforced: `@nx/enforce-module-boundaries` via project tags
 
 Third-party side **[enforced: `check:arch` lib-purity]**:
 
-| Lib            | May not import                                                                                                      |
-| -------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `@grov/models` | react, react-router, TanStack, axios, zustand, radix-ui                                                             |
-| `@grov/ui`     | react-router, TanStack, axios, zustand (primitives stay router- and data-agnostic; links come in through `asChild`) |
-| `@grov/api`    | react-router, zustand, radix-ui                                                                                     |
-| `@grov/store`  | react-router, TanStack, axios, radix-ui                                                                             |
+| Lib            | May not import                                                                                                                                                                      |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@grov/models` | react, react-router, TanStack, axios, zustand, radix-ui                                                                                                                             |
+| `@grov/ui`     | react-router, TanStack Query, axios, zustand (primitives stay router- and data-agnostic; links come in through `asChild` or a `link` prop). TanStack Table is allowed (`DataTable`) |
+| `@grov/api`    | react-router, zustand, radix-ui                                                                                                                                                     |
+| `@grov/store`  | react-router, TanStack, axios, radix-ui                                                                                                                                             |
 
 - Import a library only through its public index (`@grov/ui`, never `@grov/ui/src/...`); the two CSS entry points `@grov/ui/styles.css` and `@grov/ui/tokens.css` are the exceptions **[enforced: `check:arch` deep-import]**. No relative import into another project.
 - Libraries are consumed from source (`exports` → `src/index.ts`); there is no library build step. Every public symbol is exported from the lib's `index.ts`; anything not exported there is private.

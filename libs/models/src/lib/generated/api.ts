@@ -7582,6 +7582,7 @@ export interface operations {
                      * @example ngozi@example.com
                      */
                     email: string;
+                    captchaToken?: string;
                 };
             };
         };
@@ -7884,6 +7885,7 @@ export interface operations {
                      * @example ngozi@example.com
                      */
                     email: string;
+                    captchaToken?: string;
                 };
             };
         };
@@ -8075,6 +8077,8 @@ export interface operations {
             content: {
                 "application/json": {
                     refreshToken?: string;
+                    /** @enum {string} */
+                    audience?: "APP" | "ADMIN";
                 };
             };
         };

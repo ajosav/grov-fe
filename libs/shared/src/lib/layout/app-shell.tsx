@@ -1,9 +1,18 @@
 import {type ComponentType, type ReactNode, useState} from 'react';
 
 import {Menu} from 'lucide-react';
-import {NavLink, Outlet, useLocation} from 'react-router';
+import {Link, matchPath, NavLink, Outlet, useLocation} from 'react-router';
 
-import {Button, cn, Dialog, DialogContent, DialogTitle, Logo} from '@grov/ui';
+import {
+  BottomNav,
+  type BottomNavLink,
+  Button,
+  cn,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Logo,
+} from '@grov/ui';
 
 import {type PermissionRequirement, usePermissions} from '../auth/access';
 
@@ -14,6 +23,8 @@ export interface NavItem {
   /** Hidden unless the signed-in admin holds these permissions. */
   requires?: PermissionRequirement;
   end?: boolean;
+  /** Bottom nav only: the raised centre action (Plan). */
+  center?: boolean;
 }
 
 export interface AppShellProps {
@@ -22,15 +33,26 @@ export interface AppShellProps {
   headerEnd?: ReactNode;
   /** Small chip next to the logo, e.g. "Admin". */
   badge?: ReactNode;
+  /**
+   * Phones and tablets: `menu` opens the nav as a side sheet (admin);
+   * `bottom` shows the floating bottom nav (customer app, IA6: five items max).
+   */
+  mobileNav?: 'menu' | 'bottom';
   children?: ReactNode;
 }
 
+const RouterLink: BottomNavLink = ({to, ...props}) => <Link to={to} {...props} />;
+
 /** Sidebar (from `lg`) + top bar + content. On phones the nav opens as a side sheet. */
-export function AppShell({nav, headerEnd, badge, children}: AppShellProps) {
+export function AppShell({nav, headerEnd, badge, mobileNav = 'menu', children}: AppShellProps) {
   const {check} = usePermissions();
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const items = nav.filter(item => !item.requires || check(item.requires));
+  const bottom = mobileNav === 'bottom';
+  const active =
+    items.find(item => matchPath({path: item.to, end: item.end ?? false}, location.pathname))?.to ??
+    '';
 
   const links = (
     <nav aria-label="Main" className="grid gap-1">
@@ -76,7 +98,7 @@ export function AppShell({nav, headerEnd, badge, children}: AppShellProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className={cn('lg:hidden', bottom && 'hidden')}
             aria-label="Open menu"
             onClick={() => setOpen(true)}
           >
@@ -87,11 +109,29 @@ export function AppShell({nav, headerEnd, badge, children}: AppShellProps) {
         </header>
         <main
           key={location.pathname}
-          className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:py-8"
+          className={cn(
+            'mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:py-8',
+            bottom && 'pb-32 lg:pb-8'
+          )}
         >
           {children ?? <Outlet />}
         </main>
       </div>
+
+      {bottom ? (
+        <BottomNav
+          className="lg:hidden"
+          active={active}
+          link={RouterLink}
+          items={items.map(({to, label, icon: Icon, center}) => ({
+            key: to,
+            href: to,
+            label,
+            center,
+            icon: <Icon aria-hidden />,
+          }))}
+        />
+      ) : null}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent layout="side" className="max-w-xs gap-8 p-5">

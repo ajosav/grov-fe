@@ -1,19 +1,25 @@
-import {House, UserRound} from 'lucide-react';
+import {ClipboardList, House, PiggyBank, Sparkles, Store} from 'lucide-react';
 
 import {AppShell, type NavItem, RequireAuth, UserMenu} from '@grov/shared';
 
 import {paths} from '../paths';
 
-/** Only screens that exist are in the nav. Shop · Plan · Orders · Savings join as they are built (IA6). */
 const NAV: NavItem[] = [
   {to: paths.home, label: 'Home', icon: House, end: true},
-  {to: paths.account, label: 'Account', icon: UserRound},
+  {to: paths.shop, label: 'Shop', icon: Store},
+  {to: paths.plan, label: 'Plan', icon: Sparkles, center: true},
+  {to: paths.orders, label: 'Orders', icon: ClipboardList},
+  {to: paths.savings, label: 'Savings', icon: PiggyBank},
 ];
 
 export default function AppLayout() {
   return (
     <RequireAuth signInPath={paths.signIn} gatesPath={paths.finishAccount}>
-      <AppShell nav={NAV} headerEnd={<UserMenu signedOutPath={paths.signIn} />} />
+      <AppShell
+        nav={NAV}
+        mobileNav="bottom"
+        headerEnd={<UserMenu signedOutPath={paths.signIn} accountPath={paths.account} />}
+      />
     </RequireAuth>
   );
 }

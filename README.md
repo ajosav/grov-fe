@@ -14,6 +14,8 @@ yarn dev:admin                          # http://localhost:4400 (admin console)
 yarn dev:web                            # http://localhost:4200 (website)
 ```
 
+Component gallery (dev only, no sign-in needed): http://localhost:4300/design-system or http://localhost:4400/design-system.
+
 The apps talk to grov-be on `VITE_API_BASE_URL` (default `http://localhost:3000`). grov-be must allow the app origins (`CORS_ORIGINS`) and its cookie prefix must match `VITE_COOKIE_PREFIX`.
 
 ## Projects

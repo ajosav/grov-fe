@@ -4,7 +4,16 @@ _Part of the `frontend` skill. **[enforced]** = checked by ESLint, `check:arch`,
 
 ## Reuse first
 
-`@grov/ui` has: Button, Input, PasswordInput, PhoneInput, OtpInput, Label, Field, Select, Checkbox, Switch, Dialog (center · sheet · side), DropdownMenu, Tooltip, Tabs, Badge, PriceStatus, Money, Alert, Card, Table, EmptyState, Skeleton, Spinner, Toaster/toast, ThemeToggle, Avatar, Separator, Logo. `@grov/shared` has the layouts (AuthLayout, AppShell, PageHeader), guards and auth screens. Search before building; a near-duplicate is a bug.
+See them all, in both themes, at `/design-system` (`yarn dev:app` → http://localhost:4300/design-system).
+
+`@grov/ui` has:
+
+- **Fields:** Button, Input, Textarea, PasswordInput, PhoneInput, OtpInput, AmountInput (naira in, kobo out), Label, Field, Select, Combobox, MultiCombobox, DatePicker, Calendar, Checkbox, RadioGroup, Switch, Segmented, SelectTile, QuantityStepper, FileUpload.
+- **Overlays:** Dialog (center · sheet · side), ConfirmDialog, StatusDialog, Popover, DropdownMenu, Tooltip.
+- **Grov patterns:** Money, PriceStatus, Tag, Badge, BudgetMeter, Progress (bar · ring), PlanLine, Banner, IconTile, GlassCard, HeroPanel, Wash.
+- **Navigation:** AppBar, BottomNav, ActionBar, Tabs, StepIndicator, Pagination, LoadMore (cursor lists, optional infinite scroll), Accordion, CollapsibleCard.
+- **Data and content:** Table, DataTable (TanStack Table: sorting, selection, search toolbar, loading/empty), Markdown, CopyableText, Card, EmptyState, Alert, Skeleton, Spinner, Toaster/toast.
+- **Other:** ThemeToggle, Avatar, Separator, OrSeparator, Logo. `@grov/shared` has the layouts (AuthLayout, AppShell with `mobileNav="menu" | "bottom"`, PageHeader, UserMenu), Turnstile, guards and auth screens. Search before building; a near-duplicate is a bug.
 
 ## A new primitive in `@grov/ui`
 
@@ -44,6 +53,7 @@ export function PopoverContent({
 - Accept and forward `className` and the native props; `forwardRef` (or `ref` prop) for anything focusable.
 - No data fetching, routing or stores in `@grov/ui` **[enforced: `check:arch` lib-purity]**. Links come in through `asChild`.
 - Export it from `lib/components/index.ts`, add a test for its behaviour and accessibility (`testing.md`).
+- Add it to the component gallery (`libs/ui/src/lib/design-system/design-system-gallery.tsx`), with its variants and states. The gallery is at `/design-system` in the app (http://localhost:4300/design-system) and admin (http://localhost:4400/design-system) in dev, or in a build with `VITE_SHOW_DESIGN_SYSTEM=true`.
 
 ## App components
 

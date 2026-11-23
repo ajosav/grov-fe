@@ -16,9 +16,13 @@ function useRefreshMe() {
     queryClient.invalidateQueries({queryKey: queryKeys.me}).then(() => response);
 }
 
+/** `captchaToken` is the Turnstile token (single use); omitted when Turnstile is off. */
 export function useRequestCode() {
   const api = useApi();
-  return useMutation({mutationFn: (email: string) => api.auth.requestCode({email})});
+  return useMutation({
+    mutationFn: ({email, captchaToken}: {email: string; captchaToken?: string}) =>
+      api.auth.requestCode({email, captchaToken}),
+  });
 }
 
 export function useVerifyCode() {

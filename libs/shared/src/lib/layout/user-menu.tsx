@@ -1,4 +1,5 @@
-import {LogOut, Monitor, Moon, Sun} from 'lucide-react';
+import {LogOut, Monitor, Moon, Sun, UserRound} from 'lucide-react';
+import {Link} from 'react-router';
 
 import {useMe} from '@grov/hooks';
 import {ThemePreference} from '@grov/models';
@@ -20,9 +21,11 @@ import {useSignOutAndLeave} from '../auth/sign-out';
 export interface UserMenuProps {
   /** Where to go after signing out. */
   signedOutPath: string;
+  /** Adds an "Account" item (the customer app reaches Account from the avatar, IA6). */
+  accountPath?: string;
 }
 
-export function UserMenu({signedOutPath}: UserMenuProps) {
+export function UserMenu({signedOutPath, accountPath}: UserMenuProps) {
   const {data: me} = useMe();
   const {preference, setPreference} = useTheme();
   const {signOut, isPending} = useSignOutAndLeave(signedOutPath);
@@ -44,6 +47,16 @@ export function UserMenu({signedOutPath}: UserMenuProps) {
           <span className="block truncate">{me.email}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {accountPath ? (
+          <>
+            <DropdownMenuItem asChild>
+              <Link to={accountPath}>
+                <UserRound aria-hidden /> Account
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        ) : null}
         <DropdownMenuLabel>Theme</DropdownMenuLabel>
         <DropdownMenuRadioGroup
           value={preference}

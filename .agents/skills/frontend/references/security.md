@@ -12,7 +12,7 @@ _Part of the `frontend` skill. **[enforced]** = checked by ESLint, `check:arch`,
 
 ## Untrusted content
 
-- Never `dangerouslySetInnerHTML` **[enforced: `react/no-danger`]**. The one exception is the constant theme script in each `root.tsx`. Markdown or rich text from the API, if ever needed, goes through a sanitising renderer approved in review.
+- Never `dangerouslySetInnerHTML` **[enforced: `react/no-danger`]**. The one exception is the constant theme script in each `root.tsx`. Markdown or rich text from the API goes through `<Markdown>` from `@grov/ui` (react-markdown + rehype-sanitize; raw HTML is dropped).
 - Don't build URLs from user input without `encodeURIComponent`. External links opened in a new tab use `rel="noreferrer"`.
 - Redirect targets from the URL (`redirectTo`) go through `safeRedirect()` (same-origin paths only).
 
@@ -24,4 +24,4 @@ _Part of the `frontend` skill. **[enforced]** = checked by ESLint, `check:arch`,
 
 ## Third-party scripts
 
-Only Google Identity Services today (sign-in). Adding any script, SDK or pixel needs review: what data it sees, where it loads from, and a Content-Security-Policy update.
+Only Google Identity Services (sign-in) and Cloudflare Turnstile (`challenges.cloudflare.com`, bot check on sign-in code and password reset; loaded on demand by `<Turnstile>`). Adding any script, SDK or pixel needs review: what data it sees, where it loads from, and a Content-Security-Policy update.

@@ -19,5 +19,7 @@ export default [
     route('access/roles', 'routes/access/roles.tsx'),
     route('settings', 'routes/settings.tsx'),
   ]),
+  // Component gallery: dev only (or VITE_SHOW_DESIGN_SYSTEM). No sign-in, no API calls.
+  route('design-system', 'routes/design-system.tsx'),
   route('*', 'routes/not-found.tsx'),
 ] satisfies RouteConfig;

@@ -32,7 +32,7 @@ export function Field({label, children, hint, error, hideLabel, optional, classN
     : children;
 
   return (
-    <div className={cn('grid gap-2', className)}>
+    <div className={cn('grid content-start gap-2', className)}>
       <Label htmlFor={id} className={cn(hideLabel && 'sr-only')}>
         {label}
         {optional ? <span className="ml-1 font-medium text-ink-muted">(optional)</span> : null}

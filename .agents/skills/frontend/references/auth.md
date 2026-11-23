@@ -20,6 +20,7 @@ Source of truth: grov-be `modules/auth` and `modules/access`, project docs 10 (a
 | Admin    | Email + password, or Google, `audience: 'ADMIN'`; forgot/reset by email link                                        | `PasswordSignInForm`, `ForgotPasswordForm`, `ResetPasswordForm`                |
 
 - Every sign-in sends `device: webDevice()` (stable per-browser UUID v7).
+- Bot protection: requesting an email code and "forgot password" carry a Cloudflare Turnstile token as `captchaToken`. Use the `<Turnstile action="sign-in-code" | "password-reset">` widget from `@grov/shared` (the action must match, grov-be rejects a token minted for another form). Tokens are single use: reset the widget after every request, success or failure. With no `VITE_TURNSTILE_SITE_KEY` the widget renders nothing and forms submit without a token (local dev against a grov-be without `TURNSTILE_SECRET_KEY`). Errors `CAPTCHA_REQUIRED` / `CAPTCHA_FAILED` have copy in `errorMessage`.
 - Terms version comes from `GET /v1/config` (`legal.termsVersion`), never hard-coded.
 - Lookup endpoints must not reveal whether an account exists; the email-code flow answers the same for both.
 
