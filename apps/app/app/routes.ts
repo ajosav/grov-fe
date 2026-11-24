@@ -1,21 +1,24 @@
 import {index, layout, route, type RouteConfig} from '@react-router/dev/routes';
 
+const pg = (page: string) => `pages/${page}.tsx`;
+const layoutPg = (layout: string) => `layouts/${layout}.tsx`;
+
 export default [
-  layout('routes/auth/layout.tsx', [
-    route('sign-in', 'routes/auth/sign-in.tsx'),
-    route('sign-in/code', 'routes/auth/code.tsx'),
-    route('sign-in/profile', 'routes/auth/profile.tsx'),
+  layout(layoutPg('auth-layout'), [
+    route('sign-in', pg('auth/sign-in')),
+    route('sign-in/code', pg('auth/code')),
+    route('sign-in/profile', pg('auth/profile')),
   ]),
-  route('finish-account', 'routes/auth/finish-account.tsx'),
-  layout('routes/app-layout.tsx', [
-    index('routes/home.tsx'),
-    route('shop', 'routes/shop/index.tsx'),
-    route('plan', 'routes/plan/index.tsx'),
-    route('orders', 'routes/orders/index.tsx'),
-    route('savings', 'routes/savings/index.tsx'),
-    route('account', 'routes/account/index.tsx'),
+  route('finish-account', pg('auth/finish-account')),
+  layout(layoutPg('app-layout'), [
+    index(pg('home')),
+    route('shop', pg('shop/index')),
+    route('plan', pg('plan/index')),
+    route('orders', pg('orders/index')),
+    route('savings', pg('savings/index')),
+    route('account', pg('account/index')),
   ]),
   // Component gallery: dev only (or VITE_SHOW_DESIGN_SYSTEM). No sign-in, no API calls.
-  route('design-system', 'routes/design-system.tsx'),
-  route('*', 'routes/not-found.tsx'),
+  route('design-system', pg('design-system')),
+  route('*', pg('not-found')),
 ] satisfies RouteConfig;

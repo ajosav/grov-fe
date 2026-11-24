@@ -27,7 +27,7 @@ import {
   setDefaultSize,
   type SizeDraft,
   type SizeLadderErrors,
-} from '../../lib/products';
+} from '../../lib/catalogue/products';
 import {
   BASE_UNITS,
   type BaseUnit,
@@ -35,8 +35,8 @@ import {
   formatAmount,
   isBaseUnit,
   pickEntryUnit,
-} from '../../lib/units';
-import {QuantityInput} from '../quantity-input';
+} from '../../lib/catalogue/units';
+import {QuantityInput} from '../common/quantity-input';
 
 interface SellModeCopy {
   label: string;

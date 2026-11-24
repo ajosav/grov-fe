@@ -18,8 +18,8 @@ import {
   NO_AVAILABILITY,
   toAvailability,
   toPatchBody,
-} from '../../lib/product-details';
-import {DETAILS_STEP, stepOfField} from '../../lib/product-steps';
+} from '../../lib/catalogue/product-details';
+import {DETAILS_STEP, stepOfField} from '../../lib/catalogue/product-steps';
 import {
   hasSizeErrors,
   serverSizeErrors,
@@ -30,8 +30,8 @@ import {
   toSizeDrafts,
   validatePrepOptions,
   validateSizes,
-} from '../../lib/products';
-import {type BaseUnit, isBaseUnit, unitNoun} from '../../lib/units';
+} from '../../lib/catalogue/products';
+import {type BaseUnit, isBaseUnit, unitNoun} from '../../lib/catalogue/units';
 import {AvailabilityPicker} from './availability-picker';
 import {PrepOptionsEditor} from './prep-options-editor';
 import {ProductDetailsFields} from './product-details-fields';

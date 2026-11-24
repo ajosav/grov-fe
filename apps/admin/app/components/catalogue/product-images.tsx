@@ -12,7 +12,7 @@ import {
   MAX_PRODUCT_IMAGES,
   moveImage,
   PRODUCT_IMAGE_DIRECTORY,
-} from '../../lib/products';
+} from '../../lib/catalogue/products';
 
 /** grov-be's public-file policy: 5 MiB, and only these types (directory-policies.ts). */
 const ACCEPT = 'image/jpeg,image/png,image/webp,image/avif';
@@ -81,7 +81,7 @@ export function ProductImages({paths, onChange, disabled}: ProductImagesProps) {
                   {url ? (
                     <img
                       src={url}
-                      alt={`Product photo ${index + 1}`}
+                      alt={`Product ${index + 1}`}
                       loading="lazy"
                       className="size-full object-cover"
                     />

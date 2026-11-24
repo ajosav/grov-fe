@@ -1,8 +1,8 @@
 import type {StoreListing} from '@grov/models';
 import {Badge} from '@grov/ui';
 
-import {formatMoment} from '../../lib/dates';
-import {listingState} from '../../lib/listings';
+import {formatMoment} from '../../lib/format/dates';
+import {listingState} from '../../lib/catalogue/listings';
 
 /** Selling, Paused until a date, or Delisted. Paused and delisted products can't be bought. */
 export function ListingStateBadge({

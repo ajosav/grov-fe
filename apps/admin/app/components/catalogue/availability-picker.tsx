@@ -2,8 +2,8 @@ import {useMyStores} from '@grov/hooks';
 import {usePermissions} from '@grov/shared';
 import {Field, MultiCombobox, Segmented} from '@grov/ui';
 
-import type {AvailabilityChoice} from '../../lib/product-details';
-import {hasAllStores} from '../../lib/stores';
+import type {AvailabilityChoice} from '../../lib/catalogue/product-details';
+import {hasAllStores} from '../../lib/stores/store-rules';
 
 export interface AvailabilityPickerProps {
   value: AvailabilityChoice;

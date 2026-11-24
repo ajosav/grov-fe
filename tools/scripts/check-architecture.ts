@@ -255,7 +255,7 @@ for (const app of ['app', 'admin', 'website']) {
   const routesFile = join(ROOT, 'apps', app, 'app/routes.ts');
   if (!existsSync(routesFile)) continue;
   const text = readFileSync(routesFile, 'utf8');
-  for (const m of text.matchAll(/['"](routes\/[^'"]+\.tsx)['"]/g)) {
+  for (const m of text.matchAll(/['"]((?:pages|layouts|routes)\/[^'"]+\.tsx)['"]/g)) {
     const target = join(dirname(routesFile), m[1] ?? '');
     const line = lineOf(text, m.index ?? 0);
     if (!existsSync(target)) {

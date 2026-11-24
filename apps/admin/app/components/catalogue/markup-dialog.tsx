@@ -26,8 +26,8 @@ import {
   MAX_PERCENT,
   toMarkupDraft,
   toMarkupValue,
-} from '../../lib/markups';
-import {NumberInput} from '../number-input';
+} from '../../lib/catalogue/markups';
+import {NumberInput} from '../common/number-input';
 
 /** What a markup applies to: everything the store sells, or every size of one product. */
 export type MarkupTarget =

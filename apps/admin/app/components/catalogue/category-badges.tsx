@@ -1,7 +1,7 @@
 import type {CategoryTint} from '@grov/models';
 import {Badge, type BadgeProps} from '@grov/ui';
 
-import {CATEGORY_TINTS} from '../../lib/categories';
+import {CATEGORY_TINTS} from '../../lib/catalogue/categories';
 
 const TINT_TONE: Record<CategoryTint, BadgeProps['tone']> = {
   GRAIN: 'palm',

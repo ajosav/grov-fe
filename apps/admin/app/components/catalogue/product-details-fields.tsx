@@ -6,9 +6,9 @@ import {PERMISSIONS} from '@grov/models';
 import {Can} from '@grov/shared';
 import {Button, Combobox, Field, Input, MultiCombobox, Switch} from '@grov/ui';
 
-import {categoryPath} from '../../lib/categories';
-import {DESCRIPTION_MAX, type DetailsValues} from '../../lib/product-details';
-import {NumberInput} from '../number-input';
+import {categoryPath} from '../../lib/catalogue/categories';
+import {DESCRIPTION_MAX, type DetailsValues} from '../../lib/catalogue/product-details';
+import {NumberInput} from '../common/number-input';
 import {CategoryDialog} from './category-dialog';
 import {MarkdownField} from './markdown-field';
 

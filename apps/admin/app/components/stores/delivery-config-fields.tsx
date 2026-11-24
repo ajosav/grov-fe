@@ -12,7 +12,7 @@ import {
   formatConfigValue,
   WEEKDAY_LABEL,
   WEEKDAYS,
-} from '../../lib/delivery-config';
+} from '../../lib/stores/delivery-config';
 
 export interface InheritedValue {
   text?: string;

@@ -13,7 +13,7 @@ import {
   SOURCE_LABEL,
   toDraft,
   toPatch,
-} from '../../lib/delivery-config';
+} from '../../lib/stores/delivery-config';
 import {DeliveryConfigFields, type InheritedValue} from './delivery-config-fields';
 
 /** Store overrides on top of the city's defaults (ADR 0001 §1). */

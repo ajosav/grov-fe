@@ -27,7 +27,7 @@ import {
   toast,
 } from '@grov/ui';
 
-import {formatDay} from '../../lib/dates';
+import {formatDay} from '../../lib/format/dates';
 import {StaffAccessDialog} from './staff-access-dialog';
 
 const fullName = (m: StaffMember) => [m.firstName, m.lastName].filter(Boolean).join(' ');

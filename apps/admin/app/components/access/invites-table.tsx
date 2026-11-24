@@ -22,7 +22,7 @@ import {
   toast,
 } from '@grov/ui';
 
-import {formatMoment} from '../../lib/dates';
+import {formatMoment} from '../../lib/format/dates';
 
 const EMPTY: Record<AdminInviteStatus, string> = {
   PENDING: 'No invites waiting',

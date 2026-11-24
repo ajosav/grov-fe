@@ -20,7 +20,7 @@ import {
   Skeleton,
 } from '@grov/ui';
 
-import {unitNoun} from '../../lib/units';
+import {unitNoun} from '../../lib/catalogue/units';
 import {paths} from '../../paths';
 
 /** "LEAFY_GREEN" → "Leafy green". */

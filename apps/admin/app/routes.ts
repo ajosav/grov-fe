@@ -1,52 +1,55 @@
 import {index, layout, route, type RouteConfig} from '@react-router/dev/routes';
 
+const pg = (page: string) => `pages/${page}.tsx`;
+const layoutPg = (layout: string) => `layouts/${layout}.tsx`;
+
 export default [
-  layout('routes/auth/layout.tsx', [
-    route('sign-in', 'routes/auth/sign-in.tsx'),
-    route('forgot-password', 'routes/auth/forgot-password.tsx'),
-    route('reset-password', 'routes/auth/reset-password.tsx'),
+  layout(layoutPg('auth-layout'), [
+    route('sign-in', pg('auth/sign-in')),
+    route('forgot-password', pg('auth/forgot-password')),
+    route('reset-password', pg('auth/reset-password')),
     // grov-be's reset emails link to `<APP_WEB_URL>/r/reset?t=…` (otp.handlers.ts).
-    route('r/reset', 'routes/auth/reset-password.tsx', {id: 'reset-password-link'}),
+    route('r/reset', pg('auth/reset-password'), {id: 'reset-password-link'}),
   ]),
-  route('finish-account', 'routes/auth/finish-account.tsx'),
+  route('finish-account', pg('auth/finish-account')),
   // Staff invite link: public, and works even while signed in as someone else.
-  route('invite', 'routes/invite.tsx'),
-  layout('routes/console-layout.tsx', [
-    index('routes/dashboard.tsx'),
-    route('orders', 'routes/orders/orders.tsx'),
+  route('invite', pg('invite')),
+  layout(layoutPg('console-layout'), [
+    index(pg('dashboard')),
+    route('orders', pg('orders/orders')),
     // Support has no sidebar entry: Inbox in the top bar, the panel, or ⌘K.
-    route('support', 'routes/support.tsx'),
+    route('support', pg('support')),
 
-    route('catalogue/products', 'routes/catalogue/products.tsx'),
-    route('catalogue/products/new', 'routes/catalogue/new-product.tsx'),
-    route('catalogue/products/:productId', 'routes/catalogue/product.tsx'),
-    route('catalogue/categories', 'routes/catalogue/categories.tsx'),
-    route('catalogue/listings', 'routes/catalogue/listings.tsx'),
-    route('catalogue/requests', 'routes/catalogue/requests.tsx'),
+    route('catalogue/products', pg('catalogue/products')),
+    route('catalogue/products/new', pg('catalogue/new-product')),
+    route('catalogue/products/:productId', pg('catalogue/product')),
+    route('catalogue/categories', pg('catalogue/categories')),
+    route('catalogue/listings', pg('catalogue/listings')),
+    route('catalogue/requests', pg('catalogue/requests')),
 
-    route('stock/levels', 'routes/stock/levels.tsx'),
-    route('stock/movements', 'routes/stock/movements.tsx'),
-    route('stock/receipts', 'routes/stock/receipts.tsx'),
+    route('stock/levels', pg('stock/levels')),
+    route('stock/movements', pg('stock/movements')),
+    route('stock/receipts', pg('stock/receipts')),
 
-    route('meals/foods', 'routes/meals/foods.tsx'),
-    route('meals/library', 'routes/meals/library.tsx'),
+    route('meals/foods', pg('meals/foods')),
+    route('meals/library', pg('meals/library')),
 
-    route('planning/plans', 'routes/planning/plans.tsx'),
-    route('planning/extras', 'routes/planning/extras.tsx'),
-    route('planning/preview', 'routes/planning/preview.tsx'),
-    route('planning/generation', 'routes/planning/generation.tsx'),
-    route('planning/changes', 'routes/planning/changes.tsx'),
+    route('planning/plans', pg('planning/plans')),
+    route('planning/extras', pg('planning/extras')),
+    route('planning/preview', pg('planning/preview')),
+    route('planning/generation', pg('planning/generation')),
+    route('planning/changes', pg('planning/changes')),
 
-    route('stores', 'routes/stores/stores.tsx'),
-    route('stores/new', 'routes/stores/new-store.tsx'),
-    route('stores/cities', 'routes/stores/cities.tsx'),
-    route('stores/:storeId', 'routes/stores/store.tsx'),
+    route('stores', pg('stores/stores')),
+    route('stores/new', pg('stores/new-store')),
+    route('stores/cities', pg('stores/cities')),
+    route('stores/:storeId', pg('stores/store')),
 
-    route('access/staff', 'routes/access/staff.tsx'),
-    route('access/roles', 'routes/access/roles.tsx'),
-    route('settings', 'routes/settings.tsx'),
+    route('access/staff', pg('access/staff')),
+    route('access/roles', pg('access/roles')),
+    route('settings', pg('settings')),
   ]),
   // Component gallery: dev only (or VITE_SHOW_DESIGN_SYSTEM). No sign-in, no API calls.
-  route('design-system', 'routes/design-system.tsx'),
-  route('*', 'routes/not-found.tsx'),
+  route('design-system', pg('design-system')),
+  route('*', pg('not-found')),
 ] satisfies RouteConfig;

@@ -4,11 +4,13 @@ _Part of the `frontend` skill. **[enforced]** = checked by ESLint, `check:arch`,
 
 ## Layout
 
+Apps are grouped by domain: pages in `app/pages/<area>/`, route layouts in `app/layouts/`, and app-local code next to it in `app/components/<domain>/` and `app/lib/<domain>/`. A new domain gets one folder in each place, never a new top-level folder.
+
 ```
 apps/
-  website/  app/root.tsx · app/routes/* · app/site/{sections,parts}/* · site.css · site-behaviour.ts
-  app/      app/root.tsx · app/routes.ts · app/paths.ts · app/routes/** · app/components/*
-  admin/    app/root.tsx · app/routes.ts · app/paths.ts · app/routes/** · app/components/* · app/lib/*
+  website/  app/root.tsx · app/pages/* · app/site/{sections,parts}/* · site.css · site-behaviour.ts
+  app/      app/root.tsx · app/routes.ts · app/paths.ts · app/pages/** · app/layouts/** · app/components/*
+  admin/    app/root.tsx · app/routes.ts · app/paths.ts · app/pages/** · app/layouts/** · app/components/<domain>/* · app/lib/<domain>/* · app/stores/*
 libs/
   models/     lib/generated/api.ts (OpenAPI) · schemas.ts (aliases) · errors.ts · auth.ts · config.ts · permission-keys.generated.ts
   ui/         styles.css · tokens.css · lib/styles/* · lib/components/* · lib/theme/* · lib/utils/*
@@ -55,7 +57,7 @@ Third-party side **[enforced: `check:arch` lib-purity]**:
 | Hook reading or writing server data                             | `@grov/hooks` → `lib/api/<resource>.ts`        |
 | Client-only state shared across screens                         | `@grov/store`                                  |
 | Feature used by two or more apps (auth screens, guards, shells) | `@grov/shared`                                 |
-| Page, or a component only one app uses                          | that app (`app/routes/**`, `app/components/*`) |
+| Page, or a component only one app uses                          | that app (`app/pages/**`, `app/components/<domain>/*`) |
 
 ## Helpers and shared code
 

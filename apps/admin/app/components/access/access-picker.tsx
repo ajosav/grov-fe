@@ -6,7 +6,7 @@ import {useMyStores, useRoles} from '@grov/hooks';
 import {errorMessage, usePermissions} from '@grov/shared';
 import {Alert, Badge, Checkbox, cn, Input, Skeleton, Switch} from '@grov/ui';
 
-import {canGrantAllStores, canGrantRole} from '../../lib/grants';
+import {canGrantAllStores, canGrantRole} from '../../lib/access/grants';
 
 export interface AccessValue {
   roleIds: string[];

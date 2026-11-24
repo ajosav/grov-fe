@@ -24,7 +24,7 @@ import {TerraDrawMapLibreGLAdapter} from 'terra-draw-maplibre-gl-adapter';
 import {appConfig, type GeoJsonMultiPolygon, type Pin} from '@grov/models';
 import {cn, useTheme} from '@grov/ui';
 
-import {boundsOf, type Position, roundPin} from '../../lib/geo';
+import {boundsOf, type Position, roundPin} from '../../lib/stores/geo';
 
 export type DrawMode = 'polygon' | 'select';
 

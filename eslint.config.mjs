@@ -151,6 +151,7 @@ export default tseslint.config(
     files: [
       'libs/shared/src/lib/auth/**',
       'apps/*/app/routes/auth/**',
+      'apps/*/app/pages/auth/**',
       'apps/admin/app/components/**',
     ],
     rules: {'jsx-a11y/no-autofocus': 'off'},
@@ -161,6 +162,8 @@ export default tseslint.config(
       'apps/*/app/root.tsx',
       'apps/*/app/routes.ts',
       'apps/*/app/routes/**',
+      'apps/*/app/pages/**',
+      'apps/*/app/layouts/**',
       '**/*.config.{ts,mjs,js}',
     ],
     rules: {'no-restricted-syntax': ['error', PALETTE_COLOURS, FOCUSED_TEST]},

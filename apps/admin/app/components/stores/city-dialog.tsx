@@ -28,7 +28,7 @@ import {
   toast,
 } from '@grov/ui';
 
-import {type ConfigDraft, draftErrors, toDraft, toPatch} from '../../lib/delivery-config';
+import {type ConfigDraft, draftErrors, toDraft, toPatch} from '../../lib/stores/delivery-config';
 import {DeliveryConfigFields, inheritedFrom} from './delivery-config-fields';
 import {CITY_STATUS, CITY_STATUSES} from './status-badges';
 

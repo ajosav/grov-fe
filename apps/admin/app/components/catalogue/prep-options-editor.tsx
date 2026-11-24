@@ -21,9 +21,9 @@ import {
   PREP_PRICE_MODES,
   type PrepDraft,
   type PrepRowErrors,
-} from '../../lib/products';
-import {formatAmount, unitNoun} from '../../lib/units';
-import {NumberInput} from '../number-input';
+} from '../../lib/catalogue/products';
+import {formatAmount, unitNoun} from '../../lib/catalogue/units';
+import {NumberInput} from '../common/number-input';
 
 export interface PrepOptionsEditorProps {
   drafts: PrepDraft[];

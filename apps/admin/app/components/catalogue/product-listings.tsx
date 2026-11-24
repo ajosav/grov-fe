@@ -18,8 +18,8 @@ import {
   toast,
 } from '@grov/ui';
 
-import {listingState, sellingBody} from '../../lib/listings';
-import {formatAmount} from '../../lib/units';
+import {listingState, sellingBody} from '../../lib/catalogue/listings';
+import {formatAmount} from '../../lib/catalogue/units';
 import {ListingStateBadge} from './listing-badges';
 import {ListingEditDialog} from './listing-edit-dialog';
 

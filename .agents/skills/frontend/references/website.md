@@ -6,7 +6,7 @@ The public landing page, ported from `../requirements/site/index.html` and prere
 
 | Piece                              | Where                                                                                                          |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Page composition                   | `app/routes/home.tsx`                                                                                          |
+| Page composition                   | `app/pages/home.tsx`                                                                                          |
 | Static sections (converted markup) | `app/site/sections/*.tsx`                                                                                      |
 | Stateful parts                     | `app/site/parts/*` — plan builder (+ `plan-maths.ts`), waitlist, ticker, skyline, word splitting, phone shots  |
 | Scroll/presentation behaviour      | `app/site/site-behaviour.ts` (nav frost, reveals, journey rail, hero billboard, sticky phone, tabs, count-ups) |

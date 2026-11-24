@@ -4,7 +4,7 @@ import {Bold, Italic, Link2, List, ListOrdered} from 'lucide-react';
 
 import {Button, cn, Markdown, Segmented, Textarea} from '@grov/ui';
 
-import {type Edit, insertLink, toggleList, wrapSelection} from '../../lib/markdown';
+import {type Edit, insertLink, toggleList, wrapSelection} from '../../lib/catalogue/markdown';
 
 export interface MarkdownFieldProps {
   value: string;

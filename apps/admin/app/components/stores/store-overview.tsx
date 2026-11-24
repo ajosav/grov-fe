@@ -29,7 +29,7 @@ import {
   toE164Nigeria,
 } from '@grov/ui';
 
-import {formatCoordinates, parseCoordinates} from '../../lib/geo';
+import {formatCoordinates, parseCoordinates} from '../../lib/stores/geo';
 import {storePath} from '../../paths';
 import {LazyStoreMap} from './lazy-store-map';
 

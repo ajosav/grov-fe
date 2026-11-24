@@ -16,8 +16,8 @@ import {
   toMultiPolygon,
   ZONE_RULES,
   zoneHasHoles,
-} from '../../lib/geo';
-import {DEFAULT_RADIUS_KM} from '../../lib/stores';
+} from '../../lib/stores/geo';
+import {DEFAULT_RADIUS_KM} from '../../lib/stores/store-rules';
 import {LazyStoreMap} from './lazy-store-map';
 import type {DrawMode, StoreMapHandle} from './store-map';
 

@@ -1,6 +1,6 @@
 import {Field, Segmented} from '@grov/ui';
 
-import {BASE_UNIT_CODES, BASE_UNITS, type BaseUnit} from '../../lib/units';
+import {BASE_UNIT_CODES, BASE_UNITS, type BaseUnit} from '../../lib/catalogue/units';
 
 const LABELS: Record<BaseUnit, string> = {g: 'By weight', ml: 'By volume', piece: 'By count'};
 
