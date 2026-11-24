@@ -24,8 +24,8 @@ import {
 
 import {ActiveBadge, CategoryTintBadge} from '../../components/catalogue/category-badges';
 import {CategoryDialog} from '../../components/catalogue/category-dialog';
-import {categoryRows} from '../../lib/catalogue/categories';
 import type {AdminRouteHandle} from '../../lib/access/route-access';
+import {categoryRows} from '../../lib/catalogue/categories';
 import {paths} from '../../paths';
 import type {Route} from './+types/categories';
 

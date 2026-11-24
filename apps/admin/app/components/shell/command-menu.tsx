@@ -15,8 +15,8 @@ import {
 } from '@grov/ui';
 
 import type {NavTrail} from '../../lib/shell/nav';
-import {SIDEBAR_THEMES, useSidebarTheme} from '../../stores/sidebar-theme';
 import {paths} from '../../paths';
+import {SIDEBAR_THEMES, useSidebarTheme} from '../../stores/sidebar-theme';
 import {useSupport} from '../support';
 
 export interface CommandMenuProps {

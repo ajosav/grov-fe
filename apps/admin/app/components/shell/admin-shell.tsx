@@ -8,11 +8,11 @@ import {usePermissions, UserMenu} from '@grov/shared';
 import {Button, cn, Dialog, DialogContent, DialogTitle, Kbd} from '@grov/ui';
 
 import {activeTrail, firstPage, flattenNav, type NavTrail, visibleNav} from '../../lib/shell/nav';
-import {sidebarThemeProps, useSidebarTheme} from '../../stores/sidebar-theme';
 import {paths} from '../../paths';
+import {sidebarThemeProps, useSidebarTheme} from '../../stores/sidebar-theme';
+import {InboxButton, SupportPanel, SupportProvider, useSupport} from '../support';
 import {AdminSidebar} from './admin-sidebar';
 import {CommandMenu} from './command-menu';
-import {InboxButton, SupportPanel, SupportProvider, useSupport} from '../support';
 
 /**
  * Admin console frame. Desktop: sidebar (store menu, drill-in nav, settings)

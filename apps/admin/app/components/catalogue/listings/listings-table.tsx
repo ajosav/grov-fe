@@ -19,9 +19,9 @@ import {
   TableRow,
 } from '@grov/ui';
 
-import {formatDay} from '../../../lib/format/dates';
 import {formatQty, listingState} from '../../../lib/catalogue/listings';
 import {describeMarkup} from '../../../lib/catalogue/markups';
+import {formatDay} from '../../../lib/format/dates';
 import {productPath} from '../../../paths';
 import {ListingStateBadge} from '../listing-badges';
 
@@ -90,9 +90,7 @@ export function ListingsTable({
                   })()}
                 </TableCell>
                 <TableCell className="hidden text-body-sm tabular md:table-cell">
-                  {formatQty(listing.minOrderQty) ?? (
-                    <span className="text-ink-muted">None</span>
-                  )}
+                  {formatQty(listing.minOrderQty) ?? <span className="text-ink-muted">None</span>}
                 </TableCell>
                 <TableCell className="hidden text-body-sm tabular text-ink-muted lg:table-cell">
                   {formatDay(listing.updatedAt)}

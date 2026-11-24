@@ -22,11 +22,15 @@ import {
   toast,
 } from '@grov/ui';
 
-import {earliestResumeDay, formatQty, listingState, pauseUntilDay} from '../../lib/catalogue/listings';
+import {
+  earliestResumeDay,
+  formatQty,
+  listingState,
+  pauseUntilDay,
+} from '../../lib/catalogue/listings';
 import {formatAmount, unitNoun} from '../../lib/catalogue/units';
 import {NumberInput} from '../common/number-input';
 
-// Matches grov-be's minOrderQty: up to 9 digits and 3 decimals, or none.
 const schema = z
   .object({
     selling: z.enum(['selling', 'paused']),
@@ -44,7 +48,6 @@ const schema = z
   });
 type Values = z.input<typeof schema>;
 
-/** What the dialog needs of a listing; a store's own listing and a product's listing both fit. */
 export type EditableListing = Pick<
   StoreListing,
   'productId' | 'displayName' | 'active' | 'pausedUntil' | 'minOrderQty'
@@ -53,13 +56,10 @@ export type EditableListing = Pick<
 export interface ListingEditDialogProps {
   listing: EditableListing | null;
   onClose: () => void;
-  /** Set to change the listing at this store from a product's page; omit for the active store. */
   storeId?: string;
-  /** The product's base unit, to show the minimum in words. */
   unit?: string;
 }
 
-/** Pause a product until a day, resume it, and set the smallest amount a shopper can order. */
 export function ListingEditDialog({listing, onClose, storeId, unit}: ListingEditDialogProps) {
   return (
     <Dialog open={listing !== null} onOpenChange={open => (open ? undefined : onClose())}>

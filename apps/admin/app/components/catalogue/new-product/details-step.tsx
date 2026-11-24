@@ -1,8 +1,7 @@
+import type {UseFormReturn} from 'react-hook-form';
 import {Link} from 'react-router';
 
 import type {Food} from '@grov/models';
-import type {UseFormReturn} from 'react-hook-form';
-
 import {Alert} from '@grov/ui';
 
 import type {AvailabilityChoice, DetailsValues} from '../../../lib/catalogue/product-details';

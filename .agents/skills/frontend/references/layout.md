@@ -9,7 +9,7 @@ Apps are grouped by domain: pages in `app/pages/<area>/`, route layouts in `app/
 ```
 apps/
   website/  app/root.tsx · app/pages/* · app/site/{sections,parts}/* · site.css · site-behaviour.ts
-  app/      app/root.tsx · app/routes.ts · app/paths.ts · app/pages/** · app/layouts/** · app/components/*
+  app/      app/root.tsx · app/routes.ts · app/paths.ts · app/pages/** · app/layouts/** · app/components/<domain>/* · app/lib/<domain>/*
   admin/    app/root.tsx · app/routes.ts · app/paths.ts · app/pages/** · app/layouts/** · app/components/<domain>/* · app/lib/<domain>/* · app/stores/*
 libs/
   models/     lib/generated/api.ts (OpenAPI) · schemas.ts (aliases) · errors.ts · auth.ts · config.ts · permission-keys.generated.ts
@@ -48,15 +48,15 @@ Third-party side **[enforced: `check:arch` lib-purity]**:
 
 ## Where code goes
 
-| Code                                                            | Home                                           |
-| --------------------------------------------------------------- | ---------------------------------------------- |
-| Visual primitive with no data (button, field, dialog, chip)     | `@grov/ui` → `lib/components`                  |
-| Pure formatting helper (money, phone, dates)                    | `@grov/ui` → `lib/utils` (tested)              |
-| Type, constant, error code, config value                        | `@grov/models`                                 |
-| Function that calls an endpoint                                 | `@grov/api` → `endpoints/<resource>.ts`        |
-| Hook reading or writing server data                             | `@grov/hooks` → `lib/api/<resource>.ts`        |
-| Client-only state shared across screens                         | `@grov/store`                                  |
-| Feature used by two or more apps (auth screens, guards, shells) | `@grov/shared`                                 |
+| Code                                                            | Home                                                   |
+| --------------------------------------------------------------- | ------------------------------------------------------ |
+| Visual primitive with no data (button, field, dialog, chip)     | `@grov/ui` → `lib/components`                          |
+| Pure formatting helper (money, phone, dates)                    | `@grov/ui` → `lib/utils` (tested)                      |
+| Type, constant, error code, config value                        | `@grov/models`                                         |
+| Function that calls an endpoint                                 | `@grov/api` → `endpoints/<resource>.ts`                |
+| Hook reading or writing server data                             | `@grov/hooks` → `lib/api/<resource>.ts`                |
+| Client-only state shared across screens                         | `@grov/store`                                          |
+| Feature used by two or more apps (auth screens, guards, shells) | `@grov/shared`                                         |
 | Page, or a component only one app uses                          | that app (`app/pages/**`, `app/components/<domain>/*`) |
 
 ## Helpers and shared code

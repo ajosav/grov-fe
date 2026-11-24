@@ -20,8 +20,8 @@ import {
 
 import {CityDialog} from '../../components/stores/city-dialog';
 import {CityStatusBadge} from '../../components/stores/status-badges';
-import {formatConfigValue} from '../../lib/stores/delivery-config';
 import type {AdminRouteHandle} from '../../lib/access/route-access';
+import {formatConfigValue} from '../../lib/stores/delivery-config';
 import {paths} from '../../paths';
 import type {Route} from './+types/cities';
 
@@ -121,7 +121,6 @@ export default function Cities() {
   );
 }
 
-/** The defaults this city sets; anything it doesn't set uses the system default. */
 function DefaultsSummary({city}: {city: AdminCity}) {
   const {config} = city;
   const parts = [
