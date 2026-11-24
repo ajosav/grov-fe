@@ -1,0 +1,368 @@
+import type {Conversation, Macro} from './support-types';
+
+/** Sample inbox for the layout. Replace with `useConversations()` once grov-be has the support module. */
+const minutesAgo = (now: number, m: number) => new Date(now - m * 60_000).toISOString();
+
+const DAY = 1440;
+
+export function sampleConversations(now = Date.now()): Conversation[] {
+  const list: Conversation[] = [
+    {
+      id: 'c1',
+      number: 'S-1042',
+      subject: 'Crate of eggs missing from Thursday’s delivery',
+      category: 'ORDER_ISSUE',
+      status: 'OPEN',
+      priority: 'HIGH',
+      channel: 'IN_APP',
+      assignee: null,
+      orderNumber: 'GV-20418',
+      unread: true,
+      dueAt: minutesAgo(now, -25),
+      createdAt: minutesAgo(now, 42),
+      customer: {
+        id: 'u-ngozi',
+        name: 'Ngozi Okafor',
+        email: 'ngozi@example.com',
+        phone: '+2348031234567',
+        city: 'Lagos',
+        storeName: 'Ikeja',
+        household: 'Family of 5 · monthly plan',
+        foodBalanceKobo: 740_000,
+        openOrder: {number: 'GV-20418', totalKobo: 18_450_000, nextDelivery: '28/11/2026'},
+      },
+      messages: [
+        {
+          id: 'm1',
+          author: 'CUSTOMER',
+          authorName: 'Ngozi Okafor',
+          kind: 'REPLY',
+          body: 'Hi, my delivery came today but the crate of eggs (30) wasn’t in it. Everything else was fine. Photo of the bags attached.',
+          at: minutesAgo(now, 42),
+          attachments: ['delivery-bags.jpg'],
+        },
+        {
+          id: 'm2',
+          author: 'SYSTEM',
+          authorName: 'System',
+          kind: 'EVENT',
+          body: 'Linked to order GV-20418 · handed over 13:10 with code',
+          at: minutesAgo(now, 42),
+        },
+      ],
+    },
+    {
+      id: 'c2',
+      number: 'S-1041',
+      subject: 'Can I change the address for my next delivery?',
+      category: 'DELIVERY',
+      status: 'OPEN',
+      priority: 'NORMAL',
+      channel: 'IN_APP',
+      assignee: 'Joshua',
+      orderNumber: 'GV-20377',
+      unread: true,
+      dueAt: minutesAgo(now, -95),
+      createdAt: minutesAgo(now, 18),
+      customer: {
+        id: 'u-tunde',
+        name: 'Tunde Bakare',
+        email: 'tunde@example.com',
+        phone: '+2348090001122',
+        city: 'Lagos',
+        storeName: 'Lekki Phase 1',
+        household: 'Couple · weekly plan',
+        foodBalanceKobo: 0,
+        openOrder: {number: 'GV-20377', totalKobo: 4_210_000, nextDelivery: '27/11/2026'},
+      },
+      messages: [
+        {
+          id: 'm3',
+          author: 'CUSTOMER',
+          authorName: 'Tunde Bakare',
+          kind: 'REPLY',
+          body: 'I’ll be at my office in VI on Thursday. Can you deliver there instead of home?',
+          at: minutesAgo(now, 18),
+        },
+      ],
+    },
+    {
+      id: 'c3',
+      number: 'S-1038',
+      subject: 'Refund for cancelled order',
+      category: 'REFUND',
+      status: 'PENDING',
+      priority: 'NORMAL',
+      channel: 'EMAIL',
+      assignee: 'Amaka',
+      orderNumber: 'GV-20291',
+      unread: false,
+      dueAt: minutesAgo(now, -600),
+      createdAt: minutesAgo(now, 300),
+      customer: {
+        id: 'u-funke',
+        name: 'Funke Adeyemi',
+        email: 'funke@example.com',
+        phone: '+2348125556677',
+        city: 'Ibadan',
+        storeName: 'Bodija',
+        household: 'Family of 3 · every 2 weeks',
+        foodBalanceKobo: 1_250_000,
+      },
+      messages: [
+        {
+          id: 'm4',
+          author: 'CUSTOMER',
+          authorName: 'Funke Adeyemi',
+          kind: 'REPLY',
+          body: 'I cancelled order GV-20291 on Monday. When will the money be back on my card?',
+          at: minutesAgo(now, 300),
+        },
+        {
+          id: 'm5',
+          author: 'STAFF',
+          authorName: 'Amaka',
+          kind: 'NOTE',
+          body: 'Refund started 21/11 to card •• 4417. Provider says 3–5 working days.',
+          at: minutesAgo(now, 240),
+        },
+        {
+          id: 'm6',
+          author: 'STAFF',
+          authorName: 'Amaka',
+          kind: 'REPLY',
+          body: 'Hi Funke, the full ₦12,500 went back to your card ending 4417 on 21/11. Banks usually show it within 3–5 working days. I’ll check in on Friday.',
+          at: minutesAgo(now, 236),
+        },
+        {
+          id: 'm7',
+          author: 'SYSTEM',
+          authorName: 'System',
+          kind: 'EVENT',
+          body: 'Amaka set status to Waiting on customer',
+          at: minutesAgo(now, 236),
+        },
+      ],
+    },
+    {
+      id: 'c4',
+      number: 'S-1035',
+      subject: 'Why is garri in my plan every week?',
+      category: 'PLAN',
+      status: 'OPEN',
+      priority: 'NORMAL',
+      channel: 'WHATSAPP',
+      assignee: null,
+      unread: false,
+      dueAt: minutesAgo(now, -180),
+      createdAt: minutesAgo(now, 75),
+      followsId: 'c8',
+      customer: {
+        id: 'u-ifeoma',
+        name: 'Ifeoma Nwosu',
+        email: 'ifeoma@example.com',
+        phone: '+2348067778899',
+        city: 'Lagos',
+        storeName: 'Ikeja',
+        household: 'Family of 4 · monthly plan',
+        foodBalanceKobo: 310_000,
+      },
+      messages: [
+        {
+          id: 'm8',
+          author: 'CUSTOMER',
+          authorName: 'Ifeoma Nwosu',
+          kind: 'REPLY',
+          body: 'My children don’t eat eba. Can the plan stop adding garri?',
+          at: minutesAgo(now, 75),
+        },
+      ],
+    },
+    {
+      id: 'c5',
+      number: 'S-1029',
+      subject: 'Food balance top-up not showing',
+      category: 'FOOD_BALANCE',
+      status: 'RESOLVED',
+      priority: 'NORMAL',
+      channel: 'IN_APP',
+      assignee: 'Joshua',
+      unread: false,
+      dueAt: minutesAgo(now, 1440),
+      createdAt: minutesAgo(now, 1500),
+      customer: {
+        id: 'u-segun',
+        name: 'Segun Alabi',
+        email: 'segun@example.com',
+        phone: '+2348023334455',
+        city: 'Lagos',
+        storeName: 'Ikeja',
+        household: 'Single · weekly plan',
+        foodBalanceKobo: 2_000_000,
+      },
+      messages: [
+        {
+          id: 'm9',
+          author: 'CUSTOMER',
+          authorName: 'Segun Alabi',
+          kind: 'REPLY',
+          body: 'I added ₦20,000 an hour ago but it isn’t in my Food balance.',
+          at: minutesAgo(now, 1500),
+        },
+        {
+          id: 'm10',
+          author: 'STAFF',
+          authorName: 'Joshua',
+          kind: 'REPLY',
+          body: 'Thanks Segun, the payment confirmed a few minutes later and your Food balance now shows ₦20,000.',
+          at: minutesAgo(now, 1460),
+        },
+      ],
+    },
+  ];
+  const customer = (id: string) => {
+    const found = list.find(c => c.customer.id === id);
+    if (!found) throw new Error(`sample customer ${id}`);
+    return found.customer;
+  };
+  const resolved = (
+    id: string,
+    number: string,
+    customerId: string,
+    subject: string,
+    category: Conversation['category'],
+    daysAgo: number,
+    assignee: string,
+    ask: string,
+    answer: string,
+    orderNumber?: string
+  ): Conversation => ({
+    id,
+    number,
+    subject,
+    category,
+    status: 'RESOLVED',
+    priority: 'NORMAL',
+    channel: 'IN_APP',
+    customer: customer(customerId),
+    assignee,
+    orderNumber,
+    unread: false,
+    dueAt: minutesAgo(now, daysAgo * DAY - 120),
+    createdAt: minutesAgo(now, daysAgo * DAY),
+    messages: [
+      {
+        id: `${id}-1`,
+        author: 'CUSTOMER',
+        authorName: customer(customerId).name,
+        kind: 'REPLY',
+        body: ask,
+        at: minutesAgo(now, daysAgo * DAY),
+      },
+      {
+        id: `${id}-2`,
+        author: 'STAFF',
+        authorName: assignee,
+        kind: 'REPLY',
+        body: answer,
+        at: minutesAgo(now, daysAgo * DAY - 90),
+      },
+      {
+        id: `${id}-3`,
+        author: 'SYSTEM',
+        authorName: 'System',
+        kind: 'EVENT',
+        body: `${assignee} set status to Resolved`,
+        at: minutesAgo(now, daysAgo * DAY - 90),
+      },
+    ],
+  });
+
+  return [
+    ...list,
+    // Ngozi's second open request, about the same order as S-1042: a merge candidate.
+    {
+      id: 'c6',
+      number: 'S-1043',
+      subject: 'Also: palm oil was 2 litres, not 4',
+      category: 'ORDER_ISSUE',
+      status: 'OPEN',
+      priority: 'NORMAL',
+      channel: 'WHATSAPP',
+      customer: customer('u-ngozi'),
+      assignee: 'Amaka',
+      orderNumber: 'GV-20418',
+      unread: true,
+      dueAt: minutesAgo(now, -150),
+      createdAt: minutesAgo(now, 30),
+      messages: [
+        {
+          id: 'c6-1',
+          author: 'CUSTOMER',
+          authorName: 'Ngozi Okafor',
+          kind: 'REPLY',
+          body: 'Sorry, one more thing from today. The palm oil was a 2 litre bottle but I ordered 4 litres.',
+          at: minutesAgo(now, 30),
+        },
+      ],
+    },
+    resolved(
+      'c7',
+      'S-0988',
+      'u-ngozi',
+      'Tomatoes arrived soft',
+      'ORDER_ISSUE',
+      19,
+      'Amaka',
+      'The basket of tomatoes in my delivery was soft and some had burst.',
+      'Sorry Ngozi. I’ve added ₦6,500 back to your Food balance and told the Ikeja packing team.',
+      'GV-19877'
+    ),
+    resolved(
+      'c8',
+      'S-1011',
+      'u-ifeoma',
+      'Remove beans from our plan',
+      'PLAN',
+      9,
+      'Joshua',
+      'Please stop adding beans to the plan, my husband can’t eat them.',
+      'Done. Beans are now in your “foods to avoid”, so new plans leave them out.'
+    ),
+    resolved(
+      'c9',
+      'S-0970',
+      'u-funke',
+      'Card charged twice',
+      'REFUND',
+      31,
+      'Amaka',
+      'I was charged twice for the same order.',
+      'The second charge was a hold that the bank released on 25/10. Nothing more will leave your account.'
+    ),
+  ];
+}
+
+/** Staff notes pinned to a customer, shown on every one of their conversations. */
+export const SAMPLE_CUSTOMER_NOTES: Record<string, string> = {
+  'u-ngozi': 'Second missing or wrong item this month. Check packing at Ikeja before replying.',
+  'u-ifeoma': 'Prefers WhatsApp. Household avoids beans.',
+};
+
+export const SAMPLE_MACROS: Macro[] = [
+  {
+    id: 'missing-item',
+    title: 'Missing item: refund to Food balance',
+    body: 'Sorry {firstName}, that shouldn’t have happened. I’ve added the cost of the missing item back to your Food balance, and flagged it with the packing team.',
+  },
+  {
+    id: 'address-change',
+    title: 'Address change before cut-off',
+    body: 'Hi {firstName}, yes, we can change it as long as it’s before the cut-off. Please send the full address and a landmark, and I’ll update the delivery.',
+  },
+  {
+    id: 'refund-timing',
+    title: 'Refund timing',
+    body: 'Hi {firstName}, your refund has gone back to the card you paid with. Banks usually show it within 3–5 working days.',
+  },
+];

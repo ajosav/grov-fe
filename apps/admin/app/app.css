@@ -1,1 +1,161 @@
 @import '@grov/ui/styles.css';
+
+/* Admin sidebar: panels slide in from the side they come from. */
+@keyframes admin-slide-forward {
+  from {
+    transform: translateX(12%);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes admin-slide-back {
+  from {
+    transform: translateX(-12%);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.admin-slide-in-forward {
+  animation: admin-slide-forward 180ms var(--ease-emphasized) both;
+}
+.admin-slide-in-back {
+  animation: admin-slide-back 180ms var(--ease-emphasized) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-slide-in-forward,
+  .admin-slide-in-back {
+    animation: none;
+  }
+}
+
+/*
+ * Admin type scale. The console is a desktop, mouse-first tool read for hours,
+ * so it runs one step denser than the customer app: 14px regular body, weight
+ * for hierarchy only (600 for names and the active item), and tighter titles.
+ * Same family (Plus Jakarta Sans) and tokens; only sizes and weights change.
+ * Touch screens keep 44px rows (pointer-coarse in the components).
+ */
+:root {
+  --text-body-lg: 15px;
+  --text-body-lg--line-height: 22px;
+  --text-body-lg--font-weight: 400;
+  --text-body: 14px;
+  --text-body--line-height: 20px;
+  --text-body--font-weight: 400;
+  --text-body-sm: 12.5px;
+  --text-body-sm--line-height: 18px;
+  --text-body-sm--font-weight: 400;
+  --text-label: 13px;
+  --text-label--line-height: 18px;
+  --text-label--font-weight: 600;
+  --text-chip: 11.5px;
+  --text-chip--line-height: 16px;
+  --text-chip--font-weight: 600;
+  --text-title-sm: 15px;
+  --text-title-sm--line-height: 20px;
+  --text-title-sm--font-weight: 600;
+  --text-title-md: 18px;
+  --text-title-md--line-height: 24px;
+  --text-title-md--font-weight: 650;
+  --text-title-lg: 26px;
+  --text-title-lg--line-height: 32px;
+  --text-title-lg--font-weight: 700;
+}
+body {
+  letter-spacing: -0.005em;
+}
+
+/*
+ * Sidebar themes (lib/sidebar-theme.ts). Each colours the console frame: the
+ * sidebar and the top bar, text and the Inbox count included. Menus they open
+ * portal out and keep the app theme. Page content is not themed.
+ *
+ * Staying in step with the brand: every themed element also carries
+ * `data-theme="light"` or `"dark"`, so the design-system tokens (tokens.css)
+ * apply there first. A theme then overrides only what makes it that theme.
+ * - Night and Grey are brand palettes: they only pick brand tokens, so a change
+ *   to tokens.json reaches them on the next `yarn sync:tokens`.
+ * - Ember, Forest, Ocean and Lavender add their own hue for the surface and
+ *   text; Grey and Ember keep the brand flame accent.
+ * Contrast and token names are checked in lib/design-contract.test.ts.
+ */
+[data-sidebar-theme] {
+  background-color: var(--sidebar);
+  color: var(--ink);
+}
+/* Night: the brand's dark canvas; hover and active rows use night-hi. */
+[data-sidebar-theme='night'] {
+  --sidebar: var(--canvas);
+  --surface-sunken: var(--night-hi);
+}
+/* Grey: cool neutral surface and slate text; brand flame accent. */
+[data-sidebar-theme='grey'] {
+  --sidebar: #eff1f4;
+  --canvas: #eff1f4;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #e1e5eb;
+  --ink: #1a2230;
+  --ink-muted: #556073;
+  --line: #d9dde4;
+}
+/* Lavender: soft violet surface, violet text and accent. */
+[data-sidebar-theme='lavender'] {
+  --sidebar: #f2effa;
+  --canvas: #f2effa;
+  --surface: #fbfaff;
+  --surface-raised: #fbfaff;
+  --surface-sunken: #e3ddf5;
+  --ink: #261b4f;
+  --ink-muted: #5c4c93;
+  --line: #ddd6f0;
+  --flame: #7c5ce0;
+  --flame-strong: #5b3cc4;
+  --flame-tint: #e3ddf5;
+  --on-bright: #ffffff;
+}
+/* Ember: deep brown surface, warm text; brand flame accent. */
+[data-sidebar-theme='ember'] {
+  --sidebar: #2a130a;
+  --canvas: #2a130a;
+  --surface: #36190e;
+  --surface-raised: #3e1d11;
+  --surface-sunken: #4a2415;
+  --ink: #ffe8da;
+  --ink-muted: #e3b398;
+  --line: #4d2818;
+}
+/* Forest: deep green surface, green text and accent. */
+[data-sidebar-theme='forest'] {
+  --sidebar: #0e2419;
+  --canvas: #0e2419;
+  --surface: #133022;
+  --surface-raised: #163727;
+  --surface-sunken: #1c412e;
+  --ink: #e1f6e8;
+  --ink-muted: #9ccfae;
+  --line: #234a35;
+  --flame: #3ccb7a;
+  --flame-strong: #6fe0a0;
+  --flame-tint: #1c412e;
+}
+/* Ocean: deep blue surface, blue text and accent. */
+[data-sidebar-theme='ocean'] {
+  --sidebar: #0d1830;
+  --canvas: #0d1830;
+  --surface: #12213f;
+  --surface-raised: #162746;
+  --surface-sunken: #1c3054;
+  --ink: #e1eaff;
+  --ink-muted: #9cb4e8;
+  --line: #243659;
+  --flame: #5b8cff;
+  --flame-strong: #8db3ff;
+  --flame-tint: #1c3054;
+}
