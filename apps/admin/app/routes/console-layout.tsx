@@ -1,50 +1,27 @@
-import {LayoutDashboard, Settings, ShieldCheck} from 'lucide-react';
 import {Outlet} from 'react-router';
 
-import {PERMISSIONS} from '@grov/models';
 import {
-  AppShell,
-  type NavItem,
   NoAccess,
   RequireAuth,
   RequirePermission,
   usePermissions,
-  UserMenu,
   useSignOutAndLeave,
 } from '@grov/shared';
 import {Button} from '@grov/ui';
 
-import {StoreSwitcher} from '../components/store-switcher';
+import {AdminShell} from '../components/admin-shell';
 import {useRouteRequirement} from '../lib/route-access';
 import {paths} from '../paths';
 
-const NAV: NavItem[] = [
-  {to: paths.dashboard, label: 'Dashboard', icon: LayoutDashboard, end: true},
-  {
-    to: paths.roles,
-    label: 'Roles and permissions',
-    icon: ShieldCheck,
-    requires: {allOf: [PERMISSIONS.ACCESS.ROLES_READ]},
-  },
-  {to: paths.settings, label: 'Settings', icon: Settings},
-];
+/** The navigation lives in `lib/nav.ts`; the frame in `components/admin-shell.tsx`. */
 
 export default function ConsoleLayout() {
   return (
     <RequireAuth signInPath={paths.signIn} gatesPath={paths.finishAccount}>
       <RequireAdmin>
-        <AppShell
-          nav={NAV}
-          badge="Admin"
-          headerEnd={
-            <>
-              <StoreSwitcher />
-              <UserMenu signedOutPath={paths.signIn} />
-            </>
-          }
-        >
+        <AdminShell>
           <RoutePermissionGate />
-        </AppShell>
+        </AdminShell>
       </RequireAdmin>
     </RequireAuth>
   );
