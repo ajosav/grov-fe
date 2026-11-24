@@ -9,6 +9,8 @@ export default [
     route('r/reset', 'routes/auth/reset-password.tsx', {id: 'reset-password-link'}),
   ]),
   route('finish-account', 'routes/auth/finish-account.tsx'),
+  // Staff invite link: public, and works even while signed in as someone else.
+  route('invite', 'routes/invite.tsx'),
   layout('routes/console-layout.tsx', [
     index('routes/dashboard.tsx'),
     route('orders', 'routes/orders/orders.tsx'),
@@ -16,13 +18,11 @@ export default [
     route('support', 'routes/support.tsx'),
 
     route('catalogue/products', 'routes/catalogue/products.tsx'),
+    route('catalogue/products/new', 'routes/catalogue/new-product.tsx'),
+    route('catalogue/products/:productId', 'routes/catalogue/product.tsx'),
     route('catalogue/categories', 'routes/catalogue/categories.tsx'),
     route('catalogue/listings', 'routes/catalogue/listings.tsx'),
     route('catalogue/requests', 'routes/catalogue/requests.tsx'),
-
-    route('pricing/base', 'routes/pricing/base.tsx'),
-    route('pricing/markups', 'routes/pricing/markups.tsx'),
-    route('pricing/publish', 'routes/pricing/publish.tsx'),
 
     route('stock/levels', 'routes/stock/levels.tsx'),
     route('stock/movements', 'routes/stock/movements.tsx'),
@@ -38,7 +38,9 @@ export default [
     route('planning/changes', 'routes/planning/changes.tsx'),
 
     route('stores', 'routes/stores/stores.tsx'),
+    route('stores/new', 'routes/stores/new-store.tsx'),
     route('stores/cities', 'routes/stores/cities.tsx'),
+    route('stores/:storeId', 'routes/stores/store.tsx'),
 
     route('access/staff', 'routes/access/staff.tsx'),
     route('access/roles', 'routes/access/roles.tsx'),

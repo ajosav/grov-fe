@@ -4,7 +4,6 @@ import {Check, Inbox, MessagesSquare, Palette, Store} from 'lucide-react';
 import {useLocation, useNavigate} from 'react-router';
 
 import {useMyStores, useSwitchStore} from '@grov/hooks';
-import {errorMessage} from '@grov/shared';
 import {
   CommandDialog,
   CommandEmpty,
@@ -143,7 +142,6 @@ export function CommandMenu({open, onOpenChange, trails}: CommandMenuProps) {
                   if (store.id === stores.data?.activeStoreId) return;
                   switchStore.mutate(store.id, {
                     onSuccess: () => toast.success(`Now working in ${store.name}`),
-                    onError: error => toast.error(errorMessage(error)),
                   });
                 }}
               >

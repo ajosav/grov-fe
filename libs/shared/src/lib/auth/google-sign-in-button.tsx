@@ -4,8 +4,6 @@ import {useGoogleSignIn, useProviderNonce} from '@grov/hooks';
 import {appConfig, type Audience, type AuthResponse} from '@grov/models';
 import {Skeleton, toast, useTheme} from '@grov/ui';
 
-import {errorMessage} from '../errors';
-
 export interface GoogleSignInButtonProps {
   audience: Audience;
   /** Sent when Google creates a new account (Terms are agreed on the sign-in screen). */
@@ -42,10 +40,7 @@ export function GoogleSignInButton({audience, termsVersion, onSignedIn}: GoogleS
             {idToken: credential, nonce: nonce.data?.nonce, termsVersion},
             {
               onSuccess: onSignedIn,
-              onError: error => {
-                toast.error(errorMessage(error, 'Google sign-in didn’t go through. Try again.'));
-                void nonce.refetch();
-              },
+              onError: () => void nonce.refetch(),
             }
           );
         }}

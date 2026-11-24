@@ -2,93 +2,66 @@
 
 export const PERMISSIONS = {
   ACCESS: {
-    /** View roles and permissions: See every available permission and the roles built from them */
-    ROLES_READ: 'access.roles.read',
-    /** Manage roles: Create roles and choose which permissions they carry */
     ROLES_MANAGE: 'access.roles.manage',
+    ROLES_READ: 'access.roles.read',
+    STAFF_INVITE: 'access.staff.invite',
+    STAFF_MANAGE: 'access.staff.manage',
+    STAFF_READ: 'access.staff.read',
   },
   CITIES: {
-    /** Manage cities: Add cities, change their status and the delivery defaults their stores share */
     MANAGE: 'cities.manage',
   },
   FILES: {
-    /** Upload public files: Upload to public directories (product and catalogue images on the CDN) */
-    PUBLIC_WRITE: 'files.public.write',
-    /** Upload private operations files: Upload under private/ outside a personal directory */
+    PRIVATE_READ: 'files.private.read',
     PRIVATE_WRITE: 'files.private.write',
+    PUBLIC_WRITE: 'files.public.write',
   },
   FOODS: {
-    /** View foods: Browse foods, their names, allergens, substitutes and availability */
-    READ: 'foods.read',
-    /** Manage foods: Create and edit foods, confirm allergens, set substitutes and planner availability */
     MANAGE: 'foods.manage',
+    READ: 'foods.read',
   },
   MEALS: {
-    /** View meals: Browse meals and their ingredient lines */
-    READ: 'meals.read',
-    /** Manage meals: Create and edit meals, replace lines, publish and retire meals */
     MANAGE: 'meals.manage',
+    READ: 'meals.read',
   },
   ORDERS: {
-    /** View orders: See the orders placed for the stores you manage, their items and timeline */
     READ: 'orders.read',
   },
   PLANNING: {
-    /** View meal plans: Inspect a household’s plan, its cycles and household extras */
-    READ: 'planning.read',
-    /** Manage household extras: Set the tea, sugar, milk, bread and snacks that plans add for each city */
     EXTRAS_MANAGE: 'planning.extras.manage',
-    /** Preview plans: Run the planner for a made-up household without saving anything */
-    PREVIEW: 'planning.preview',
-    /** View how timetables were chosen: See the decisions, scores and rules behind a generated meal timetable, and replay it without saving */
     GENERATION_READ: 'planning.generation.read',
-    /** Request meal-planner changes: File a request to change how the meal planner chooses meals, with proposed rule values */
     GENERATION_REQUEST_CHANGE: 'planning.generation.request-change',
-    /** Review meal-planner change requests: Accept, reject or mark change requests as implemented */
     GENERATION_REVIEW: 'planning.generation.review',
-  },
-  PRICING: {
-    /** View prices: See captured prices, stale items and price changes */
-    READ: 'pricing.read',
-    /** Capture base prices: Capture prices that apply at every store */
-    BASE_WRITE: 'pricing.base.write',
-    /** Set store markups: Set markups on the base price at the stores you manage (whole store, a category or one size) */
-    MARKUP_WRITE: 'pricing.markup.write',
-    /** Publish prices: Review drafts and make chosen base prices and markups live for shoppers */
-    PUBLISH: 'pricing.publish',
+    PREVIEW: 'planning.preview',
+    READ: 'planning.read',
   },
   PRODUCTS: {
-    /** View products: Browse categories, products, sizes and listings */
-    READ: 'products.read',
-    /** Manage products: Create and edit categories, products and size ladders */
-    MANAGE: 'products.manage',
-    /** Manage store listings: List, delist or pause products at the stores you manage */
     LISTINGS_WRITE: 'products.listings.write',
+    MANAGE: 'products.manage',
+    READ: 'products.read',
   },
   SHOP: {
-    /** View shopper requests: See what shoppers ask us to stock, and how often */
-    REQUESTS_READ: 'shop.requests.read',
-    /** Manage shopper requests: Mark shopper requests as seen, planned or declined */
     REQUESTS_MANAGE: 'shop.requests.manage',
+    REQUESTS_READ: 'shop.requests.read',
   },
   STOCK: {
-    /** View stock: See stock levels and movements at the stores you manage */
     READ: 'stock.read',
-    /** Manage stock: Record receipts, counts and write-offs at your stores */
     WRITE: 'stock.write',
   },
   STORES: {
-    /** View stores: See stores, their delivery zones and pin coverage */
-    READ: 'stores.read',
-    /** Manage stores: Add stores, change their details, status and delivery zone */
     MANAGE: 'stores.manage',
+    READ: 'stores.read',
   },
 } as const;
 
 export type PermissionKey =
   | 'access.roles.manage'
   | 'access.roles.read'
+  | 'access.staff.invite'
+  | 'access.staff.manage'
+  | 'access.staff.read'
   | 'cities.manage'
+  | 'files.private.read'
   | 'files.private.write'
   | 'files.public.write'
   | 'foods.manage'
@@ -102,10 +75,6 @@ export type PermissionKey =
   | 'planning.generation.review'
   | 'planning.preview'
   | 'planning.read'
-  | 'pricing.base.write'
-  | 'pricing.markup.write'
-  | 'pricing.publish'
-  | 'pricing.read'
   | 'products.listings.write'
   | 'products.manage'
   | 'products.read'

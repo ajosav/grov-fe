@@ -1,20 +1,42 @@
 import {type ReactNode, useEffect, useRef, useState} from 'react';
 
 import {GoogleOAuthProvider} from '@react-oauth/google';
-import {QueryClient, QueryClientProvider, useQueryClient} from '@tanstack/react-query';
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import {type Api, ApiProvider, createApi, isApiError, queryKeys} from '@grov/api';
 import {useMe, useUpdateMe} from '@grov/hooks';
 import {appConfig, type Audience, type ThemePreference} from '@grov/models';
 import {ThemeProvider, toast, Toaster, TooltipProvider, useTheme} from '@grov/ui';
 
+import {toastError} from '../errors';
+
 export interface AppProvidersProps {
   audience: Audience;
   children: ReactNode;
 }
 
+/**
+ * Every failed request says so in a toast at the bottom of the screen, with grov-be's own message
+ * word for word (the app's copy only when grov-be never answered). Forms still put field
+ * messages under their fields; this is the one place the request-level message is shown, so
+ * callers don't toast errors themselves. The id stops the same failure stacking up.
+ */
+function toastFailure(error: unknown) {
+  // A 401 is the session ending, which `onSessionEnded` announces once.
+  if (isApiError(error) && error.status === 401) return;
+  toastError(error);
+}
+
 function createQueryClient(): QueryClient {
   return new QueryClient({
+    queryCache: new QueryCache({onError: toastFailure}),
+    mutationCache: new MutationCache({onError: toastFailure}),
     defaultOptions: {
       queries: {
         staleTime: 30_000,

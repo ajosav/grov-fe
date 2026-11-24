@@ -1,6 +1,15 @@
 export * from './lib/api/admin-access';
 export * from './lib/api/auth';
 export * from './lib/api/me';
+export * from './lib/api/admin-stores';
+export * from './lib/api/admin-cities';
+export * from './lib/api/admin-products';
+export * from './lib/api/admin-categories';
+export * from './lib/api/admin-listings';
+export * from './lib/api/admin-markups';
+export * from './lib/api/files';
+export * from './lib/api/allergens';
+export * from './lib/api/admin-foods';
 // gen:resource:exports
 export * from './lib/util/use-countdown';
 export * from './lib/util/use-debounce';

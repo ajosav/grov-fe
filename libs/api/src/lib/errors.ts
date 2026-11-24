@@ -4,8 +4,8 @@ import {ErrorCode, type ErrorEnvelope, type FieldErrors, ROOT_ERROR_KEY} from '@
 
 /**
  * Every failed request becomes an ApiError. Branch on `code` (stable, from
- * grov-be) and build copy from `code` + `params`. `message` is developer text:
- * log it, never show it.
+ * grov-be). `message` is grov-be's own text: the app-wide failure toast shows it
+ * word for word (see `AppProviders`); inline copy is still built from `code` + `params`.
  */
 export class ApiError extends Error {
   readonly status: number;

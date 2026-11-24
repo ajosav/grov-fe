@@ -6,8 +6,10 @@ import type {
   CodeVerifyResponse,
   ForgotPasswordAccepted,
   ForgotPasswordBody,
+  InviteCheck,
   LoginBody,
   OtpChallengeSummary,
+  PasswordInviteAcceptBody,
   PhoneCompleteBody,
   ProviderNonce,
   ResetLinkCheck,
@@ -42,6 +44,11 @@ export function authApi(client: ApiClient) {
     checkResetLink: (token: string) =>
       post<ResetLinkCheck>('/v1/auth/password/reset/check', {token}),
     resetPassword: (body: ResetPasswordBody) => post<AuthResponse>('/v1/auth/password/reset', body),
+
+    // Staff invites (admin console): check does not use up the link.
+    checkInvite: (token: string) => post<InviteCheck>('/v1/auth/invites/check', {token}),
+    acceptInvite: (body: PasswordInviteAcceptBody) =>
+      post<AuthResponse>('/v1/auth/invites/accept', body),
   };
 }
 export type AuthApi = ReturnType<typeof authApi>;

@@ -7,16 +7,15 @@ import {
   type CodeCompleteBody,
   type ConsentBody,
   type ForgotPasswordBody,
+  type PasswordInviteAcceptBody,
 } from '@grov/models';
 
-/** After any call that changes the session, reload `/v1/me` (gates, access). */
 function useRefreshMe() {
   const queryClient = useQueryClient();
   return (response?: AuthResponse) =>
     queryClient.invalidateQueries({queryKey: queryKeys.me}).then(() => response);
 }
 
-/** `captchaToken` is the Turnstile token (single use); omitted when Turnstile is off. */
 export function useRequestCode() {
   const api = useApi();
   return useMutation({
@@ -47,7 +46,6 @@ export function useCompleteProfile() {
   });
 }
 
-/** Google ID token sign-in for either console. Fetch a nonce first and pass it to Google. */
 export function useGoogleSignIn(audience: Audience) {
   const api = useApi();
   const refreshMe = useRefreshMe();
@@ -79,7 +77,6 @@ export function useProviderNonce(enabled = true) {
     queryKey: ['auth', 'nonce'],
     queryFn: api.auth.nonce,
     enabled,
-    // Single use and short-lived: never share between attempts.
     gcTime: 0,
     staleTime: 0,
     refetchOnWindowFocus: false,
@@ -102,8 +99,6 @@ export function useSignOut() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => api.auth.logout(),
-    // Signed out on the server or not, forget everything this tab knows.
-    // (Not `clear()`: mounted `useMe` observers must see the null.)
     onSettled: () => {
       queryClient.removeQueries({predicate: query => query.queryKey[0] !== queryKeys.me[0]});
       queryClient.setQueryData(queryKeys.me, null);
@@ -164,6 +159,27 @@ export function useResetPassword() {
   return useMutation({
     mutationFn: ({token, password}: {token: string; password: string}) =>
       api.auth.resetPassword({token, password, device: webDevice()}),
+    onSuccess: refreshMe,
+  });
+}
+
+export function useInviteCheck(token: string | null) {
+  const api = useApi();
+  return useQuery({
+    queryKey: queryKeys.inviteCheck(token ?? ''),
+    queryFn: () => api.auth.checkInvite(token ?? ''),
+    enabled: Boolean(token),
+    retry: false,
+    staleTime: Infinity,
+  });
+}
+
+export function useAcceptInvite() {
+  const api = useApi();
+  const refreshMe = useRefreshMe();
+  return useMutation({
+    mutationFn: (body: Omit<PasswordInviteAcceptBody, 'method' | 'device'>) =>
+      api.auth.acceptInvite({...body, method: 'PASSWORD', device: webDevice()}),
     onSuccess: refreshMe,
   });
 }

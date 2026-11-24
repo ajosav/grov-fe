@@ -4,7 +4,8 @@ import {cn} from '../utils/cn';
 
 export interface SegmentedProps<T extends string> {
   options: readonly {value: T; label: string}[];
-  value: T;
+  /** `null` when nothing is chosen yet; the first option is then the one Tab lands on. */
+  value: T | null;
   onChange: (value: T) => void;
   label: string;
   className?: string;
@@ -46,7 +47,7 @@ export function Segmented<T extends string>({
             type="button"
             role="radio"
             aria-checked={checked}
-            tabIndex={checked ? 0 : -1}
+            tabIndex={checked || (value === null && index === 0) ? 0 : -1}
             onKeyDown={event => move(event, index)}
             onClick={() => onChange(option.value)}
             className={cn(

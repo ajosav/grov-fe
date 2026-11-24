@@ -178,7 +178,6 @@ export function CodeStep({onSignedIn, onProfileRequired, onChangeEmail}: CodeSte
                 verify.reset();
                 toast.success('New code sent');
               },
-              onError: error => toast.error(errorMessage(error)),
               onSettled: () => turnstile.current?.reset(),
             }
           )

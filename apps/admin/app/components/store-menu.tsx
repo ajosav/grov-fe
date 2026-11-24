@@ -74,7 +74,6 @@ export function StoreMenu() {
     if (store.id === activeStoreId) return;
     switchStore.mutate(store.id, {
       onSuccess: () => toast.success(`Now working in ${store.name}`),
-      onError: error => toast.error(errorMessage(error)),
     });
   };
 

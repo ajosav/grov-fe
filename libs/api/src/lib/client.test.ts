@@ -119,6 +119,52 @@ describe('createApiClient', () => {
     expect(onSessionEnded).toHaveBeenCalledTimes(1);
   });
 
+  it('keeps the session when the refresh fails for a transient reason', async () => {
+    vi.useFakeTimers();
+    try {
+      for (const status of [429, 503]) {
+        let refreshCalls = 0;
+        const {client, onSessionEnded} = clientWith(config => {
+          if (config.url === '/v1/auth/refresh') {
+            refreshCalls++;
+            return {status, data: {status: false, statusCode: status, message: 'busy', errors: {}}};
+          }
+          return unauthorized();
+        });
+        const pending = client.request({url: '/v1/me'}).catch((e: unknown) => e);
+        await vi.runAllTimersAsync();
+        const error = await pending;
+        expect((error as ApiError).code).toBe('UNAUTHENTICATED');
+        expect(refreshCalls).toBe(3);
+        expect(onSessionEnded).not.toHaveBeenCalled();
+      }
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('recovers when a retried refresh succeeds', async () => {
+    vi.useFakeTimers();
+    try {
+      let refreshCalls = 0;
+      const {client, onSessionEnded} = clientWith(config => {
+        if (config.url === '/v1/auth/refresh') {
+          refreshCalls++;
+          return refreshCalls === 1
+            ? {status: 503, data: {status: false, statusCode: 503, message: 'x', errors: {}}}
+            : ok({tokens: null});
+        }
+        return refreshCalls >= 2 ? ok({id: 1}) : unauthorized();
+      });
+      const pending = client.request({url: '/v1/me'});
+      await vi.runAllTimersAsync();
+      await expect(pending).resolves.toEqual({id: 1});
+      expect(onSessionEnded).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('never refreshes for the sign-in endpoints themselves', async () => {
     const {client, calls} = clientWith(() => unauthorized('AUTH_INVALID_CREDENTIALS'));
     await expect(

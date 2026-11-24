@@ -24,9 +24,9 @@ describe('admin nav', () => {
   });
 
   it('opens a section on its first visible page', () => {
-    const {groups} = visibleNav(holding(PERMISSIONS.PRICING.PUBLISH));
-    const pricing = groups.flatMap(g => g.entries).find(e => e.label === 'Pricing');
-    expect(pricing && firstPage(pricing)?.to).toBe(paths.publishPrices);
+    const {groups} = visibleNav(holding(PERMISSIONS.STOCK.READ));
+    const stock = groups.flatMap(g => g.entries).find(e => e.label === 'Stock');
+    expect(stock && firstPage(stock)?.to).toBe(paths.stockLevels);
   });
 
   it('finds the section trail for a deep link', () => {

@@ -17,8 +17,9 @@ import {toApiError} from './errors';
  * - Any 401 outside the auth endpoints triggers one shared refresh, then the
  *   request is retried once. The access cookie expires with the token, so an
  *   expired session usually shows up as `UNAUTHENTICATED`, not `SESSION_EXPIRED`.
- * - If the refresh fails the session is over and `onSessionEnded` runs (the
- *   app decides what that means, e.g. only toast if someone was signed in).
+ * - If the server rejects the refresh the session is over and `onSessionEnded` runs
+ *   (the app decides what that means, e.g. only toast if someone was signed in).
+ *   A transient failure (offline, 429, 5xx) is retried and never ends the session.
  */
 export interface ApiClientOptions {
   baseURL: string;
@@ -35,9 +36,15 @@ export interface ApiClient {
   request<T>(config: AxiosRequestConfig): Promise<T>;
   /** Same as `request`, but keeps pagination `meta`. */
   requestEnvelope<T>(config: AxiosRequestConfig): Promise<SuccessEnvelope<T>>;
-  /** Shared, single-flight refresh. Resolves false when the session is gone. */
+  /** Shared, single-flight refresh. Resolves false when it did not succeed. */
   refresh(): Promise<boolean>;
 }
+
+const REFRESH_RETRIES = 2;
+const REFRESH_RETRY_DELAY_MS = 500;
+const delay = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
+const isTransient = (error: {status: number}): boolean =>
+  error.status === 0 || error.status === 429 || error.status >= 500;
 
 const UNSAFE = new Set(['post', 'put', 'patch', 'delete']);
 
@@ -76,20 +83,38 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
     return config;
   });
 
-  let refreshing: Promise<boolean> | null = null;
+  type RefreshOutcome = 'ok' | 'ended' | 'failed';
+  let refreshing: Promise<RefreshOutcome> | null = null;
 
-  const refresh = (): Promise<boolean> => {
-    refreshing ??= instance
+  const attemptRefresh = async (): Promise<RefreshOutcome> => {
+    try {
       // The audience picks this console's refresh cookie: a browser signed in to
       // the app and the admin holds both, on the same path.
-      .post('/v1/auth/refresh', {audience: options.audience})
-      .then(() => true)
-      .catch(() => false)
-      .finally(() => {
-        refreshing = null;
-      });
+      await instance.post('/v1/auth/refresh', {audience: options.audience});
+      return 'ok';
+    } catch (error) {
+      // Only a server answer that rejects the session ends it. A dropped
+      // connection, a 429 or a 5xx says nothing about the session, which is
+      // usually still valid: signing the person out would throw away their work.
+      return isTransient(toApiError(error)) ? 'failed' : 'ended';
+    }
+  };
+
+  const refreshOnce = (): Promise<RefreshOutcome> => {
+    refreshing ??= (async () => {
+      let outcome = await attemptRefresh();
+      for (let retry = 0; outcome === 'failed' && retry < REFRESH_RETRIES; retry++) {
+        await delay(REFRESH_RETRY_DELAY_MS * (retry + 1));
+        outcome = await attemptRefresh();
+      }
+      return outcome;
+    })().finally(() => {
+      refreshing = null;
+    });
     return refreshing;
   };
+
+  const refresh = async (): Promise<boolean> => (await refreshOnce()) === 'ok';
 
   instance.interceptors.response.use(
     response => response,
@@ -101,8 +126,9 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
 
       if (canRefresh) {
         config._retried = true;
-        if (await refresh()) return instance.request(config);
-        options.onSessionEnded?.();
+        const outcome = await refreshOnce();
+        if (outcome === 'ok') return instance.request(config);
+        if (outcome === 'ended') options.onSessionEnded?.();
       }
       throw apiError;
     }
