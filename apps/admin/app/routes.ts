@@ -1,4 +1,4 @@
-import { index, layout, route, type RouteConfig } from '@react-router/dev/routes';
+import {index, layout, route, type RouteConfig} from '@react-router/dev/routes';
 
 export default [
   layout('routes/auth/layout.tsx', [
@@ -6,7 +6,7 @@ export default [
     route('forgot-password', 'routes/auth/forgot-password.tsx'),
     route('reset-password', 'routes/auth/reset-password.tsx'),
     // grov-be's reset emails link to `<APP_WEB_URL>/r/reset?t=…` (otp.handlers.ts).
-    route('r/reset', 'routes/auth/reset-password.tsx', { id: 'reset-password-link' }),
+    route('r/reset', 'routes/auth/reset-password.tsx', {id: 'reset-password-link'}),
   ]),
   route('finish-account', 'routes/auth/finish-account.tsx'),
   layout('routes/console-layout.tsx', [
