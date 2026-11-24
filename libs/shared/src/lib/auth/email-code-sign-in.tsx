@@ -58,6 +58,7 @@ export function EmailStep({redirectTo, onCodeSent}: EmailStepProps) {
 
   return (
     <form onSubmit={submit} noValidate className="grid gap-4">
+      {requestCode.isError ? <Alert tone="danger">{errorMessage(requestCode.error)}</Alert> : null}
       <Field label="Email" error={form.formState.errors.email?.message}>
         <Input
           type="email"
@@ -69,7 +70,6 @@ export function EmailStep({redirectTo, onCodeSent}: EmailStepProps) {
         />
       </Field>
       <Turnstile ref={turnstile} action="sign-in-code" onToken={setCaptchaToken} />
-      {requestCode.isError ? <Alert tone="danger">{errorMessage(requestCode.error)}</Alert> : null}
       <Button type="submit" block loading={requestCode.isPending} disabled={waitingForCheck}>
         Continue
       </Button>

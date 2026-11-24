@@ -43,6 +43,7 @@ export function PasswordSignInForm({
   const submit = form.handleSubmit(values => signIn.mutate(values, {onSuccess: onSignedIn}));
   return (
     <form onSubmit={submit} noValidate className="grid gap-4">
+      {signIn.isError ? <Alert tone="danger">{errorMessage(signIn.error)}</Alert> : null}
       <Field label="Email" error={form.formState.errors.email?.message}>
         <Input type="email" autoComplete="username" autoFocus {...form.register('email')} />
       </Field>
@@ -57,7 +58,6 @@ export function PasswordSignInForm({
           Forgot password?
         </a>
       </div>
-      {signIn.isError ? <Alert tone="danger">{errorMessage(signIn.error)}</Alert> : null}
       <Button type="submit" block loading={signIn.isPending}>
         Sign in
       </Button>
