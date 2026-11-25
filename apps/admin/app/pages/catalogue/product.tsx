@@ -1,37 +1,36 @@
-import type {ReactNode} from 'react';
+import {type ReactNode, useCallback} from 'react';
 
 import {ArrowLeft, Package} from 'lucide-react';
 import {Link, useParams, useSearchParams} from 'react-router';
 
 import {isApiError} from '@grov/api';
-import {useProduct, useUpdateProduct} from '@grov/hooks';
+import {
+  useCategories,
+  useFileUrls,
+  useMyStores,
+  useProduct,
+  useProductPricing,
+  useProductStock,
+} from '@grov/hooks';
 import {appConfig, ErrorCode, PERMISSIONS, type Product} from '@grov/models';
 import {errorMessage, usePermissions} from '@grov/shared';
-import {
-  Alert,
-  Badge,
-  Button,
-  Card,
-  EmptyState,
-  Skeleton,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-  toast,
-} from '@grov/ui';
+import {Alert, Button, Card, EmptyState, Skeleton, Tabs, TabsContent} from '@grov/ui';
 
-import {ActiveBadge} from '../../components/catalogue/category-badges';
+import {useDetailsEditor, useSizesPrepEditor} from '../../components/catalogue/product-tabs';
+import {ProductAnalyticsTab} from '../../components/catalogue/product/product-analytics-tab';
 import {
-  DetailsTab,
-  MoreTab,
-  SizesPrepTab,
-  useDetailsEditor,
-  useSizesPrepEditor,
-} from '../../components/catalogue/product-tabs';
+  type InformationSection,
+  ProductInformationTab,
+} from '../../components/catalogue/product/product-information-tab';
+import {ProductInventoryTab} from '../../components/catalogue/product/product-inventory-tab';
+import {ProductOverviewTab} from '../../components/catalogue/product/product-overview-tab';
+import {ProductPricingTab} from '../../components/catalogue/product/product-pricing-tab';
+import {ProductTabNav} from '../../components/catalogue/product/product-tab-nav';
+import {ProductWorkspaceHeader} from '../../components/catalogue/product/product-workspace-header';
 import {useUnsavedGuard} from '../../components/common/unsaved-guard';
 import type {AdminRouteHandle} from '../../lib/access/route-access';
-import {unitNoun} from '../../lib/catalogue/units';
+import {categoryPath} from '../../lib/catalogue/categories';
+import {type PeriodValue, readPeriod, writePeriod} from '../../lib/catalogue/insight-format';
 import {paths} from '../../paths';
 import type {Route} from './+types/product';
 
@@ -41,20 +40,35 @@ export const handle = {
 
 export const meta: Route.MetaFunction = () => [{title: `Product · ${appConfig.brandName} admin`}];
 
-const TABS = ['details', 'sizes', 'more'] as const;
+const TABS = ['overview', 'analytics', 'inventory', 'pricing', 'information'] as const;
 type Tab = (typeof TABS)[number];
-const isTab = (value: string | null): value is Tab => TABS.includes(value as Tab);
-// Prep options, photos and where it's sold used to be their own tabs; old links still land in the right place.
-const tabOf = (value: string | null): Tab =>
-  value === 'prep' ? 'sizes' : isTab(value) ? value : 'details';
+const TAB_LABEL: Record<Tab, string> = {
+  overview: 'Overview',
+  analytics: 'Performance',
+  inventory: 'Stock',
+  pricing: 'Pricing',
+  information: 'Details',
+};
+const SECTIONS = ['details', 'sizes', 'more'] as const;
+
+/** Old links (?tab=details|sizes|prep|more) land in Product information. */
+function readTab(params: URLSearchParams): {tab: Tab; section: InformationSection} {
+  const tab = params.get('tab');
+  const legacy = tab === 'prep' ? 'sizes' : tab;
+  if (SECTIONS.includes(legacy as InformationSection))
+    return {tab: 'information', section: legacy as InformationSection};
+  const section = params.get('section');
+  return {
+    tab: TABS.includes(tab as Tab) ? (tab as Tab) : 'overview',
+    section: SECTIONS.includes(section as InformationSection)
+      ? (section as InformationSection)
+      : 'details',
+  };
+}
 
 export default function ProductPage() {
   const {productId} = useParams();
-  const [params, setParams] = useSearchParams();
-  const tab = tabOf(params.get('tab'));
   const product = useProduct(productId);
-  const {can} = usePermissions();
-  const canManage = can(PERMISSIONS.PRODUCTS.MANAGE);
 
   const back = (
     <Link
@@ -69,7 +83,7 @@ export default function ProductPage() {
     return (
       <>
         {back}
-        <Skeleton className="mb-6 h-10 w-72" />
+        <Skeleton className="mb-5 h-40" />
         <Skeleton className="h-96" />
       </>
     );
@@ -106,101 +120,113 @@ export default function ProductPage() {
     );
   }
 
-  return (
-    <ProductView
-      data={product.data}
-      canManage={canManage}
-      back={back}
-      tab={tab}
-      onTab={value =>
-        setParams(
-          previous => {
-            const next = new URLSearchParams(previous);
-            if (value === 'details') next.delete('tab');
-            else next.set('tab', value);
-            return next;
-          },
-          {replace: true}
-        )
-      }
-    />
-  );
+  return <ProductWorkspace data={product.data} back={back} />;
 }
 
-interface ProductViewProps {
+interface ProductWorkspaceProps {
   data: Product;
-  canManage: boolean;
   back: ReactNode;
-  tab: Tab;
-  onTab: (tab: Tab) => void;
 }
 
-/** Split out so the edit form (one Save for Details and More information) lives below the loading states. */
-function ProductView({data, canManage, back, tab, onTab}: ProductViewProps) {
-  const editor = useDetailsEditor(data, onTab);
+/**
+ * The product workspace: one identity banner over every tab.
+ * The edit forms live here, not in the Product information tab, so unsaved edits survive
+ * moving between tabs.
+ */
+function ProductWorkspace({data, back}: ProductWorkspaceProps) {
+  const [params, setParams] = useSearchParams();
+  const {tab, section} = readTab(params);
+  const period = readPeriod(params);
+  const storeId = params.get('storeId') ?? undefined;
+  const {can} = usePermissions();
+  const canManage = can(PERMISSIONS.PRODUCTS.MANAGE);
+
+  const setParam = useCallback(
+    (patch: (next: URLSearchParams) => void) =>
+      setParams(
+        previous => {
+          const next = new URLSearchParams(previous);
+          patch(next);
+          return next;
+        },
+        {replace: true}
+      ),
+    [setParams]
+  );
+  const goTo = (next: Tab, nextSection?: InformationSection) =>
+    setParam(p => {
+      if (next === 'overview') p.delete('tab');
+      else p.set('tab', next);
+      if (next === 'information' && nextSection && nextSection !== 'details')
+        p.set('section', nextSection);
+      else p.delete('section');
+    });
+  const onPeriod = (value: PeriodValue) => setParam(p => writePeriod(p, value));
+  const onStore = (value: string | undefined) =>
+    setParam(p => (value ? p.set('storeId', value) : p.delete('storeId')));
+
+  const editor = useDetailsEditor(data, invalid => goTo('information', invalid));
   const sizesEditor = useSizesPrepEditor(data);
   const guard = useUnsavedGuard(editor.dirty || sizesEditor.dirty);
-  const publish = useUpdateProduct();
-  const liveSizes = data.sizes.filter(size => size.active).length;
-  const livePrep = data.prepOptions.filter(option => option.active).length;
+
+  const stores = useMyStores();
+  const categories = useCategories();
+  const stock = useProductStock(data.id);
+  const pricing = useProductPricing(data.id);
+  const categoryName = categoryPath(data.categoryId, categories.data ?? []) ?? undefined;
+  const cover = useFileUrls(data.imagePaths[0] ? [data.imagePaths[0]] : []);
+
+  const shared = {
+    product: data,
+    period,
+    storeId,
+    onPeriod,
+    onStore,
+    stores: stores.data?.stores,
+    canManage,
+  };
 
   return (
     <>
       {guard.dialog}
       {back}
-      <header className="grid gap-1 pb-5">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-title-lg">{data.displayName}</h1>
-          <ActiveBadge active={data.active} draft={data.draft} />
-          {data.availableAtAllStores ? <Badge tone="sky">All stores</Badge> : null}
+      <Tabs value={tab} onValueChange={value => goTo(value as Tab)}>
+        <ProductWorkspaceHeader
+          product={data}
+          categoryName={categoryName}
+          coverUrl={data.imagePaths[0] ? cover.data?.get(data.imagePaths[0]) : undefined}
+          pricing={pricing.data}
+          stock={stock.data}
+          canManage={canManage}
+          editsPending={editor.dirty || sizesEditor.dirty}
+          onEdit={() => goTo('information')}
+        />
+        <ProductTabNav tabs={TABS.map(value => ({value, label: TAB_LABEL[value]}))} />
+
+        <div className="@container min-w-0">
+          <TabsContent value="overview">
+            <ProductOverviewTab {...shared} onTab={goTo} />
+          </TabsContent>
+          <TabsContent value="analytics">
+            <ProductAnalyticsTab {...shared} />
+          </TabsContent>
+          <TabsContent value="inventory">
+            <ProductInventoryTab {...shared} />
+          </TabsContent>
+          <TabsContent value="pricing">
+            <ProductPricingTab {...shared} onEditPrices={() => goTo('information', 'sizes')} />
+          </TabsContent>
+          <TabsContent value="information">
+            <ProductInformationTab
+              product={data}
+              canManage={canManage}
+              section={section}
+              onSection={next => goTo('information', next)}
+              editor={editor}
+              sizesEditor={sizesEditor}
+            />
+          </TabsContent>
         </div>
-        <p className="text-body text-ink-muted">
-          {data.sku}
-          {data.brand ? ` · ${data.brand}` : ''} · counted in {unitNoun(data.baseUnit)}
-        </p>
-      </header>
-
-      {data.draft ? (
-        <Alert tone="info" title="This product is a draft" className="mb-5 max-w-3xl">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <span>
-              {publish.isError
-                ? errorMessage(publish.error)
-                : 'Shoppers can’t see it yet. Give every size a price, then publish it. Save your edits first.'}
-            </span>
-            {canManage ? (
-              <Button
-                loading={publish.isPending}
-                disabled={editor.dirty || sizesEditor.dirty}
-                onClick={() =>
-                  publish.mutate(
-                    {id: data.id, body: {draft: false}},
-                    {onSuccess: () => toast.success(`${data.displayName} is live`)}
-                  )
-                }
-              >
-                Publish
-              </Button>
-            ) : null}
-          </div>
-        </Alert>
-      ) : null}
-
-      <Tabs value={tab} onValueChange={value => onTab(value as Tab)}>
-        <TabsList className="mb-5 max-w-full justify-start overflow-x-auto [&_button]:h-8 [&_button]:shrink-0 [&_button]:whitespace-nowrap">
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="sizes">Sizes &amp; prep options ({liveSizes + livePrep})</TabsTrigger>
-          <TabsTrigger value="more">More information</TabsTrigger>
-        </TabsList>
-        <TabsContent value="details">
-          <DetailsTab product={data} canManage={canManage} editor={editor} />
-        </TabsContent>
-        <TabsContent value="sizes">
-          <SizesPrepTab product={data} canManage={canManage} editor={sizesEditor} />
-        </TabsContent>
-        <TabsContent value="more">
-          <MoreTab product={data} canManage={canManage} editor={editor} />
-        </TabsContent>
       </Tabs>
     </>
   );

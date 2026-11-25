@@ -60,7 +60,13 @@ import {
   toast,
   Tooltip,
 } from '../components';
-import {GrovSection, MoreFieldsSection, NavigationSection, RichDataDemos} from './more-sections';
+import {
+  GrovSection,
+  InsightsSection,
+  MoreFieldsSection,
+  NavigationSection,
+  RichDataDemos,
+} from './more-sections';
 import {Row, Section, sectionId, SECTIONS} from './parts';
 
 /**
@@ -450,6 +456,8 @@ export function DesignSystemGallery() {
         </Table>
         <RichDataDemos />
       </Section>
+
+      <InsightsSection />
 
       <Section title="Layout">
         <div className="grid gap-4 md:grid-cols-2">

@@ -49,6 +49,8 @@ export interface NavPage {
   storeScoped?: boolean;
   /** Extra words the ⌘K search matches. */
   keywords?: string[];
+  /** Other paths that belong to this page, e.g. views reached from its own tabs. */
+  also?: string[];
 }
 
 /** A section the sidebar drills into (AI SDK style). Sections can nest. */
@@ -102,7 +104,15 @@ export const ADMIN_NAV: NavGroup[] = [
             label: 'Products',
             icon: Package,
             requires: {allOf: [PERMISSIONS.PRODUCTS.READ]},
-            keywords: ['sizes', 'items'],
+            keywords: [
+              'sizes',
+              'items',
+              'analytics',
+              'intelligence',
+              'recommendations',
+              'insights',
+            ],
+            also: [paths.productAnalytics, paths.productIntelligence],
           }),
           page({
             to: paths.categories,
@@ -329,6 +339,10 @@ export function flattenNav(entries: NavEntry[], sections: NavSection[] = []): Na
 /** The page the URL is on (longest match wins), or undefined for pages outside the nav. */
 export function activeTrail(trails: NavTrail[], pathname: string): NavTrail | undefined {
   return trails
-    .filter(({page: p}) => matchPath({path: p.to, end: p.end ?? false}, pathname))
-    .sort((a, b) => b.page.to.length - a.page.to.length)[0];
+    .flatMap(trail =>
+      [trail.page.to, ...(trail.page.also ?? [])]
+        .filter(path => matchPath({path, end: trail.page.end ?? false}, pathname))
+        .map(path => ({trail, length: path.length}))
+    )
+    .sort((a, b) => b.length - a.length)[0]?.trail;
 }

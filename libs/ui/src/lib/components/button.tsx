@@ -25,6 +25,8 @@ export const buttonVariants = cva(
         secondary: 'bg-surface-sunken text-ink hover:bg-line',
         outline: 'border border-line-strong bg-transparent text-ink hover:bg-surface-sunken',
         ghost: 'bg-transparent text-ink hover:bg-surface-sunken',
+        /** Quiet accent action: flame-strong label, flame tint on hover. For contextual quick actions (e.g. on a selection). */
+        accent: 'bg-transparent text-flame-strong hover:bg-flame-tint',
         danger: 'bg-danger text-destructive-foreground hover:opacity-90',
         link: 'h-auto rounded-sm px-0 text-ink underline underline-offset-4 hover:text-flame-strong',
       },

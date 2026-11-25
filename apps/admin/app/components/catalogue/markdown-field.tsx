@@ -93,7 +93,7 @@ export const MarkdownField = forwardRef<HTMLTextAreaElement, MarkdownFieldProps>
               {value: 'write', label: 'Write'},
               {value: 'preview', label: 'Preview'},
             ]}
-            className="[&_button]:h-8"
+            size="sm"
           />
         </div>
         {mode === 'write' ? (

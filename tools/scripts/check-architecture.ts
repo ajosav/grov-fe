@@ -26,6 +26,7 @@ const RULE_DOC: Record<string, string> = {
   'permission-literal': 'auth.md',
   'storage-access': 'security.md',
   'token-colors': 'styling.md',
+  'component-reuse': 'components.md',
   'route-module': 'routing.md',
   'test-files': 'testing.md',
 };
@@ -247,6 +248,54 @@ for (const file of files) {
   // test-files: tests sit next to the code as *.test.ts(x)
   if (/\.spec\.tsx?$/.test(name) || r.includes('/__tests__/')) {
     report(file, 1, 'test-files', 'name tests *.test.ts(x) and keep them next to the code');
+  }
+}
+
+// component-reuse: app components never fork a shared primitive or each other
+const SHARED_COMPONENTS = new Map<string, string>();
+for (const dir of ['libs/ui/src/lib/components', 'libs/shared/src/lib']) {
+  const lib = dir.startsWith('libs/ui') ? '@grov/ui' : '@grov/shared';
+  for (const file of walk(join(ROOT, dir))) {
+    const base = basename(file);
+    if (!base.endsWith('.tsx') || base.endsWith('.test.tsx')) continue;
+    const component = base.slice(0, -'.tsx'.length);
+    if (!SHARED_COMPONENTS.has(component)) SHARED_COMPONENTS.set(component, lib);
+  }
+}
+
+const APP_COMPONENT_RE = /^apps\/([^/]+)\/app\/components\/(?:.*\/)?([^/]+)\.tsx$/;
+const appComponents = files.flatMap(file => {
+  if (isTest(file)) return [];
+  const match = APP_COMPONENT_RE.exec(rel(file));
+  return match ? [{file, app: match[1] ?? '', name: match[2] ?? ''}] : [];
+});
+
+const componentApps = new Map<string, Set<string>>();
+for (const {app, name} of appComponents) {
+  const owners = componentApps.get(name) ?? new Set<string>();
+  owners.add(app);
+  componentApps.set(name, owners);
+}
+
+for (const {file, name} of appComponents) {
+  const shared = SHARED_COMPONENTS.get(name);
+  if (shared) {
+    report(
+      file,
+      1,
+      'component-reuse',
+      `"${name}" already exists in ${shared}; import it and add a prop or variant instead of forking`
+    );
+    continue;
+  }
+  const owners = componentApps.get(name);
+  if (owners && owners.size > 1) {
+    report(
+      file,
+      1,
+      'component-reuse',
+      `"${name}" is duplicated in apps/${[...owners].join(' and apps/')}; share one component instead of forking`
+    );
   }
 }
 

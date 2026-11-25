@@ -34,11 +34,12 @@ Unsure which applies? Read `references/layout.md` first; it maps every folder to
 - The server computes money, totals and states; money is integer kobo → `formatNaira` / `<Money>`.
 - Copy from `ApiError.code` → `errorMessage()`. Field errors → `error.fieldError('field')`.
 - `appConfig.brandName`, `PERMISSIONS.*`, `paths.*` — never literals.
+- Components: search `@grov/ui` and `@grov/shared` first, configure with props or variants, promote on the second app. Never copy or fork one (`components.md`).
 - Named exports only, except route modules and configs.
 
 ## Workflow
 
-1. Read the reference above, plus the files you'll change and one existing example of the same kind.
+1. Read the reference above, plus the files you'll change and one existing example of the same kind. For UI, search `@grov/ui` and `@grov/shared` before building: reuse, configure, promote, then create.
 2. Make the change following the reference's template (use `yarn gen:resource` for API resources).
 3. Run `yarn check:arch && yarn nx affected -t lint typecheck test build` (or `yarn verify`). Fix, don't silence: never edit lint/arch config, tsconfig, CI or generated files to get green.
 4. UI changes: check light and dark, 360px and desktop, keyboard only. Say what you checked.

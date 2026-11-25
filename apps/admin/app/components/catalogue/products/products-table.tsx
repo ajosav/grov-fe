@@ -1,9 +1,12 @@
+import {ArrowDown, ArrowUp, ArrowUpDown} from 'lucide-react';
 import {Link} from 'react-router';
 
-import type {Category, ProductSummary} from '@grov/models';
+import type {CatalogueSort} from '@grov/api';
 import {
   Badge,
   Button,
+  Checkbox,
+  formatNaira,
   Table,
   TableBody,
   TableCell,
@@ -12,99 +15,239 @@ import {
   TableRow,
 } from '@grov/ui';
 
-import {categoryPath} from '../../../lib/catalogue/categories';
+import type {CatalogueState, ColumnKey} from '../../../lib/catalogue/catalogue-view';
+import {formatBps, formatCount, formatQty} from '../../../lib/catalogue/insight-format';
 import {formatDay} from '../../../lib/format/dates';
 import {productPath} from '../../../paths';
 import {ActiveBadge} from '../category-badges';
-import {ProductThumb} from '../product-thumb';
+import {ProductRowActions} from './product-row-actions';
+import {
+  type CatalogueLayoutProps,
+  ChangeText,
+  priceText,
+  ProductCell,
+  STOCK_BADGE,
+} from './products-cells';
 
-interface ProductsTableProps {
-  rows: ProductSummary[];
-  categories: readonly Category[];
-  coverFor: (path: string | undefined) => string | undefined;
-  onOpen: (productId: string) => void;
-  hasNextPage: boolean;
-  isFetchingNextPage: boolean;
-  onLoadMore: () => void;
+export interface ProductsTableProps extends CatalogueLayoutProps {
+  hidden: ColumnKey[];
+  state: CatalogueState;
+  onSort: (sort: CatalogueSort) => void;
 }
 
-/** The product master table; the row is a bigger click target than its name link. */
+interface SortHeadProps {
+  label: string;
+  sort: CatalogueSort;
+  state: CatalogueState;
+  onSort: (sort: CatalogueSort) => void;
+  className?: string;
+}
+
+function SortHead({label, sort, state, onSort, className}: SortHeadProps) {
+  const active = state.sort === sort;
+  const Icon = !active ? ArrowUpDown : state.dir === 'asc' ? ArrowUp : ArrowDown;
+  return (
+    <TableHead
+      className={className}
+      aria-sort={active ? (state.dir === 'asc' ? 'ascending' : 'descending') : 'none'}
+    >
+      <button
+        type="button"
+        onClick={() => onSort(sort)}
+        className="inline-flex items-center gap-1 hover:text-ink"
+      >
+        {label}
+        <Icon aria-hidden className="size-3.5" />
+      </button>
+    </TableHead>
+  );
+}
+
+/** Dense table: the default. Sorting is server-side; every column can be hidden. */
 export function ProductsTable({
   rows,
-  categories,
   coverFor,
-  onOpen,
-  hasNextPage,
-  isFetchingNextPage,
-  onLoadMore,
+  selected,
+  onToggle,
+  onToggleAll,
+  hidden,
+  state,
+  onSort,
+  ...actions
 }: ProductsTableProps) {
+  const show = (key: ColumnKey) => !hidden.includes(key);
+  const all = rows.length > 0 && rows.every(row => selected.has(row.id));
+  const some = rows.some(row => selected.has(row.id));
   return (
-    <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Product</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="hidden md:table-cell">Sold at</TableHead>
-            <TableHead className="hidden lg:table-cell">Added</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows.map(product => (
-            <TableRow
-              key={product.id}
-              className="cursor-pointer"
-              onClick={event => {
-                // The name is the real link; the row is a bigger target for mouse users.
-                if ((event.target as HTMLElement).closest('a')) return;
-                onOpen(product.id);
-              }}
-            >
-              <TableCell>
-                <div className="flex items-center gap-3">
-                  <ProductThumb url={coverFor(product.imagePaths[0])} name={product.displayName} />
-                  <div className="min-w-0">
-                    <Link
-                      to={productPath(product.id)}
-                      className="font-semibold text-ink underline-offset-4 hover:underline"
-                    >
-                      {product.displayName}
-                    </Link>
-                    <div className="truncate text-body-sm text-ink-muted">
-                      {product.sku}
-                      {product.brand ? ` · ${product.brand}` : ''}
-                    </div>
-                  </div>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-10">
+            <Checkbox
+              aria-label="Select all on this page"
+              checked={all ? true : some ? 'indeterminate' : false}
+              onCheckedChange={checked => onToggleAll(checked === true)}
+            />
+          </TableHead>
+          <SortHead label="Product" sort="name" state={state} onSort={onSort} />
+          {show('category') ? (
+            <TableHead className="hidden @3xl:table-cell">Category</TableHead>
+          ) : null}
+          {show('price') ? (
+            <SortHead
+              label="Price"
+              sort="price"
+              state={state}
+              onSort={onSort}
+              className="text-right"
+            />
+          ) : null}
+          {show('stock') ? (
+            <SortHead
+              label="Available"
+              sort="stock"
+              state={state}
+              onSort={onSort}
+              className="text-right"
+            />
+          ) : null}
+          {show('sold') ? (
+            <SortHead
+              label="Sold"
+              sort="sold"
+              state={state}
+              onSort={onSort}
+              className="text-right"
+            />
+          ) : null}
+          {show('viewers') ? (
+            <SortHead
+              label="Viewers"
+              sort="viewers"
+              state={state}
+              onSort={onSort}
+              className="hidden text-right @2xl:table-cell"
+            />
+          ) : null}
+          {show('conversion') ? (
+            <SortHead
+              label="Conversion"
+              sort="conversion"
+              state={state}
+              onSort={onSort}
+              className="hidden text-right @2xl:table-cell"
+            />
+          ) : null}
+          {show('revenue') ? (
+            <SortHead
+              label="Revenue"
+              sort="revenue"
+              state={state}
+              onSort={onSort}
+              className="text-right"
+            />
+          ) : null}
+          {show('margin') ? (
+            <SortHead
+              label="Margin"
+              sort="margin"
+              state={state}
+              onSort={onSort}
+              className="text-right"
+            />
+          ) : null}
+          {show('status') ? <TableHead>Status</TableHead> : null}
+          {show('updated') ? (
+            <SortHead
+              label="Updated"
+              sort="updated"
+              state={state}
+              onSort={onSort}
+              className="hidden @4xl:table-cell"
+            />
+          ) : null}
+          <TableHead className="text-right">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {rows.map(row => (
+          <TableRow key={row.id} data-state={selected.has(row.id) ? 'selected' : undefined}>
+            <TableCell>
+              <Checkbox
+                aria-label={`Select ${row.displayName}`}
+                checked={selected.has(row.id)}
+                onCheckedChange={() => onToggle(row.id)}
+              />
+            </TableCell>
+            <TableCell className="min-w-48 max-w-80">
+              <ProductCell row={row} cover={coverFor(row.coverImagePath)} />
+            </TableCell>
+            {show('category') ? (
+              <TableCell className="hidden text-body-sm @3xl:table-cell">
+                {row.categoryName}
+              </TableCell>
+            ) : null}
+            {show('price') ? (
+              <TableCell className="text-right tabular">{priceText(row)}</TableCell>
+            ) : null}
+            {show('stock') ? (
+              <TableCell className="text-right">
+                <div className="tabular">
+                  {row.availableQty === null ? '—' : formatQty(row.availableQty, row.baseUnit)}
                 </div>
+                {row.stockState !== 'IN_STOCK' ? (
+                  <Badge tone={STOCK_BADGE[row.stockState].tone}>
+                    {STOCK_BADGE[row.stockState].label}
+                  </Badge>
+                ) : null}
               </TableCell>
-              <TableCell className="text-body-sm">
-                {categoryPath(product.categoryId, categories) ?? '—'}
+            ) : null}
+            {show('sold') ? (
+              <TableCell className="text-right tabular whitespace-nowrap">
+                <div>{formatQty(row.qtySold, row.baseUnit)}</div>
+                <div className="text-body-sm text-ink-muted">{formatCount(row.orders)} orders</div>
               </TableCell>
+            ) : null}
+            {show('viewers') ? (
+              <TableCell className="hidden text-right tabular @2xl:table-cell">
+                {formatCount(row.viewers)}
+              </TableCell>
+            ) : null}
+            {show('conversion') ? (
+              <TableCell className="hidden text-right tabular @2xl:table-cell">
+                {formatBps(row.conversionBps)}
+              </TableCell>
+            ) : null}
+            {show('revenue') ? (
+              <TableCell className="text-right tabular">
+                <div>{formatNaira(row.revenue.kobo)}</div>
+                <ChangeText bps={row.revenueChangeBps} />
+              </TableCell>
+            ) : null}
+            {show('margin') ? (
+              <TableCell className="text-right tabular">{formatBps(row.marginBps)}</TableCell>
+            ) : null}
+            {show('status') ? (
               <TableCell>
-                <ActiveBadge active={product.active} draft={product.draft} />
+                <ActiveBadge active={row.active} draft={row.draft} />
               </TableCell>
-              <TableCell className="hidden md:table-cell">
-                {product.availableAtAllStores ? (
-                  <Badge tone="sky">All stores</Badge>
-                ) : (
-                  <span className="text-body-sm text-ink-muted">Per store</span>
-                )}
+            ) : null}
+            {show('updated') ? (
+              <TableCell className="hidden text-body-sm tabular text-ink-muted @4xl:table-cell">
+                {formatDay(row.updatedAt)}
               </TableCell>
-              <TableCell className="hidden text-body-sm tabular text-ink-muted lg:table-cell">
-                {formatDay(product.createdAt)}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      {hasNextPage ? (
-        <div className="mt-4 flex justify-center">
-          <Button variant="outline" size="sm" loading={isFetchingNextPage} onClick={onLoadMore}>
-            Show more
-          </Button>
-        </div>
-      ) : null}
-    </>
+            ) : null}
+            <TableCell>
+              <div className="flex items-center justify-end gap-1">
+                <Button asChild size="sm" variant="secondary" className="h-8">
+                  <Link to={productPath(row.id)}>View</Link>
+                </Button>
+                <ProductRowActions row={row} {...actions} />
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }

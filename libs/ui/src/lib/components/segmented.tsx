@@ -2,20 +2,30 @@ import {type KeyboardEvent} from 'react';
 
 import {cn} from '../utils/cn';
 
+export type SegmentedSize = 'sm' | 'md';
+
 export interface SegmentedProps<T extends string> {
   options: readonly {value: T; label: string}[];
   /** `null` when nothing is chosen yet; the first option is then the one Tab lands on. */
   value: T | null;
   onChange: (value: T) => void;
   label: string;
+  /** `sm` is the dense toolbar size; `md` (default) is for page-level switches. */
+  size?: SegmentedSize;
   className?: string;
 }
+
+const SIZE: Record<SegmentedSize, {track: string; button: string}> = {
+  sm: {track: 'p-0.5', button: 'h-8 px-3'},
+  md: {track: 'p-1', button: 'h-10 px-4'},
+};
 
 export function Segmented<T extends string>({
   options,
   value,
   onChange,
   label,
+  size = 'md',
   className,
 }: SegmentedProps<T>) {
   const move = (event: KeyboardEvent, index: number) => {
@@ -35,7 +45,8 @@ export function Segmented<T extends string>({
       role="radiogroup"
       aria-label={label}
       className={cn(
-        'inline-flex flex-wrap items-center gap-1 rounded-pill bg-surface-sunken p-1',
+        'inline-flex flex-wrap items-center gap-1 rounded-pill bg-surface-sunken',
+        SIZE[size].track,
         className
       )}
     >
@@ -51,7 +62,8 @@ export function Segmented<T extends string>({
             onKeyDown={event => move(event, index)}
             onClick={() => onChange(option.value)}
             className={cn(
-              'inline-flex h-10 items-center rounded-pill px-4 text-body-sm font-semibold text-ink-muted transition-colors hover:text-ink',
+              'inline-flex items-center rounded-pill text-body-sm font-semibold text-ink-muted transition-colors hover:text-ink',
+              SIZE[size].button,
               checked && 'bg-night text-on-night hover:text-on-night'
             )}
           >

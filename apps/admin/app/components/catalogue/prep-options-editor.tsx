@@ -7,6 +7,7 @@ import {
   Card,
   Field,
   Input,
+  NumberInput,
   Select,
   SelectContent,
   SelectItem,
@@ -23,7 +24,6 @@ import {
   type PrepRowErrors,
 } from '../../lib/catalogue/products';
 import {formatAmount, unitNoun} from '../../lib/catalogue/units';
-import {NumberInput} from '../common/number-input';
 
 export interface PrepOptionsEditorProps {
   drafts: PrepDraft[];

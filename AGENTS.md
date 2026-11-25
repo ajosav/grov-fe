@@ -13,6 +13,10 @@ New API resource: `yarn gen:resource <kebab-plural> --entity <Pascal> [--admin]`
 
 Anything visual (colours, type, spacing, copy, a new screen): also read `../.claude/skills/grov-design/SKILL.md`. Its non-negotiables apply to every screen.
 
+## Components: reuse, configure, then create
+
+Before writing a component, search `@grov/ui`, `@grov/shared` and the other apps. In order: **use** an existing one; **configure** it with a prop or variant (`size`, `variant`, `tone`, a slot); **promote** it to a lib when a second app needs it; only then **create**. Never copy a component into another app, never fork a shared one to change its look, and never style its internals from the call site (`[&_button]:h-8`). `check:arch` fails on an app component that duplicates a `@grov/ui` / `@grov/shared` component or exists in two apps. Detail: `.agents/skills/frontend/references/components.md`.
+
 ## Always
 
 - Dependencies flow app → shared → hooks → api/store → models; ui → models. Import libraries through `@grov/<lib>` only.
@@ -21,6 +25,7 @@ Anything visual (colours, type, spacing, copy, a new screen): also read `../.cla
 - Money is integer kobo from the API; the client never computes totals the server owns.
 - Copy from `ApiError.code` via `errorMessage()`; never show the server's `message`.
 - `appConfig.brandName`, never the product name; `PERMISSIONS.*`, never a permission string.
+- Shared components are configured through props/variants, not copied, forked or restyled from the call site.
 - Named exports; default exports only for route modules and configs.
 
 ## Never

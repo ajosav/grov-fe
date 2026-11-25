@@ -260,7 +260,7 @@ function SettingEditor({
             {value: 'FIXED', label: 'Fixed'},
             {value: 'PER_KM', label: 'Per km'},
           ]}
-          className="[&_button]:h-8"
+          size="sm"
         />
       );
     case 'deliveryFee':

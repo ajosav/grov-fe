@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
   Field,
+  NumberInput,
   Segmented,
   toast,
 } from '@grov/ui';
@@ -29,7 +30,6 @@ import {
   pauseUntilDay,
 } from '../../lib/catalogue/listings';
 import {formatAmount, unitNoun} from '../../lib/catalogue/units';
-import {NumberInput} from '../common/number-input';
 
 const schema = z
   .object({
