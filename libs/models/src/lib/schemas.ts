@@ -1,8 +1,3 @@
-/**
- * Friendly names for grov-be's OpenAPI schemas. The types come from
- * `generated/api.ts` (run `yarn generate:api-types` after grov-be exports a new
- * `openapi/openapi.json`); never hand-write a type the API already describes.
- */
 import type {components, paths} from './generated/api';
 
 type Schemas = components['schemas'];
