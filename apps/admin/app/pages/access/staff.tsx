@@ -80,7 +80,7 @@ export default function Staff() {
         actions={invite}
       />
       <Tabs value={tab} onValueChange={value => set('tab', value === 'staff' ? undefined : value)}>
-        <TabsList className="mb-5 [&_button]:h-8">
+        <TabsList size="sm" className="mb-5">
           <TabsTrigger value="staff">Staff</TabsTrigger>
           <TabsTrigger value="invites">Invites</TabsTrigger>
         </TabsList>
@@ -128,7 +128,7 @@ export default function Staff() {
                 {value: 'ACTIVE', label: 'Active'},
                 {value: 'SUSPENDED', label: 'Suspended'},
               ]}
-              className="[&_button]:h-8"
+              size="sm"
             />
           </div>
           <StaffTable
@@ -152,7 +152,8 @@ export default function Staff() {
               {value: 'ACCEPTED', label: 'Accepted'},
               {value: 'REVOKED', label: 'Revoked'},
             ]}
-            className="mb-4 [&_button]:h-8"
+            size="sm"
+            className="mb-4"
           />
           <InvitesTable status={inviteStatus} />
         </TabsContent>

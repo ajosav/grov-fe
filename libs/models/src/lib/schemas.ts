@@ -121,4 +121,25 @@ export type CreateCategoryBody = RequestBody<'/v1/admin/categories', 'post'>;
 export type UpdateCategoryBody = RequestBody<'/v1/admin/categories/{categoryId}', 'patch'>;
 export type DeviceInput = CodeVerifyBody['device'];
 
+export type CatalogueRow = Schemas['CatalogueRow'];
+export type CatalogueSummary = Schemas['CatalogueSummary'];
+export type CataloguePage = Schemas['CataloguePage'];
+export type CatalogueAnalytics = Schemas['CatalogueAnalytics'];
+export type ComparedMetric = Schemas['ComparedMetric'];
+export type AnalyticsPeriod = Schemas['AnalyticsPeriod'];
+export type StockState = Schemas['StockState'];
+export type ProductPerformance = Schemas['ProductPerformance'];
+export type PerformancePoint = Schemas['PerformancePoint'];
+export type StorePerformance = Schemas['StorePerformance'];
+export type ProductStock = Schemas['ProductStock'];
+export type ProductStoreStock = Schemas['ProductStoreStock'];
+export type ProductStockMovement = Schemas['ProductStockMovement'];
+export type ProductPricing = Schemas['ProductPricing'];
+export type SizePricing = Schemas['SizePricing'];
+export type StorePrice = Schemas['StorePrice'];
+export type PriceHistoryPoint = Schemas['PriceHistoryPoint'];
+export type ActivityItem = Schemas['ActivityItem'];
+export type FieldChange = Schemas['FieldChange'];
+export type ImportJob = Schemas['Import'];
+export type CreateImportBody = RequestBody<'/v1/admin/imports', 'post'>;
 // gen:resource:types

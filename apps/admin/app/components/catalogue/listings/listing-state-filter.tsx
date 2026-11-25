@@ -27,7 +27,7 @@ export function ListingStateFilter({value, onChange}: ListingStateFilterProps) {
         {value: 'PAUSED', label: 'Paused'},
         {value: 'DELISTED', label: 'Delisted'},
       ]}
-      className="[&_button]:h-8"
+      size="sm"
     />
   );
 }

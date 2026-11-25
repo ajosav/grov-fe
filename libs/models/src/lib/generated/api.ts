@@ -3382,7 +3382,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/admin/product-insights/catalogue/summary": {
+    "/v1/admin/product-analytics/catalogue/summary": {
         parameters: {
             query?: never;
             header?: never;
@@ -3390,7 +3390,7 @@ export interface paths {
             cookie?: never;
         };
         /** Catalogue counts: published, drafts, stock states, needing attention */
-        get: operations["CatalogueInsightsAdmin_summary"];
+        get: operations["CatalogueAdmin_summary"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3399,7 +3399,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/admin/product-insights/catalogue/products": {
+    "/v1/admin/product-analytics/catalogue/products": {
         parameters: {
             query?: never;
             header?: never;
@@ -3410,7 +3410,7 @@ export interface paths {
          * Products with sales, views, stock, price and margin for a period
          * @description Sorted and filtered in the database. Numbered pages (not a cursor) because rows sort by computed metrics; the catalogue is bounded. Views are each shopper’s latest view, not every view.
          */
-        get: operations["CatalogueInsightsAdmin_list"];
+        get: operations["CatalogueAdmin_list"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3419,7 +3419,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/admin/product-insights/catalogue/analytics": {
+    "/v1/admin/product-analytics/catalogue/analytics": {
         parameters: {
             query?: never;
             header?: never;
@@ -3427,7 +3427,7 @@ export interface paths {
             cookie?: never;
         };
         /** Catalogue-wide sales, profit and engagement, against the previous period */
-        get: operations["CatalogueInsightsAdmin_analytics"];
+        get: operations["CatalogueAdmin_analytics"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3436,7 +3436,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/admin/product-insights/activity": {
+    "/v1/admin/product-analytics/activity": {
         parameters: {
             query?: never;
             header?: never;
@@ -3444,10 +3444,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Product timeline: edits, prices, stock, analyses and decisions, newest first
+         * Product timeline: edits, prices and stock, newest first
          * @description Give productId for one product. Edits carry before/after values when an earlier version was recorded.
          */
-        get: operations["CatalogueInsightsAdmin_activityPage"];
+        get: operations["CatalogueAdmin_activityPage"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3456,7 +3456,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/admin/product-insights/products/{productId}/performance": {
+    "/v1/admin/product-analytics/products/{productId}/performance": {
         parameters: {
             query?: never;
             header?: never;
@@ -3476,7 +3476,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/admin/product-insights/products/{productId}/stock": {
+    "/v1/admin/product-analytics/products/{productId}/stock": {
         parameters: {
             query?: never;
             header?: never;
@@ -3493,7 +3493,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/admin/product-insights/products/{productId}/pricing": {
+    "/v1/admin/product-analytics/products/{productId}/pricing": {
         parameters: {
             query?: never;
             header?: never;
@@ -3504,260 +3504,6 @@ export interface paths {
         get: operations["ProductAnalyticsAdmin_pricing"];
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/intelligence/overview": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Catalogue intelligence: health, pending decisions and watchlist counts */
-        get: operations["IntelligenceAdmin_overview"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/intelligence/watchlist": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Products in a watchlist bucket (declining, margin pressure…), most at risk first */
-        get: operations["IntelligenceAdmin_watchlist"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/intelligence/analyses": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Analyse every published product now (up to 500)
-         * @description Rules only (rules-v1). Undecided recommendations are replaced; deferred and accepted ones are kept.
-         */
-        post: operations["IntelligenceAdmin_analyseCatalogue"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/products/{productId}/intelligence": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** A product’s latest analysis, its recommendations and the signals that apply */
-        get: operations["IntelligenceAdmin_intelligence"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/products/{productId}/analyses": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Analyse a product now */
-        post: operations["IntelligenceAdmin_analyse"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/products/{productId}/assistant": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Ask about a product
-         * @description Rules first: the question is matched to an intent and answered from the product’s data, each block labelled fact, observation, prediction, recommendation or limitation.
-         */
-        post: operations["IntelligenceAdmin_ask"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/recommendations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Recommendations, most urgent first */
-        get: operations["RecommendationsAdmin_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/recommendations/{recommendationId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** One recommendation with its evidence */
-        get: operations["RecommendationsAdmin_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/recommendations/{recommendationId}/decision": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Accept, reject or defer a recommendation
-         * @description Accepting records the decision; a change to prices or the catalogue runs only through apply.
-         */
-        post: operations["RecommendationsAdmin_decide"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/recommendations/{recommendationId}/preview": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** What applying it would change, and anything that stops it */
-        get: operations["RecommendationsAdmin_preview"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/recommendations/{recommendationId}/apply": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Apply a confirmed recommendation
-         * @description Runs the change through the owning module (prices, publishing, listings) in one transaction, then marks it APPLIED. Prices need access to every store; delisting needs products.listings.write.
-         */
-        post: operations["RecommendationsAdmin_apply"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/signals": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** External signals with their source, region and age */
-        get: operations["SignalsAdmin_list"];
-        put?: never;
-        /**
-         * Record an external signal with its source
-         * @description For a product, a category or the whole catalogue. Name the source and, when there is one, link it.
-         */
-        post: operations["SignalsAdmin_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/signals/refresh": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Pull the connected signal feed, if one is set up */
-        post: operations["SignalsAdmin_refresh"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/product-insights/signals/{signalId}/archive": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Archive a signal: analyses stop using it */
-        post: operations["SignalsAdmin_archive"];
         delete?: never;
         options?: never;
         head?: never;
@@ -7989,9 +7735,6 @@ export interface components {
             inactive: number;
             lowStock: number;
             outOfStock: number;
-            /** @description Published products out of stock, or with an open high-priority recommendation. */
-            needsAttention: number;
-            openRecommendations: number;
         };
         CataloguePageEnvelope: {
             /** @enum {boolean} */
@@ -8007,7 +7750,7 @@ export interface components {
             total: number;
             page: number;
             pageSize: number;
-            period: components["schemas"]["InsightPeriod"];
+            period: components["schemas"]["AnalyticsPeriod"];
         };
         CatalogueRow: {
             /**
@@ -8047,9 +7790,6 @@ export interface components {
             viewers: number;
             /** @description Buyers ÷ viewers. */
             conversionBps: number | null;
-            openRecommendations: number;
-            /** @enum {string|null} */
-            topPriority: "HIGH" | "MEDIUM" | "LOW" | null;
             /** Format: date-time */
             updatedAt: string;
         };
@@ -8058,7 +7798,7 @@ export interface components {
          * @enum {string}
          */
         StockState: "IN_STOCK" | "LOW" | "OUT" | "UNTRACKED";
-        InsightPeriod: {
+        AnalyticsPeriod: {
             /**
              * Format: date
              * @example 2026-11-24
@@ -8091,7 +7831,7 @@ export interface components {
             data: components["schemas"]["CatalogueAnalytics"];
         };
         CatalogueAnalytics: {
-            period: components["schemas"]["InsightPeriod"];
+            period: components["schemas"]["AnalyticsPeriod"];
             /** @description Kobo. */
             revenue: components["schemas"]["ComparedMetric"];
             /** @description Kobo: revenue less the base price at the time of sale. */
@@ -8164,8 +7904,8 @@ export interface components {
             /** Format: date-time */
             at: string;
             /** @enum {string} */
-            kind: "PRODUCT" | "PRICE" | "STOCK" | "INSIGHT";
-            /** @description What happened, as a code: products.product.updated, price.set, stock.RECEIPT, insight.analysed, recommendation.APPLIED… */
+            kind: "PRODUCT" | "PRICE" | "STOCK";
+            /** @description What happened, as a code: products.product.updated, price.set, stock.RECEIPT… */
             action: string;
             /**
              * Format: uuid
@@ -8173,6 +7913,8 @@ export interface components {
              */
             productId: string;
             productName: string;
+            /** @description What stock quantities are counted in. */
+            baseUnit: string;
             /** @description Null for the system. */
             actorName: string | null;
             changes: components["schemas"]["FieldChange"][];
@@ -8201,7 +7943,7 @@ export interface components {
              */
             productId: string;
             baseUnit: string;
-            period: components["schemas"]["InsightPeriod"];
+            period: components["schemas"]["AnalyticsPeriod"];
             tracking: components["schemas"]["EngagementTracking"];
             kpis: {
                 viewers: components["schemas"]["ComparedMetric"];
@@ -8443,397 +8185,6 @@ export interface components {
             at: string;
             /** Format: date-time */
             validUntil: string | null;
-        };
-        IntelligenceOverviewEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["IntelligenceOverview"];
-        };
-        IntelligenceOverview: {
-            analysedProducts: number;
-            /** Format: date-time */
-            lastAnalysedAt: string | null;
-            pending: number;
-            /** @description Open or deferred with a change that can run. */
-            awaitingApproval: number;
-            byPriority: {
-                HIGH: number;
-                MEDIUM: number;
-                LOW: number;
-            };
-            health: {
-                GOOD: number;
-                WATCH: number;
-                AT_RISK: number;
-                INACTIVE: number;
-            };
-            buckets: {
-                key: components["schemas"]["InsightBucket"];
-                products: number;
-            }[];
-        };
-        /** @enum {string} */
-        InsightBucket: "DECLINING_SALES" | "MARGIN_PRESSURE" | "SEASONAL_SCARCITY" | "RISING_DEMAND" | "EXCESS_INVENTORY" | "PRICE_REVIEW" | "DELIST_CANDIDATES" | "REPLENISHMENT";
-        /** @enum {string} */
-        InsightPriority: "HIGH" | "MEDIUM" | "LOW";
-        /** @enum {string} */
-        InsightDimension: "PERFORMANCE" | "INVENTORY" | "PROFITABILITY" | "SEASONALITY" | "ECONOMIC" | "WEATHER" | "POLICY" | "MARKET";
-        WatchlistEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["WatchlistItem"][];
-        };
-        WatchlistItem: {
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            productId: string;
-            displayName: string;
-            coverImagePath: string | null;
-            categoryName: string;
-            active: boolean;
-            /** @enum {string} */
-            health: "GOOD" | "WATCH" | "AT_RISK" | "INACTIVE";
-            risk: components["schemas"]["InsightPriority"];
-            confidence: number;
-            findings: {
-                code: string;
-                dimension: components["schemas"]["InsightDimension"];
-                severity: components["schemas"]["InsightPriority"];
-            }[];
-            pendingRecommendations: number;
-            /** Format: date-time */
-            analysedAt: string;
-        };
-        AnalyseCatalogueResultEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["AnalyseCatalogueResult"];
-        };
-        AnalyseCatalogueResult: {
-            analysed: number;
-            recommendations: number;
-        };
-        ProductIntelligenceEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["ProductIntelligence"];
-        };
-        ProductIntelligence: {
-            /** @description Null until the product is analysed once. */
-            analysis: components["schemas"]["ProductAnalysis"] | null;
-            recommendations: components["schemas"]["ProductRecommendation"][];
-            signals: components["schemas"]["MarketSignal"][];
-        };
-        ProductAnalysis: {
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            id: string;
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            productId: string;
-            /** @description rules-v1: deterministic rules; no model wrote this. */
-            engine: string;
-            /** @enum {string} */
-            health: "GOOD" | "WATCH" | "AT_RISK" | "INACTIVE";
-            risk: components["schemas"]["InsightPriority"];
-            confidence: number;
-            outlook: components["schemas"]["InsightOutlook"];
-            facts: components["schemas"]["InsightFacts"];
-            findings: components["schemas"]["InsightFinding"][];
-            createdByName: string | null;
-            /** Format: date-time */
-            createdAt: string;
-        };
-        InsightOutlook: {
-            /** @enum {string} */
-            demand: "RISING" | "STABLE" | "FALLING" | "UNKNOWN";
-            /** @enum {string} */
-            supply: "TIGHT" | "ADEQUATE" | "EXCESS" | "UNKNOWN";
-            /** @enum {string} */
-            pricing: "UP" | "STABLE" | "DOWN" | "UNKNOWN";
-            /** @enum {string} */
-            profitability: "HEALTHY" | "THIN" | "UNKNOWN";
-        };
-        /** @description The metric snapshot the rules read (30-day windows, base units, kobo). */
-        InsightFacts: {
-            [key: string]: unknown;
-        };
-        InsightFinding: {
-            dimension: components["schemas"]["InsightDimension"];
-            /** @description What is happening. Clients render the copy for each code. */
-            code: string;
-            severity: components["schemas"]["InsightPriority"];
-            positive: boolean;
-            params: {
-                [key: string]: number | string | (null);
-            };
-            evidence: components["schemas"]["InsightEvidence"][];
-        };
-        InsightEvidence: {
-            metric: string;
-            value: number | string | (null);
-            compareTo?: number | string | (null);
-            /** @enum {string} */
-            unit: "KOBO" | "BPS" | "COUNT" | "QTY" | "DAYS" | "MONTH";
-        };
-        ProductRecommendation: {
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            id: string;
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            productId: string;
-            productName: string;
-            coverImagePath: string | null;
-            categoryName: string;
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            analysisId: string;
-            kind: components["schemas"]["RecommendationKind"];
-            dimension: components["schemas"]["InsightDimension"];
-            priority: components["schemas"]["InsightPriority"];
-            status: components["schemas"]["RecommendationStatus"];
-            confidence: number;
-            rationale: {
-                findings: string[];
-                evidence: components["schemas"]["InsightEvidence"][];
-            };
-            action: components["schemas"]["ProposedAction"];
-            impact: {
-                /** @enum {string} */
-                metric: "REVENUE_30D_SAME_VOLUME" | "SALES_AT_RISK_7D";
-                amount: components["schemas"]["Money"];
-            } | null;
-            decidedByName: string | null;
-            /** Format: date-time */
-            decidedAt: string | null;
-            decisionNote: string | null;
-            /** Format: date-time */
-            deferredUntil: string | null;
-            /** Format: date-time */
-            appliedAt: string | null;
-            /** Format: date-time */
-            createdAt: string;
-        };
-        /** @enum {string} */
-        RecommendationKind: "RAISE_PRICE" | "LOWER_PRICE" | "REVIEW_PROFITABILITY" | "REPLENISH" | "REDUCE_PROCUREMENT" | "REDISTRIBUTE_STOCK" | "PROMOTE" | "REVIEW_SUPPLIERS" | "UNPUBLISH" | "DELIST" | "REACTIVATE";
-        /** @enum {string} */
-        RecommendationStatus: "OPEN" | "ACCEPTED" | "APPLIED" | "REJECTED" | "DEFERRED" | "SUPERSEDED";
-        /** @description SET_PRICE sets the base price of one size (live at every store). SET_ACTIVE publishes or unpublishes the product. DELIST removes it from the stores you can act on. NONE: a task for a person, nothing to run. */
-        ProposedAction: {
-            /** @enum {string} */
-            type: "SET_PRICE";
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            sizeId: string;
-            sizeLabel: string;
-            from: components["schemas"]["Money"];
-            to: components["schemas"]["Money"];
-        } | {
-            /** @enum {string} */
-            type: "SET_ACTIVE";
-            active: boolean;
-        } | {
-            /** @enum {string} */
-            type: "DELIST";
-        } | {
-            /** @enum {string} */
-            type: "NONE";
-        };
-        MarketSignal: {
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            id: string;
-            dimension: components["schemas"]["InsightDimension"];
-            /**
-             * @description Pressure on cost or scarcity: UP means prices or scarcity likely to rise.
-             * @enum {string}
-             */
-            direction: "UP" | "DOWN" | "NEUTRAL";
-            /** @enum {string} */
-            scope: "PRODUCT" | "CATEGORY" | "CATALOGUE";
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            productId: string | null;
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            categoryId: string | null;
-            categoryName: string | null;
-            region: string;
-            title: string;
-            summary: string;
-            sourceName: string;
-            sourceUrl: string | null;
-            /** Format: date-time */
-            publishedAt: string;
-            /** Format: date-time */
-            recordedAt: string;
-            /** @description Null when a feed brought it in. */
-            recordedByName: string | null;
-            /** @enum {string} */
-            origin: "ANALYST" | "FEED";
-            /** @description Days since it was published: how fresh it is. */
-            ageDays: number;
-        };
-        AssistantAnswerEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["AssistantAnswer"];
-        };
-        AssistantAnswer: {
-            /** @enum {string} */
-            intent: "WHY_SALES_CHANGED" | "PRICE_DRIVERS" | "SEASON" | "SHOULD_RAISE_PRICE" | "SHOULD_LOWER_PRICE" | "DEMAND_OUTLOOK" | "LOCATION_PERFORMANCE" | "REDUCE_PROCUREMENT" | "KEEP_IN_CATALOGUE" | "STOCK_STATUS" | "PROFITABILITY" | "EXPLAIN_RECOMMENDATION" | "UNKNOWN";
-            /** @description rules-v1 until a narrative model is approved and switched on. */
-            engine: string;
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            analysisId: string | null;
-            /** Format: date-time */
-            analysedAt: string | null;
-            blocks: components["schemas"]["AssistantBlock"][];
-            suggestions: ("WHY_SALES_CHANGED" | "PRICE_DRIVERS" | "SEASON" | "SHOULD_RAISE_PRICE" | "SHOULD_LOWER_PRICE" | "DEMAND_OUTLOOK" | "LOCATION_PERFORMANCE" | "REDUCE_PROCUREMENT" | "KEEP_IN_CATALOGUE" | "STOCK_STATUS" | "PROFITABILITY" | "EXPLAIN_RECOMMENDATION" | "UNKNOWN")[];
-        };
-        AssistantBlock: {
-            /**
-             * @description FACT: from our records. OBSERVATION: what the rules see. PREDICTION: a trend projection. RECOMMENDATION: what to consider. LIMITATION: what we do not know.
-             * @enum {string}
-             */
-            kind: "FACT" | "OBSERVATION" | "PREDICTION" | "RECOMMENDATION" | "LIMITATION";
-            code: string;
-            params: {
-                [key: string]: number | string | (null);
-            };
-            ref: {
-                /** @enum {string} */
-                type: "FINDING" | "RECOMMENDATION" | "METRIC";
-                key: string;
-            } | null;
-        };
-        ProductRecommendationPageEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["ProductRecommendation"][];
-            meta: components["schemas"]["PaginationMeta"];
-        };
-        ProductRecommendationEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["ProductRecommendation"];
-        };
-        RecommendationPreviewEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["RecommendationPreview"];
-        };
-        RecommendationPreview: {
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            recommendationId: string;
-            action: components["schemas"]["ProposedAction"];
-            executable: boolean;
-            /** @description Codes for why it cannot run as is: NO_ACTION, CLOSED, NEEDS_ALL_STORES, PRICE_MOVED, ALREADY_DONE, NO_STORES_IN_SCOPE, PRODUCT_DRAFT. */
-            blockers: string[];
-            changes: {
-                /** @description What changes: a size, the product, or a store. */
-                target: string;
-                field: string;
-                before: string | null;
-                after: string | null;
-            }[];
-            currentBase: components["schemas"]["Money"] | null;
-            storesAffected: number;
-        };
-        MarketSignalListEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["MarketSignalList"];
-        };
-        MarketSignalList: {
-            items: components["schemas"]["MarketSignal"][];
-            /** @description False: no automated feed is set up; signals are analyst-recorded only. */
-            feedConnected: boolean;
-        };
-        MarketSignalEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 201 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["MarketSignal"];
-        };
-        MarketSignalRefreshEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["MarketSignalRefresh"];
-        };
-        MarketSignalRefresh: {
-            added: number;
-            feedConnected: boolean;
         };
     };
     responses: never;
@@ -19165,7 +18516,7 @@ export interface operations {
             };
         };
     };
-    CatalogueInsightsAdmin_summary: {
+    CatalogueAdmin_summary: {
         parameters: {
             query?: {
                 /** @description First day (Lagos), inclusive. */
@@ -19210,7 +18561,7 @@ export interface operations {
             };
         };
     };
-    CatalogueInsightsAdmin_list: {
+    CatalogueAdmin_list: {
         parameters: {
             query?: {
                 /** @description First day (Lagos), inclusive. */
@@ -19226,7 +18577,7 @@ export interface operations {
                 availability?: "IN_STOCK" | "LOW" | "OUT" | "UNTRACKED";
                 performance?: "rising" | "declining" | "no_sales";
                 profitability?: "thin" | "healthy" | "unknown";
-                view?: "best_performing" | "declining" | "low_stock" | "out_of_stock" | "high_revenue" | "low_conversion" | "needs_ai_attention";
+                view?: "best_performing" | "declining" | "low_stock" | "out_of_stock" | "high_revenue" | "low_conversion";
                 sort?: "name" | "updated" | "price" | "stock" | "sold" | "viewers" | "conversion" | "revenue" | "margin";
                 dir?: "asc" | "desc";
                 page?: number;
@@ -19267,7 +18618,7 @@ export interface operations {
             };
         };
     };
-    CatalogueInsightsAdmin_analytics: {
+    CatalogueAdmin_analytics: {
         parameters: {
             query?: {
                 /** @description First day (Lagos), inclusive. */
@@ -19312,12 +18663,12 @@ export interface operations {
             };
         };
     };
-    CatalogueInsightsAdmin_activityPage: {
+    CatalogueAdmin_activityPage: {
         parameters: {
             query?: {
                 limit?: number;
                 cursor?: string;
-                kind?: "PRODUCT" | "PRICE" | "STOCK" | "INSIGHT";
+                kind?: "PRODUCT" | "PRICE" | "STOCK";
                 productId?: string;
             };
             header?: never;
@@ -19466,694 +18817,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProductPricingEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    IntelligenceAdmin_overview: {
-        parameters: {
-            query?: {
-                categoryId?: string;
-                /** @description Products listed at this store. */
-                storeId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["IntelligenceOverviewEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    IntelligenceAdmin_watchlist: {
-        parameters: {
-            query?: {
-                categoryId?: string;
-                /** @description Products listed at this store. */
-                storeId?: string;
-                bucket?: components["schemas"]["InsightBucket"];
-                priority?: components["schemas"]["InsightPriority"];
-                dimension?: components["schemas"]["InsightDimension"];
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WatchlistEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    IntelligenceAdmin_analyseCatalogue: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AnalyseCatalogueResultEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    IntelligenceAdmin_intelligence: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                productId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProductIntelligenceEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    IntelligenceAdmin_analyse: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                productId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProductIntelligenceEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    IntelligenceAdmin_ask: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                productId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    question: string;
-                    /**
-                     * Format: uuid
-                     * @description Ask about this recommendation ("Discuss with AI").
-                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-                     */
-                    recommendationId?: string;
-                    /**
-                     * Format: uuid
-                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-                     */
-                    storeId?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AssistantAnswerEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    RecommendationsAdmin_list: {
-        parameters: {
-            query?: {
-                limit?: number;
-                cursor?: string;
-                /** @description PENDING = OPEN, DEFERRED and ACCEPTED (still to be acted on). */
-                status?: "PENDING" | "OPEN" | "ACCEPTED" | "APPLIED" | "REJECTED" | "DEFERRED" | "SUPERSEDED";
-                priority?: components["schemas"]["InsightPriority"];
-                dimension?: components["schemas"]["InsightDimension"];
-                kind?: components["schemas"]["RecommendationKind"];
-                categoryId?: string;
-                /** @description Products listed at this store. */
-                storeId?: string;
-                productId?: string;
-                bucket?: "DECLINING_SALES" | "MARGIN_PRESSURE" | "SEASONAL_SCARCITY" | "RISING_DEMAND" | "EXCESS_INVENTORY" | "PRICE_REVIEW" | "DELIST_CANDIDATES" | "REPLENISHMENT";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProductRecommendationPageEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    RecommendationsAdmin_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                recommendationId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProductRecommendationEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    RecommendationsAdmin_decide: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                recommendationId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    decision: "ACCEPT" | "REJECT" | "DEFER";
-                    note?: string;
-                    /**
-                     * Format: date-time
-                     * @description With DEFER: when to look again.
-                     */
-                    deferUntil?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProductRecommendationEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    RecommendationsAdmin_preview: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                recommendationId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RecommendationPreviewEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    RecommendationsAdmin_apply: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                recommendationId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /**
-                     * @description The admin reviewed the changes and confirms them.
-                     * @enum {boolean}
-                     */
-                    confirm: true;
-                    /** @description SET_PRICE only: the price the admin settled on, within 30% of the current base. */
-                    priceKobo?: number;
-                    note?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProductRecommendationEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    SignalsAdmin_list: {
-        parameters: {
-            query?: {
-                /** @description Signals for this product, its category and the whole catalogue. */
-                productId?: string;
-                dimension?: components["schemas"]["InsightDimension"];
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarketSignalListEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    SignalsAdmin_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    dimension: "SEASONALITY" | "ECONOMIC" | "WEATHER" | "POLICY" | "MARKET";
-                    /** @enum {string} */
-                    direction: "UP" | "DOWN" | "NEUTRAL";
-                    /**
-                     * Format: uuid
-                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-                     */
-                    productId?: string;
-                    /**
-                     * Format: uuid
-                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-                     */
-                    categoryId?: string;
-                    /** @example Kano (production region) */
-                    region: string;
-                    title: string;
-                    summary: string;
-                    /** @example NBS CPI report */
-                    sourceName: string;
-                    /** Format: uri */
-                    sourceUrl?: string;
-                    /** Format: date-time */
-                    publishedAt: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Success */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarketSignalEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    SignalsAdmin_refresh: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarketSignalRefreshEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    SignalsAdmin_archive: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                signalId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarketSignalEnvelope"];
                 };
             };
             /** @description Client error */

@@ -20,6 +20,7 @@ export function createApi(options: ApiClientOptions) {
     files: endpoints.filesApi(client),
     allergens: endpoints.allergensApi(client),
     adminFoods: endpoints.adminFoodsApi(client),
+    adminProductAnalytics: endpoints.adminProductAnalyticsApi(client),
     // gen:resource:api (yarn gen:resource adds endpoint groups above this line)
   };
 }

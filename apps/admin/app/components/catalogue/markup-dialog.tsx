@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   Field,
+  NumberInput,
   Segmented,
   toast,
 } from '@grov/ui';
@@ -27,7 +28,6 @@ import {
   toMarkupDraft,
   toMarkupValue,
 } from '../../lib/catalogue/markups';
-import {NumberInput} from '../common/number-input';
 
 /** What a markup applies to: everything the store sells, or every size of one product. */
 export type MarkupTarget =

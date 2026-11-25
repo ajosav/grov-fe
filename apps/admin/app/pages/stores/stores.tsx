@@ -110,7 +110,7 @@ export default function Stores() {
             {value: 'ACTIVE', label: 'Active'},
             {value: 'INACTIVE', label: 'Inactive'},
           ]}
-          className="[&_button]:h-8"
+          size="sm"
         />
       </div>
 

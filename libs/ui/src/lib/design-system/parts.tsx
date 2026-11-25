@@ -13,6 +13,7 @@ export const SECTIONS = [
   'Patterns',
   'Navigation',
   'Data',
+  'Insights',
   'Layout',
 ] as const;
 

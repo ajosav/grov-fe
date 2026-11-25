@@ -69,5 +69,26 @@ export const queryKeys = {
     detail: (id: string) => ['admin', 'foods', 'detail', id] as const,
     products: (id: string) => ['admin', 'foods', 'products', id] as const,
   },
+  /** Catalogue metrics and product intelligence. A product's keys share `product(id)` so one write refreshes them all. */
+  adminProductAnalytics: {
+    all: ['admin', 'product-analytics'] as const,
+    catalogue: ['admin', 'product-analytics', 'catalogue'] as const,
+    summary: (params: object) =>
+      ['admin', 'product-analytics', 'catalogue', 'summary', params] as const,
+    list: (params: object) => ['admin', 'product-analytics', 'catalogue', 'list', params] as const,
+    analytics: (params: object) =>
+      ['admin', 'product-analytics', 'catalogue', 'analytics', params] as const,
+    activityAll: ['admin', 'product-analytics', 'activity'] as const,
+    activity: (params: object) => ['admin', 'product-analytics', 'activity', params] as const,
+    productAll: ['admin', 'product-analytics', 'product'] as const,
+    product: (id: string) => ['admin', 'product-analytics', 'product', id] as const,
+    performance: (id: string, params: object) =>
+      ['admin', 'product-analytics', 'product', id, 'performance', params] as const,
+    stock: (id: string, storeId?: string) =>
+      ['admin', 'product-analytics', 'product', id, 'stock', storeId ?? null] as const,
+    pricing: (id: string, storeId?: string) =>
+      ['admin', 'product-analytics', 'product', id, 'pricing', storeId ?? null] as const,
+    importJob: (id: string) => ['admin', 'product-analytics', 'import', id] as const,
+  },
   // gen:resource:keys
 } as const;

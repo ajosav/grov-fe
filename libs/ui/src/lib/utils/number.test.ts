@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest';
 
-import {sanitizeNumber} from './numbers';
+import {sanitizeNumber} from './number';
 
 describe('sanitizeNumber', () => {
   it('drops everything but digits', () => {
