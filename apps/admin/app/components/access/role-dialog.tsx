@@ -139,7 +139,8 @@ export function RoleDialog({trigger, role, open: controlled, onOpenChange}: Role
                           .map(permission => permission.key)
                           .filter(key => isSuper || held.has(key));
                         const selected = usableKeys.filter(key => field.value.includes(key));
-                        const allOn = usableKeys.length > 0 && selected.length === usableKeys.length;
+                        const allOn =
+                          usableKeys.length > 0 && selected.length === usableKeys.length;
                         const chosen = group.permissions.filter(permission =>
                           field.value.includes(permission.key)
                         ).length;

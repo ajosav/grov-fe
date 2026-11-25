@@ -66,7 +66,6 @@ export interface NavSection {
 export type NavEntry = NavPage | NavSection;
 
 export interface NavGroup {
-  /** Small heading above the group on the root panel. */
   label?: string;
   entries: NavEntry[];
 }
@@ -74,10 +73,6 @@ export interface NavGroup {
 const page = (p: Omit<NavPage, 'kind'>): NavPage => ({kind: 'page', ...p});
 const section = (s: Omit<NavSection, 'kind'>): NavSection => ({kind: 'section', ...s});
 
-/**
- * The admin console's information architecture. A page appears only when its
- * route exists; a section appears only when at least one page in it is visible.
- */
 export const ADMIN_NAV: NavGroup[] = [
   {
     entries: [
@@ -259,7 +254,7 @@ export const ADMIN_NAV: NavGroup[] = [
             to: paths.cities,
             label: 'Cities',
             icon: MapPinned,
-            requires: {allOf: [PERMISSIONS.CITIES.MANAGE]},
+            requires: {allOf: [PERMISSIONS.STORES.MANAGE]},
           }),
         ],
       }),
@@ -319,7 +314,6 @@ export function visibleNav(check: Check): {groups: NavGroup[]; footer: NavPage[]
   };
 }
 
-/** First page inside a section: where clicking the section goes. */
 export function firstPage(entry: NavEntry): NavPage | undefined {
   if (entry.kind === 'page') return entry;
   for (const child of entry.children) {
@@ -330,12 +324,10 @@ export function firstPage(entry: NavEntry): NavPage | undefined {
 }
 
 export interface NavTrail {
-  /** Sections from the root down to the page. */
   sections: NavSection[];
   page: NavPage;
 }
 
-/** Every visible page with the sections above it (breadcrumbs, ⌘K). */
 export function flattenNav(entries: NavEntry[], sections: NavSection[] = []): NavTrail[] {
   return entries.flatMap(entry =>
     entry.kind === 'page'
@@ -344,7 +336,6 @@ export function flattenNav(entries: NavEntry[], sections: NavSection[] = []): Na
   );
 }
 
-/** The page the URL is on (longest match wins), or undefined for pages outside the nav. */
 export function activeTrail(trails: NavTrail[], pathname: string): NavTrail | undefined {
   return trails
     .flatMap(trail =>

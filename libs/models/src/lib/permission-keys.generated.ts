@@ -11,9 +11,6 @@ export const PERMISSIONS = {
   AUDIT: {
     LOGS_READ: 'audit.logs.read',
   },
-  CITIES: {
-    MANAGE: 'cities.manage',
-  },
   FILES: {
     PRIVATE_READ: 'files.private.read',
     PRIVATE_WRITE: 'files.private.write',
@@ -64,7 +61,6 @@ export type PermissionKey =
   | 'access.staff.manage'
   | 'access.staff.read'
   | 'audit.logs.read'
-  | 'cities.manage'
   | 'files.private.read'
   | 'files.private.write'
   | 'files.public.write'
