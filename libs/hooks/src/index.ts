@@ -11,6 +11,7 @@ export * from './lib/api/files';
 export * from './lib/api/allergens';
 export * from './lib/api/admin-foods';
 export * from './lib/api/admin-product-analytics';
+export * from './lib/api/admin-audit-logs';
 // gen:resource:exports
 export * from './lib/util/use-countdown';
 export * from './lib/util/use-debounce';

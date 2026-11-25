@@ -1040,7 +1040,7 @@ export interface paths {
         /** Every city, with its delivery defaults */
         get: operations["CitiesAdmin_list"];
         put?: never;
-        /** Add a city (all-store admins only) */
+        /** Add a city */
         post: operations["CitiesAdmin_create"];
         delete?: never;
         options?: never;
@@ -1062,7 +1062,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** Change a city: name, status, time zone or delivery defaults (all-store admins only) */
+        /** Change a city: name, status, time zone or delivery defaults */
         patch: operations["CitiesAdmin_update"];
         trace?: never;
     };
@@ -3510,6 +3510,83 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/admin/audit-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Audit entries, newest first
+         * @description Within a period (default: the last 7 days) and the viewer’s stores. Search with `q` (every word must match) and narrow with repeated `filter=field:is|not:value`, e.g. `filter=actor:is:<user id>` for one person.
+         */
+        get: operations["AuditLogsAdmin_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/audit-logs/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Totals, time series and top breakdowns for the same filters
+         * @description Totals compare with the period of equal length just before. The series has one point per hour, six hours or day depending on the span.
+         */
+        get: operations["AuditLogsAdmin_stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/audit-logs/facets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Values the filter pickers can offer
+         * @description Modules, actions, record types and people seen in the period, and the stores the viewer can see.
+         */
+        get: operations["AuditLogsAdmin_facets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/audit-logs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One entry with what it returned and what changed since the last */
+        get: operations["AuditLogsAdmin_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -4083,7 +4160,7 @@ export interface components {
             data: components["schemas"]["PermissionGroup"][];
         };
         PermissionGroup: {
-            /** @description First segment of the keys. */
+            /** @description Stable permission group key. */
             module: string;
             label: string;
             permissions: components["schemas"]["Permission"][];
@@ -8186,6 +8263,205 @@ export interface components {
             /** Format: date-time */
             validUntil: string | null;
         };
+        AuditLogPageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["AuditLogItem"][];
+            meta: components["schemas"]["PaginationMeta"];
+        };
+        AuditLogItem: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            /** Format: date-time */
+            at: string;
+            /** @description Code such as products.product.updated. */
+            action: string;
+            /** @enum {string} */
+            kind: "create" | "update" | "delete" | "other";
+            /** @example Product updated */
+            label: string;
+            module: string;
+            moduleLabel: string;
+            entityType: string;
+            entityId: string | null;
+            subject: components["schemas"]["AuditSubject"];
+            /** @description Null when the system acted on its own. */
+            actor: components["schemas"]["AuditActor"] | null;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            storeId: string | null;
+            storeName: string | null;
+            ip: string | null;
+            requestId: string | null;
+        };
+        AuditSubject: {
+            /** @enum {string} */
+            kind: "product" | "store" | "category" | "city" | "role" | "staff" | "invite" | "food" | "meal" | "allergen" | "unit" | "file" | "other";
+            /**
+             * Format: uuid
+             * @description The record the entry was about, when it has one the console can open.
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string | null;
+            /** @description Its name: as saved with the entry, else as it is now. Null when neither is known. */
+            name: string | null;
+        };
+        AuditActor: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            userId: string;
+            name: string | null;
+            email: string;
+            roles: string[];
+        };
+        AuditStatsEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["AuditStats"];
+        };
+        AuditStats: {
+            range: {
+                /** Format: date-time */
+                from: string;
+                /** Format: date-time */
+                to: string;
+                /** @enum {string} */
+                bucket: "HOUR" | "SIX_HOURS" | "DAY";
+            };
+            actions: components["schemas"]["AuditMetric"];
+            actors: components["schemas"]["AuditMetric"];
+            entities: components["schemas"]["AuditMetric"];
+            modules: components["schemas"]["AuditMetric"];
+            series: components["schemas"]["AuditSeriesPoint"][];
+            breakdowns: {
+                actions: components["schemas"]["AuditBreakdownRow"][];
+                actors: components["schemas"]["AuditBreakdownRow"][];
+                entities: components["schemas"]["AuditBreakdownRow"][];
+                modules: components["schemas"]["AuditBreakdownRow"][];
+            };
+        };
+        AuditMetric: {
+            value: number;
+            previous: number;
+            /** @description Change on the period just before, in basis points. Null when that had none. */
+            changeBps: number | null;
+        };
+        AuditSeriesPoint: {
+            /** Format: date-time */
+            at: string;
+            actions: number;
+            actors: number;
+            entities: number;
+            modules: number;
+        };
+        AuditBreakdownRow: {
+            key: string;
+            label: string;
+            count: number;
+        };
+        AuditFacetsEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["AuditFacets"];
+        };
+        /** @description What the filter pickers can offer for the period. */
+        AuditFacets: {
+            modules: {
+                value: string;
+                label: string;
+            }[];
+            actions: {
+                value: string;
+                label: string;
+            }[];
+            entities: {
+                value: string;
+                label: string;
+            }[];
+            actors: {
+                value: string;
+                label: string;
+                email: string;
+            }[];
+            stores: {
+                value: string;
+                label: string;
+            }[];
+        };
+        AuditLogDetailEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["AuditLogDetail"];
+        };
+        AuditLogDetail: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            /** Format: date-time */
+            at: string;
+            /** @description Code such as products.product.updated. */
+            action: string;
+            /** @enum {string} */
+            kind: "create" | "update" | "delete" | "other";
+            /** @example Product updated */
+            label: string;
+            module: string;
+            moduleLabel: string;
+            entityType: string;
+            entityId: string | null;
+            subject: components["schemas"]["AuditSubject"];
+            /** @description Null when the system acted on its own. */
+            actor: components["schemas"]["AuditActor"] | null;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            storeId: string | null;
+            storeName: string | null;
+            ip: string | null;
+            requestId: string | null;
+            /** @description What the action returned, as saved. Secrets are hidden. */
+            snapshot: {
+                [key: string]: unknown;
+            } | null;
+            /** @description Fields that differ from the previous entry for the same record. Empty when there is none. */
+            changes: components["schemas"]["AuditFieldChange"][];
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            previousId: string | null;
+        };
+        AuditFieldChange: {
+            field: string;
+            before: string | null;
+            after: string | null;
+        };
     };
     responses: never;
     parameters: never;
@@ -8336,7 +8612,7 @@ export interface operations {
                     file?: string;
                     /** @description Several files (repeat the field, up to 10). Send this or `file`. */
                     files?: string[];
-                    /** @description Directory, e.g. images/products (admins with files.public.write) or private/users/<your id>/receipts. Default: uploads/images for those admins, else private/users/<your id>/uploads. Paths under private/ are private. */
+                    /** @description Any signed-in user can upload to any directory and resolve any file path, including private files. Default: uploads/images for admins, else private/users/<your id>/uploads. Paths under private/ are served with short-lived signed URLs. */
                     path?: string;
                 };
             };
@@ -18817,6 +19093,183 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProductPricingEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    AuditLogsAdmin_list: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                /** @description Start of the period (inclusive). Defaults to 7 days ago. */
+                from?: string;
+                /** @description End of the period. Defaults to now. */
+                to?: string;
+                /** @description Words to look for in the person, action, record type or id, request id and IP. Every word must match. */
+                q?: string;
+                filter?: string | string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditLogPageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    AuditLogsAdmin_stats: {
+        parameters: {
+            query?: {
+                /** @description Start of the period (inclusive). Defaults to 7 days ago. */
+                from?: string;
+                /** @description End of the period. Defaults to now. */
+                to?: string;
+                /** @description Words to look for in the person, action, record type or id, request id and IP. Every word must match. */
+                q?: string;
+                filter?: string | string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditStatsEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    AuditLogsAdmin_facets: {
+        parameters: {
+            query?: {
+                /** @description Start of the period (inclusive). Defaults to 7 days ago. */
+                from?: string;
+                /** @description End of the period. Defaults to now. */
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditFacetsEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    AuditLogsAdmin_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditLogDetailEnvelope"];
                 };
             };
             /** @description Client error */

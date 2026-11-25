@@ -8,8 +8,8 @@ export const PERMISSIONS = {
     STAFF_MANAGE: 'access.staff.manage',
     STAFF_READ: 'access.staff.read',
   },
-  CITIES: {
-    MANAGE: 'cities.manage',
+  AUDIT: {
+    LOGS_READ: 'audit.logs.read',
   },
   FILES: {
     PRIVATE_READ: 'files.private.read',
@@ -60,7 +60,7 @@ export type PermissionKey =
   | 'access.staff.invite'
   | 'access.staff.manage'
   | 'access.staff.read'
-  | 'cities.manage'
+  | 'audit.logs.read'
   | 'files.private.read'
   | 'files.private.write'
   | 'files.public.write'

@@ -26,7 +26,7 @@ import {paths} from '../../paths';
 import type {Route} from './+types/cities';
 
 export const handle = {
-  requires: {allOf: [PERMISSIONS.CITIES.MANAGE]},
+  requires: {allOf: [PERMISSIONS.STORES.MANAGE]},
 } satisfies AdminRouteHandle;
 
 export const meta: Route.MetaFunction = () => [{title: `Cities · ${appConfig.brandName} admin`}];

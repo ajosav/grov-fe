@@ -128,7 +128,7 @@ export default function Stores() {
               title="Add a city first"
               description="Every store belongs to a city, which holds the delivery defaults its stores share."
               action={
-                <Can permission={PERMISSIONS.CITIES.MANAGE}>
+                <Can permission={PERMISSIONS.STORES.MANAGE}>
                   <Button asChild>
                     <Link to={paths.cities}>Go to cities</Link>
                   </Button>

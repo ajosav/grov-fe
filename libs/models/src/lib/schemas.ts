@@ -1,8 +1,3 @@
-/**
- * Friendly names for grov-be's OpenAPI schemas. The types come from
- * `generated/api.ts` (run `yarn generate:api-types` after grov-be exports a new
- * `openapi/openapi.json`); never hand-write a type the API already describes.
- */
 import type {components, paths} from './generated/api';
 
 type Schemas = components['schemas'];
@@ -142,4 +137,15 @@ export type ActivityItem = Schemas['ActivityItem'];
 export type FieldChange = Schemas['FieldChange'];
 export type ImportJob = Schemas['Import'];
 export type CreateImportBody = RequestBody<'/v1/admin/imports', 'post'>;
+export type AuditLogItem = Schemas['AuditLogItem'];
+export type AuditLogDetail = Schemas['AuditLogDetail'];
+export type AuditSubject = Schemas['AuditSubject'];
+export type AuditActor = Schemas['AuditActor'];
+export type AuditStats = Schemas['AuditStats'];
+export type AuditMetric = Schemas['AuditMetric'];
+export type AuditSeriesPoint = Schemas['AuditSeriesPoint'];
+export type AuditBreakdownRow = Schemas['AuditBreakdownRow'];
+export type AuditFacets = Schemas['AuditFacets'];
+export type AuditFieldChange = Schemas['AuditFieldChange'];
+export type AuditActionKind = AuditLogItem['kind'];
 // gen:resource:types

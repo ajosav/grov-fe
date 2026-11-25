@@ -10,14 +10,7 @@ import {
 
 import {cn} from '../utils/cn';
 
-/**
- * Small SVG charts for the admin, drawn with the chart tokens (no chart library).
- * One y-axis per chart; 2px lines; recessive grid; a crosshair tooltip on hover and
- * arrow keys; a hidden table for screen readers. Colour carries identity only, and
- * every value is also in text.
- */
-
-function useWidth<T extends HTMLElement>() {
+export function useWidth<T extends HTMLElement>() {
   const ref = useRef<T>(null);
   const [width, setWidth] = useState(0);
   useEffect(() => {
@@ -33,7 +26,6 @@ function useWidth<T extends HTMLElement>() {
   return [ref, width] as const;
 }
 
-/** Round axis ticks: 0 and up to 4 steps of 1/2/2.5/5 × 10^n. */
 export function niceTicks(max: number, count = 4): number[] {
   if (max <= 0) return [0, 1];
   const raw = max / count;
@@ -46,21 +38,17 @@ export function niceTicks(max: number, count = 4): number[] {
 }
 
 export interface TrendPoint {
-  /** YYYY-MM-DD or any label. */
   x: string;
   value: number;
-  /** Same position in the previous period, for comparison. */
   previous?: number;
 }
 
 export interface TrendChartProps {
   points: TrendPoint[];
-  /** What the line measures, e.g. "Revenue". Names the series in the legend and tooltip. */
   label: string;
   formatValue: (value: number) => string;
   formatAxis?: (value: number) => string;
   formatX: (x: string) => string;
-  /** Label of the comparison line, when points carry `previous`. */
   previousLabel?: string;
   height?: number;
   className?: string;

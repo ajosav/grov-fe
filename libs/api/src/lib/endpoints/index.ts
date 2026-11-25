@@ -11,4 +11,5 @@ export * from './files';
 export * from './allergens';
 export * from './admin-foods';
 export * from './admin-product-analytics';
+export * from './admin-audit-logs';
 // gen:resource:exports

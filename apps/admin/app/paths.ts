@@ -38,6 +38,7 @@ export const paths = {
 
   roles: '/access/roles',
   staff: '/access/staff',
+  auditLogs: '/access/audit-logs',
 } as const;
 
 /** A store's page; `tab` opens a section (overview, zone, delivery, staff). */
