@@ -10,6 +10,7 @@ export * from './lib/api/admin-markups';
 export * from './lib/api/files';
 export * from './lib/api/allergens';
 export * from './lib/api/admin-foods';
+export * from './lib/api/admin-product-analytics';
 // gen:resource:exports
 export * from './lib/util/use-countdown';
 export * from './lib/util/use-debounce';

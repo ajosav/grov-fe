@@ -1,12 +1,12 @@
 import type {Food} from '@grov/models';
 
-import {BASE_UNITS, type BaseUnit, unitNoun} from '../../../lib/catalogue/units';
 import type {
   PrepDraft,
   PrepRowErrors,
   SizeDraft,
   SizeLadderErrors,
 } from '../../../lib/catalogue/products';
+import {BASE_UNITS, type BaseUnit, unitNoun} from '../../../lib/catalogue/units';
 import {PrepOptionsEditor} from '../prep-options-editor';
 import {SizesEditor} from '../sizes-editor';
 import {UnitChoice} from '../unit-choice';

@@ -1797,6 +1797,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/admin/products/{productId}/listings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Where a product is listed
+         * @description Only stores you can act on. Delisted listings are included with active false.
+         */
+        get: operations["ProductListingsAdmin_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/products/{productId}/listings/{storeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * List, pause or resume a product at a store
+         * @description Replaces the listing, like the active-store route. The store must be one you can act on.
+         */
+        put: operations["ProductListingsAdmin_put"];
+        post?: never;
+        /**
+         * Delist a product at a store
+         * @description Keeps the row so the product can be listed again later.
+         */
+        delete: operations["ProductListingsAdmin_delist"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/admin/foods/{foodId}/products": {
         parameters: {
             query?: never;
@@ -1896,6 +1940,26 @@ export interface paths {
          * @description A store price is the base price plus its markup: FIXED adds kobo (negative sells below the base), PERCENT scales it and rounds to the nearest ₦, NONE removes the markup at that scope. Scope: the whole store, a category (covers its sub-categories) or one size; the most specific wins. `validUntil` makes it a promo. Live at once.
          */
         post: operations["MarkupsAdmin_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/products/{productId}/markup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set one markup for all sizes of a product at your active store
+         * @description Writes a size markup for each active size, so a size can still be set on its own afterwards. NONE removes them. Live at once.
+         */
+        put: operations["MarkupsAdmin_setForProduct"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -3318,18 +3382,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/admin/products/{productId}/listings": {
+    "/v1/admin/product-analytics/catalogue/summary": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Where a product is listed
-         * @description Only stores you can act on. Delisted listings are included with active false.
-         */
-        get: operations["ProductListingsAdmin_list"];
+        /** Catalogue counts: published, drafts, stock states, needing attention */
+        get: operations["CatalogueAdmin_summary"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3338,43 +3399,110 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/admin/products/{productId}/listings/{storeId}": {
+    "/v1/admin/product-analytics/catalogue/products": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
         /**
-         * List, pause or resume a product at a store
-         * @description Replaces the listing, like the active-store route. The store must be one you can act on.
+         * Products with sales, views, stock, price and margin for a period
+         * @description Sorted and filtered in the database. Numbered pages (not a cursor) because rows sort by computed metrics; the catalogue is bounded. Views are each shopper’s latest view, not every view.
          */
-        put: operations["ProductListingsAdmin_put"];
+        get: operations["CatalogueAdmin_list"];
+        put?: never;
         post?: never;
-        /**
-         * Delist a product at a store
-         * @description Keeps the row so the product can be listed again later.
-         */
-        delete: operations["ProductListingsAdmin_delist"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/admin/store/products/{productId}/markup": {
+    "/v1/admin/product-analytics/catalogue/analytics": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Catalogue-wide sales, profit and engagement, against the previous period */
+        get: operations["CatalogueAdmin_analytics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/product-analytics/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
-         * Set one markup for all sizes of a product at your active store
-         * @description Writes a size markup for each active size, so a size can still be set on its own afterwards. NONE removes them. Live at once.
+         * Product timeline: edits, prices and stock, newest first
+         * @description Give productId for one product. Edits carry before/after values when an earlier version was recorded.
          */
-        put: operations["MarkupsAdmin_setForProduct"];
+        get: operations["CatalogueAdmin_activityPage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/product-analytics/products/{productId}/performance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A product’s views, funnel, sales, profit and daily series for a period
+         * @description `tracking` says which engagement events exist; untracked ones are never estimated.
+         */
+        get: operations["ProductAnalyticsAdmin_performance"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/product-analytics/products/{productId}/stock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A product’s stock at each store, cover days and recent movements */
+        get: operations["ProductAnalyticsAdmin_stock"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/product-analytics/products/{productId}/pricing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Base and shopper prices per size and store, markups, margins and history */
+        get: operations["ProductAnalyticsAdmin_pricing"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -5079,8 +5207,14 @@ export interface components {
              * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
              */
             categoryId: string;
+            /** @description What size quantities are counted in: g, ml or piece. Fixed when the product is added. */
+            baseUnit: string;
             availableAtAllStores: boolean;
             active: boolean;
+            /** @description Saved but not finished. A draft is inactive, hidden from shoppers and cannot be listed; publish it with `draft: false`. */
+            draft: boolean;
+            /** @description Public image paths, first is the cover. Turn them into URLs with GET /files/urls. */
+            imagePaths: string[];
             /** Format: date-time */
             createdAt: string;
             labelAllergenIds: string[];
@@ -5095,12 +5229,6 @@ export interface components {
             prepOptions: components["schemas"]["ProductPrepOption"][];
             /** Format: date-time */
             updatedAt: string;
-            /** @description Public image paths, first is the cover. Turn them into URLs with GET /files/urls. */
-            imagePaths: string[];
-            /** @description What size quantities are counted in: g, ml or piece. Fixed when the product is added. */
-            baseUnit: string;
-            /** @description Saved but not finished. A draft is inactive, hidden from shoppers and cannot be listed; publish it with `draft: false`. */
-            draft: boolean;
         };
         ProductSize: {
             /**
@@ -5123,6 +5251,12 @@ export interface components {
             /** @description The live price of this size at every store before store markups. Null until one is set. */
             price: components["schemas"]["Money"] | null;
         };
+        Money: {
+            /** @example 16850000 */
+            kobo: number;
+            /** @enum {string} */
+            currency: "NGN";
+        };
         ProductPrepOption: {
             /**
              * Format: uuid
@@ -5137,12 +5271,6 @@ export interface components {
             note: string | null;
             sort: number;
             active: boolean;
-        };
-        Money: {
-            /** @example 16850000 */
-            kobo: number;
-            /** @enum {string} */
-            currency: "NGN";
         };
         ProductPageEnvelope: {
             /** @enum {boolean} */
@@ -5168,16 +5296,16 @@ export interface components {
              * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
              */
             categoryId: string;
-            availableAtAllStores: boolean;
-            active: boolean;
-            /** Format: date-time */
-            createdAt: string;
-            /** @description Public image paths, first is the cover. Turn them into URLs with GET /files/urls. */
-            imagePaths: string[];
             /** @description What size quantities are counted in: g, ml or piece. Fixed when the product is added. */
             baseUnit: string;
+            availableAtAllStores: boolean;
+            active: boolean;
             /** @description Saved but not finished. A draft is inactive, hidden from shoppers and cannot be listed; publish it with `draft: false`. */
             draft: boolean;
+            /** @description Public image paths, first is the cover. Turn them into URLs with GET /files/urls. */
+            imagePaths: string[];
+            /** Format: date-time */
+            createdAt: string;
         };
         StoreListingPageEnvelope: {
             /** @enum {boolean} */
@@ -5231,6 +5359,29 @@ export interface components {
         };
         CopyListingsResult: {
             copied: number;
+        };
+        ProductListingListEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["ProductListing"][];
+        };
+        ProductListing: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            storeId: string;
+            storeName: string;
+            active: boolean;
+            /** Format: date-time */
+            pausedUntil: string | null;
+            minOrderQty: string | null;
+            /** Format: date-time */
+            updatedAt: string;
         };
         FoodProductListEnvelope: {
             /** @enum {boolean} */
@@ -5446,6 +5597,15 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             publishedAt: string | null;
+        };
+        PriceMarkupListEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["PriceMarkup"][];
         };
         PriceMarkupPageEnvelope: {
             /** @enum {boolean} */
@@ -5675,8 +5835,6 @@ export interface components {
             variableWeight: boolean;
             isDefault: boolean;
             quote: components["schemas"]["PriceQuote"];
-            /** @description Sets the size’s price, live at once (the old price stays as history). Needs access to every store. A product can only be published from draft once every size has one. */
-            priceKobo?: number;
         };
         ProductPrepView: {
             /**
@@ -7561,41 +7719,472 @@ export interface components {
             message: string;
             data: components["schemas"]["OrderEvent"][];
         };
-        ProductListing: {
+        CatalogueSummaryEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["CatalogueSummary"];
+        };
+        CatalogueSummary: {
+            total: number;
+            published: number;
+            drafts: number;
+            inactive: number;
+            lowStock: number;
+            outOfStock: number;
+        };
+        CataloguePageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["CataloguePage"];
+        };
+        CataloguePage: {
+            items: components["schemas"]["CatalogueRow"][];
+            total: number;
+            page: number;
+            pageSize: number;
+            period: components["schemas"]["AnalyticsPeriod"];
+        };
+        CatalogueRow: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            sku: string;
+            displayName: string;
+            brand: string | null;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            categoryId: string;
+            categoryName: string;
+            coverImagePath: string | null;
+            baseUnit: string;
+            active: boolean;
+            draft: boolean;
+            sizes: number;
+            defaultSizeLabel: string | null;
+            /** @description Lowest shopper price of the default size across your stores. */
+            priceMin: components["schemas"]["Money"] | null;
+            priceMax: components["schemas"]["Money"] | null;
+            /** @description Average markup over the base price, default size. */
+            marginBps: number | null;
+            /** @description On hand minus reserved, base unit. Null when no store counts it. */
+            availableQty: number | null;
+            stockState: components["schemas"]["StockState"];
+            /** @description Sold in the period, base unit. */
+            qtySold: number;
+            orders: number;
+            revenue: components["schemas"]["Money"];
+            revenueChangeBps: number | null;
+            /** @description Signed-in shoppers whose latest view of it fell in the period. */
+            viewers: number;
+            /** @description Buyers ÷ viewers. */
+            conversionBps: number | null;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        /**
+         * @description UNTRACKED: no store counts it. OUT: nothing available anywhere it is counted. LOW: some store is at or below its low threshold, or out.
+         * @enum {string}
+         */
+        StockState: "IN_STOCK" | "LOW" | "OUT" | "UNTRACKED";
+        AnalyticsPeriod: {
+            /**
+             * Format: date
+             * @example 2026-11-24
+             */
+            from: string;
+            /**
+             * Format: date
+             * @example 2026-11-24
+             */
+            to: string;
+            days: number;
+            /**
+             * Format: date
+             * @example 2026-11-24
+             */
+            previousFrom: string;
+            /**
+             * Format: date
+             * @example 2026-11-24
+             */
+            previousTo: string;
+        };
+        CatalogueAnalyticsEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["CatalogueAnalytics"];
+        };
+        CatalogueAnalytics: {
+            period: components["schemas"]["AnalyticsPeriod"];
+            /** @description Kobo. */
+            revenue: components["schemas"]["ComparedMetric"];
+            /** @description Kobo: revenue less the base price at the time of sale. */
+            grossProfit: components["schemas"]["ComparedMetric"];
+            /** @description Share of revenue whose base price was known. */
+            costCoverageBps: number | null;
+            orders: components["schemas"]["ComparedMetric"];
+            buyers: components["schemas"]["ComparedMetric"];
+            viewers: components["schemas"]["ComparedMetric"];
+            conversionBps: number | null;
+            productsSold: number;
+            series: components["schemas"]["SalesPoint"][];
+            topProducts: components["schemas"]["ProductRank"][];
+            decliners: components["schemas"]["ProductRank"][];
+            byCategory: components["schemas"]["RevenueBreakdownRow"][];
+            byStore: components["schemas"]["RevenueBreakdownRow"][];
+        };
+        ComparedMetric: {
+            value: number;
+            previous: number;
+            changeBps: number | null;
+        };
+        SalesPoint: {
+            /** Format: date */
+            day: string;
+            revenue: components["schemas"]["Money"];
+            orders: number;
+            qty: number;
+            viewers: number;
+        };
+        ProductRank: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string;
+            displayName: string;
+            coverImagePath: string | null;
+            baseUnit: string;
+            revenue: components["schemas"]["Money"];
+            previousRevenue: components["schemas"]["Money"];
+            qty: number;
+            orders: number;
+        };
+        RevenueBreakdownRow: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            name: string;
+            revenue: components["schemas"]["Money"];
+            previousRevenue: components["schemas"]["Money"];
+            orders: number;
+            products: number;
+        };
+        ActivityPageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["ActivityItem"][];
+            meta: components["schemas"]["PaginationMeta"];
+        };
+        ActivityItem: {
+            /** @description Unique within the timeline: <kind>:<source id>. */
+            id: string;
+            /** Format: date-time */
+            at: string;
+            /** @enum {string} */
+            kind: "PRODUCT" | "PRICE" | "STOCK";
+            /** @description What happened, as a code: products.product.updated, price.set, stock.RECEIPT… */
+            action: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string;
+            productName: string;
+            /** @description What stock quantities are counted in. */
+            baseUnit: string;
+            /** @description Null for the system. */
+            actorName: string | null;
+            changes: components["schemas"]["FieldChange"][];
+            details: {
+                [key: string]: string | number | (null);
+            };
+        };
+        FieldChange: {
+            field: string;
+            before: string | null;
+            after: string | null;
+        };
+        ProductPerformanceEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["ProductPerformance"];
+        };
+        ProductPerformance: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string;
+            baseUnit: string;
+            period: components["schemas"]["AnalyticsPeriod"];
+            tracking: components["schemas"]["EngagementTracking"];
+            kpis: {
+                viewers: components["schemas"]["ComparedMetric"];
+                qtySold: components["schemas"]["ComparedMetric"];
+                orders: components["schemas"]["ComparedMetric"];
+                buyers: components["schemas"]["ComparedMetric"];
+                /** @description Kobo. */
+                revenue: components["schemas"]["ComparedMetric"];
+                /** @description Kobo: revenue less the base price at the time of sale. */
+                grossProfit: components["schemas"]["ComparedMetric"];
+                conversionBps: number | null;
+                previousConversionBps: number | null;
+                marginBps: number | null;
+                costCoverageBps: number | null;
+                /** @description Revenue ÷ order lines. */
+                averageSellingPrice: components["schemas"]["Money"] | null;
+                availableQty: number | null;
+            };
+            funnel: {
+                viewers: number;
+                /** @description Shoppers with it in their basket right now (not limited to the period). */
+                inBasketsNow: number;
+                /** @description Shoppers who placed an order with it, paid or not. */
+                checkoutStarted: number;
+                purchased: number;
+            };
+            financial: {
+                revenue: components["schemas"]["Money"];
+                grossProfit: components["schemas"]["Money"];
+                marginBps: number | null;
+                averageSellingPrice: components["schemas"]["Money"] | null;
+                cancelledOrders: number;
+                cancelledRevenue: components["schemas"]["Money"];
+                unpaidOrders: number;
+                /** @description Null: promotions are not recorded per line yet. */
+                discounts: components["schemas"]["Money"] | null;
+                /** @description Null: refunds are not recorded per product yet. */
+                refunds: components["schemas"]["Money"] | null;
+            };
+            series: components["schemas"]["PerformancePoint"][];
+            byStore: components["schemas"]["StorePerformance"][];
+        };
+        EngagementTracking: {
+            impressions: boolean;
+            totalViews: boolean;
+            uniqueViewers: boolean;
+            addToCart: boolean;
+            viewersByStore: boolean;
+        };
+        PerformancePoint: {
+            /** Format: date */
+            day: string;
+            revenue: components["schemas"]["Money"];
+            orders: number;
+            qty: number;
+            viewers: number;
+            /** @description Received or transferred in, base unit. */
+            stockIn: number;
+            /** @description Picked, written off or transferred out, base unit. */
+            stockOut: number;
+        };
+        StorePerformance: {
             /**
              * Format: uuid
              * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
              */
             storeId: string;
             storeName: string;
+            revenue: components["schemas"]["Money"];
+            previousRevenue: components["schemas"]["Money"];
+            qty: number;
+            orders: number;
+            availableQty: number | null;
+            listed: boolean;
+        };
+        ProductStockEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["ProductStock"];
+        };
+        ProductStock: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string;
+            baseUnit: string;
+            totals: {
+                onHandQty: number;
+                reservedQty: number;
+                availableQty: number;
+                trackedStores: number;
+                outStores: number;
+                lowStores: number;
+                soldQty30d: number;
+                coverDays: number | null;
+            };
+            /**
+             * @description Purchase orders are not recorded yet, so incoming stock is unknown.
+             * @enum {string|null}
+             */
+            incoming: null;
+            stores: components["schemas"]["ProductStoreStock"][];
+            movements: components["schemas"]["ProductStockMovement"][];
+        };
+        ProductStoreStock: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            storeId: string;
+            storeName: string;
+            storeActive: boolean;
+            /** @enum {string} */
+            listing: "LISTED" | "PAUSED" | "NOT_LISTED";
+            tracked: boolean;
+            onHandQty: number;
+            reservedQty: number;
+            availableQty: number;
+            lowThresholdQty: number | null;
+            state: components["schemas"]["StockState"];
+            soldQty30d: number;
+            /** @description Available ÷ average daily sales over 30 days. */
+            coverDays: number | null;
+            /** Format: date-time */
+            updatedAt: string | null;
+        };
+        ProductStockMovement: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            storeId: string;
+            storeName: string;
+            /** @enum {string} */
+            kind: "RECEIPT" | "ADJUSTMENT" | "RESERVE" | "RELEASE" | "PICK" | "TRANSFER_OUT" | "TRANSFER_IN" | "WRITE_OFF";
+            qty: number;
+            reason: string | null;
+            actorName: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ProductPricingEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["ProductPricing"];
+        };
+        ProductPricing: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string;
+            /**
+             * @description Margin is the store markup over the base price. Procurement and landed costs are not recorded yet.
+             * @enum {string}
+             */
+            costBasis: "BASE_PRICE";
+            sizes: components["schemas"]["SizePricing"][];
+            history: components["schemas"]["PriceHistoryPoint"][];
+        };
+        SizePricing: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            sizeId: string;
+            label: string;
+            isDefault: boolean;
             active: boolean;
+            base: components["schemas"]["Money"] | null;
+            /** @enum {string|null} */
+            baseSource: "FIELD_CAPTURE" | "SUPPLIER_FEED" | "RECEIPT" | "ADMIN" | null;
+            /** @enum {string|null} */
+            baseConfidence: "HIGH" | "MEDIUM" | "LOW" | null;
             /** Format: date-time */
-            pausedUntil: string | null;
-            minOrderQty: string | null;
+            baseSetAt: string | null;
             /** Format: date-time */
-            updatedAt: string;
+            baseValidUntil: string | null;
+            stores: components["schemas"]["StorePrice"][];
         };
-        /** @description Where one product is listed, for the stores the admin can act on. Delisted rows are included (active false). */
-        ProductListingList: {
-            items: components["schemas"]["ProductListing"][];
+        StorePrice: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            storeId: string;
+            storeName: string;
+            price: components["schemas"]["Money"];
+            base: components["schemas"]["Money"];
+            markup: {
+                /** @enum {string|null} */
+                kind: "FIXED" | "PERCENT" | "NONE" | null;
+                amount: components["schemas"]["Money"] | null;
+                percentBps: number | null;
+                /** @enum {string|null} */
+                scope: "STORE" | "CATEGORY" | "SIZE" | null;
+                /** Format: date-time */
+                validUntil: string | null;
+            };
+            marginBps: number | null;
+            previousPrice: components["schemas"]["Money"] | null;
+            changeBps: number | null;
+            /** Format: date-time */
+            changedAt: string;
         };
-        ProductListingListEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["ProductListingList"];
-        };
-        PriceMarkupListEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["PriceMarkup"][];
+        PriceHistoryPoint: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            sizeId: string;
+            sizeLabel: string;
+            price: components["schemas"]["Money"];
+            /** @enum {string} */
+            source: "FIELD_CAPTURE" | "SUPPLIER_FEED" | "RECEIPT" | "ADMIN";
+            /** @enum {string} */
+            confidence: "HIGH" | "MEDIUM" | "LOW";
+            capturedByName: string | null;
+            /** Format: date-time */
+            at: string;
+            /** Format: date-time */
+            validUntil: string | null;
         };
     };
     responses: never;
@@ -12759,6 +13348,11 @@ export interface operations {
                      * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
                      */
                     categoryId: string;
+                    /**
+                     * @description Defaults to g.
+                     * @enum {string}
+                     */
+                    baseUnit?: "g" | "ml" | "piece";
                     brand?: string;
                     labelAllergenIds?: string[];
                     shelfLifeDaysOverride?: number;
@@ -12769,6 +13363,7 @@ export interface operations {
                     grade?: string;
                     qualityTier?: string;
                     tags?: string[];
+                    imagePaths?: string[];
                     availability?: {
                         /** @enum {boolean} */
                         allStores: true;
@@ -12805,13 +13400,6 @@ export interface operations {
                         /** @description Sets the size’s price, live at once (the old price stays as history). Needs access to every store. A product can only be published from draft once every size has one. */
                         priceKobo?: number;
                     }[];
-                    /** @description Public image paths from POST /files, first is the cover (up to 6, each once). */
-                    imagePaths?: string[];
-                    /**
-                     * @description What size quantities are counted in: g (grams), ml (millilitres) or piece. Set when the product is added and fixed after that. Defaults to g.
-                     * @enum {string}
-                     */
-                    baseUnit?: "g" | "ml" | "piece";
                     /** @description Save without publishing: inactive, hidden from shoppers and not listed. Sizes and prices can be incomplete. */
                     draft?: boolean;
                 };
@@ -12920,6 +13508,7 @@ export interface operations {
                     grade?: string | null;
                     qualityTier?: string | null;
                     tags?: string[];
+                    imagePaths?: string[];
                     availability?: {
                         /** @enum {boolean} */
                         allStores: true;
@@ -12927,8 +13516,6 @@ export interface operations {
                         storeIds: string[];
                     };
                     active?: boolean;
-                    /** @description Public image paths from POST /files, first is the cover (up to 6, each once). */
-                    imagePaths?: string[];
                     /**
                      * @description Publish a draft: it needs a size with a price. Sets active true and lists it where chosen.
                      * @enum {boolean}
@@ -13282,6 +13869,145 @@ export interface operations {
             };
         };
     };
+    ProductListingsAdmin_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductListingListEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    ProductListingsAdmin_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @default true */
+                    active?: boolean;
+                    /**
+                     * Format: date-time
+                     * @default null
+                     */
+                    pausedUntil?: string | null;
+                    /**
+                     * @default null
+                     * @example 2.000
+                     */
+                    minOrderQty?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoreListingEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    ProductListingsAdmin_delist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoreListingEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     FoodProductsAdmin_list: {
         parameters: {
             query?: never;
@@ -13599,6 +14325,54 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PriceMarkupEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    MarkupsAdmin_setForProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    markup: components["schemas"]["PriceMarkupValue"];
+                    /** Format: date-time */
+                    validUntil?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceMarkupListEnvelope"];
                 };
             };
             /** @description Client error */
@@ -17742,9 +18516,206 @@ export interface operations {
             };
         };
     };
-    ProductListingsAdmin_list: {
+    CatalogueAdmin_summary: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description First day (Lagos), inclusive. */
+                from?: string;
+                /** @description Last day (Lagos), inclusive. Defaults to today. */
+                to?: string;
+                /** @description One store. Leave out for every store you can see. */
+                storeId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogueSummaryEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    CatalogueAdmin_list: {
+        parameters: {
+            query?: {
+                /** @description First day (Lagos), inclusive. */
+                from?: string;
+                /** @description Last day (Lagos), inclusive. Defaults to today. */
+                to?: string;
+                /** @description One store. Leave out for every store you can see. */
+                storeId?: string;
+                q?: string;
+                /** @description Also matches its sub-categories. */
+                categoryId?: string;
+                status?: "published" | "draft" | "inactive";
+                availability?: "IN_STOCK" | "LOW" | "OUT" | "UNTRACKED";
+                performance?: "rising" | "declining" | "no_sales";
+                profitability?: "thin" | "healthy" | "unknown";
+                view?: "best_performing" | "declining" | "low_stock" | "out_of_stock" | "high_revenue" | "low_conversion";
+                sort?: "name" | "updated" | "price" | "stock" | "sold" | "viewers" | "conversion" | "revenue" | "margin";
+                dir?: "asc" | "desc";
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CataloguePageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    CatalogueAdmin_analytics: {
+        parameters: {
+            query?: {
+                /** @description First day (Lagos), inclusive. */
+                from?: string;
+                /** @description Last day (Lagos), inclusive. Defaults to today. */
+                to?: string;
+                /** @description One store. Leave out for every store you can see. */
+                storeId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogueAnalyticsEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    CatalogueAdmin_activityPage: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                kind?: "PRODUCT" | "PRICE" | "STOCK";
+                productId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivityPageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    ProductAnalyticsAdmin_performance: {
+        parameters: {
+            query?: {
+                /** @description First day (Lagos), inclusive. */
+                from?: string;
+                /** @description Last day (Lagos), inclusive. Defaults to today. */
+                to?: string;
+                /** @description One store. Leave out for every store you can see. */
+                storeId?: string;
+            };
             header?: never;
             path: {
                 productId: string;
@@ -17759,7 +18730,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ProductListingListEnvelope"];
+                    "application/json": components["schemas"]["ProductPerformanceEnvelope"];
                 };
             };
             /** @description Client error */
@@ -17782,71 +18753,15 @@ export interface operations {
             };
         };
     };
-    ProductListingsAdmin_put: {
+    ProductAnalyticsAdmin_stock: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description One store. Leave out for every store you can see. */
+                storeId?: string;
+            };
             header?: never;
             path: {
                 productId: string;
-                storeId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @default true */
-                    active?: boolean;
-                    /**
-                     * Format: date-time
-                     * @default null
-                     */
-                    pausedUntil?: string | null;
-                    /**
-                     * @default null
-                     * @example 2.000
-                     */
-                    minOrderQty?: string | null;
-                };
-            };
-        };
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StoreListingEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    ProductListingsAdmin_delist: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                productId: string;
-                storeId: string;
             };
             cookie?: never;
         };
@@ -17858,7 +18773,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StoreListingEnvelope"];
+                    "application/json": components["schemas"]["ProductStockEnvelope"];
                 };
             };
             /** @description Client error */
@@ -17881,24 +18796,19 @@ export interface operations {
             };
         };
     };
-    MarkupsAdmin_setForProduct: {
+    ProductAnalyticsAdmin_pricing: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description One store. Leave out for every store you can see. */
+                storeId?: string;
+            };
             header?: never;
             path: {
                 productId: string;
             };
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    markup: components["schemas"]["PriceMarkupValue"];
-                    /** Format: date-time */
-                    validUntil?: string;
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Success */
             200: {
@@ -17906,7 +18816,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PriceMarkupListEnvelope"];
+                    "application/json": components["schemas"]["ProductPricingEnvelope"];
                 };
             };
             /** @description Client error */

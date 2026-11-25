@@ -134,7 +134,7 @@ export default function StorePage() {
           )
         }
       >
-        <TabsList className="mb-5 max-w-full justify-start overflow-x-auto [&_button]:h-8 [&_button]:shrink-0 [&_button]:whitespace-nowrap">
+        <TabsList size="sm" className="mb-5 max-w-full justify-start overflow-x-auto">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="zone">Delivery zone</TabsTrigger>
           <TabsTrigger value="delivery">Delivery settings</TabsTrigger>

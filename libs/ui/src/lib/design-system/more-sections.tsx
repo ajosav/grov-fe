@@ -1,8 +1,10 @@
 import {createContext, type ReactNode, useContext, useState} from 'react';
 
 import {
+  Banknote,
   ChartPie,
   ClipboardList,
+  Eye,
   House,
   Leaf,
   PiggyBank,
@@ -23,6 +25,7 @@ import {
   AmountInput,
   AppBar,
   Banner,
+  BarList,
   BottomNav,
   type BottomNavLink,
   BudgetMeter,
@@ -36,6 +39,7 @@ import {
   DatePicker,
   Field,
   FileUpload,
+  Funnel,
   GlassCard,
   HeroPanel,
   IconTile,
@@ -44,8 +48,12 @@ import {
   Markdown,
   Money,
   MultiCombobox,
+  NumberInput,
   OrSeparator,
   Pagination,
+  Panel,
+  PeriodPicker,
+  PillTabs,
   PlanLine,
   Popover,
   PopoverContent,
@@ -57,12 +65,15 @@ import {
   type RowSelectionState,
   Segmented,
   SelectTile,
+  StatStrip,
   StatusDialog,
   StepIndicator,
   Tag,
   Textarea,
+  TrendChart,
   Wash,
 } from '../components';
+import type {PeriodValue} from '../utils/period';
 import {Row, Section} from './parts';
 
 const FOODS = [
@@ -84,6 +95,7 @@ export function MoreFieldsSection() {
   const [date, setDate] = useState<Date | undefined>();
   const [files, setFiles] = useState<File[]>([]);
   const [delivery, setDelivery] = useState('door');
+  const [servings, setServings] = useState('4');
   return (
     <Section title="More fields">
       <div className="grid gap-6 md:grid-cols-2">
@@ -106,6 +118,9 @@ export function MoreFieldsSection() {
         </Field>
         <Field label="Start date">
           <DatePicker value={date} onChange={setDate} disabled={{before: new Date()}} />
+        </Field>
+        <Field label="Servings" hint="Digits only; anything else typed or pasted is dropped.">
+          <NumberInput value={servings} onChange={setServings} maxIntegerDigits={3} />
         </Field>
         <div className="grid gap-3">
           <Label id="delivery-label">Delivery</Label>
@@ -561,5 +576,124 @@ export function RichDataDemos() {
         </div>
       </div>
     </>
+  );
+}
+
+const TREND = [
+  {x: '18/11', value: 520, previous: 470},
+  {x: '19/11', value: 610, previous: 495},
+  {x: '20/11', value: 580, previous: 540},
+  {x: '21/11', value: 720, previous: 610},
+  {x: '22/11', value: 680, previous: 655},
+  {x: '23/11', value: 810, previous: 700},
+  {x: '24/11', value: 900, previous: 760},
+];
+
+/** Shared panels, stats and charts promoted from the admin: one API per pattern. */
+export function InsightsSection() {
+  const [tab, setTab] = useState<'overview' | 'analytics' | 'inventory'>('overview');
+  const [metric, setMetric] = useState<'views' | 'sales'>('views');
+  const [period, setPeriod] = useState<PeriodValue>({preset: '30d'});
+  return (
+    <Section title="Insights">
+      <Row label="Period">
+        <PeriodPicker value={period} onChange={setPeriod} />
+      </Row>
+      <StatStrip
+        stats={[
+          {
+            key: 'views',
+            label: 'Views',
+            value: '4,820',
+            icon: <Eye />,
+            tone: 'sky',
+            changeBps: 1240,
+            hint: 'vs previous 30 days',
+          },
+          {
+            key: 'orders',
+            label: 'Orders',
+            value: '318',
+            icon: <ShoppingBasket />,
+            tone: 'palm',
+            changeBps: -380,
+            hint: 'vs previous 30 days',
+          },
+          {
+            key: 'revenue',
+            label: 'Revenue',
+            value: <Money kobo={48_250_000} />,
+            icon: <Banknote />,
+            tone: 'leaf',
+            changeBps: 960,
+          },
+          {
+            key: 'rating',
+            label: 'Rating',
+            value: '4.7',
+            icon: <Sparkles />,
+            tone: 'flame',
+            hint: '86 reviews',
+          },
+        ]}
+      />
+      <PillTabs
+        label="Product sections"
+        value={tab}
+        onChange={setTab}
+        tabs={[
+          {value: 'overview', label: 'Overview', count: 'This week'},
+          {value: 'analytics', label: 'Analytics', count: 'Last 30 days'},
+          {value: 'inventory', label: 'Inventory', count: '3 low'},
+        ]}
+      />
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Panel
+          title="Views"
+          description="Daily, last 7 days"
+          actions={
+            <Segmented
+              label="Metric"
+              size="sm"
+              options={[
+                {value: 'views', label: 'Views'},
+                {value: 'sales', label: 'Sales'},
+              ]}
+              value={metric}
+              onChange={setMetric}
+            />
+          }
+        >
+          <TrendChart
+            points={TREND}
+            label={metric === 'views' ? 'Views' : 'Sales'}
+            formatValue={value => value.toLocaleString('en-NG')}
+            formatX={x => x}
+            height={180}
+          />
+        </Panel>
+        <Panel title="Top products" description="Orders, last 30 days">
+          <BarList
+            items={[
+              {key: 'rice', label: 'Rice, local parboiled', value: 94},
+              {key: 'beans', label: 'Brown beans', value: 71},
+              {key: 'oil', label: 'Palm oil', value: 52},
+              {key: 'garri', label: 'Garri, yellow', value: 38},
+            ]}
+            formatValue={value => value.toLocaleString('en-NG')}
+          />
+        </Panel>
+      </div>
+      <Panel title="Sales funnel" description="Views to delivered orders">
+        <Funnel
+          steps={[
+            {label: 'Viewed', value: 4820},
+            {label: 'Added to basket', value: 931},
+            {label: 'Checked out', value: 318},
+            {label: 'Delivered', value: 302},
+          ]}
+        />
+      </Panel>
+    </Section>
   );
 }

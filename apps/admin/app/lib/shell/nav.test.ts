@@ -37,5 +37,9 @@ describe('admin nav', () => {
     expect(trail?.sections.map(s => s.id)).toEqual(['stores']);
     expect(activeTrail(trails, '/')?.page.label).toBe('Dashboard');
     expect(activeTrail(trails, '/orders/123')?.page.label).toBe('Orders');
+    expect(activeTrail(trails, paths.productIntelligence)?.page.label).toBe('Products');
+    expect(activeTrail(trails, paths.productAnalytics)?.sections.map(s => s.id)).toEqual([
+      'catalogue',
+    ]);
   });
 });

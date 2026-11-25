@@ -1,7 +1,6 @@
 import type {DeliveryConfig, DeliveryConfigPatch, DeliveryConfigSource} from '@grov/models';
 import {formatNaira} from '@grov/ui';
 
-
 export const CONFIG_KEYS = [
   'deliveryDays',
   'deliveryWindow',

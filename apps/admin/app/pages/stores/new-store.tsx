@@ -30,11 +30,7 @@ import {
   newStoreSchema,
   type NewStoreValues,
 } from '../../lib/stores/new-store';
-import {
-  cityView,
-  DEFAULT_RADIUS_KM,
-  hasAllStores,
-} from '../../lib/stores/store-rules';
+import {cityView, DEFAULT_RADIUS_KM, hasAllStores} from '../../lib/stores/store-rules';
 import {paths, storePath} from '../../paths';
 import type {Route} from './+types/new-store';
 

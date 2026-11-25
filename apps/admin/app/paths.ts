@@ -12,6 +12,8 @@ export const paths = {
   support: '/support',
 
   products: '/catalogue/products',
+  productAnalytics: '/catalogue/analytics',
+  productIntelligence: '/catalogue/intelligence',
   newProduct: '/catalogue/products/new',
   categories: '/catalogue/categories',
   listings: '/catalogue/listings',
@@ -42,6 +44,6 @@ export const paths = {
 export const storePath = (id: string, tab?: string) =>
   `${paths.stores}/${encodeURIComponent(id)}${tab ? `?tab=${tab}` : ''}`;
 
-/** A product's page; `tab` opens a section (details, sizes, prep, images, availability). */
+/** A product's workspace; `tab` opens a tab (overview, analytics, inventory, pricing, intelligence, information). */
 export const productPath = (id: string, tab?: string) =>
   `${paths.products}/${encodeURIComponent(id)}${tab ? `?tab=${tab}` : ''}`;

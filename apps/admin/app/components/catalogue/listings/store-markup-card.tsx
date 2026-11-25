@@ -41,11 +41,7 @@ export function StoreMarkupCard({
         </div>
       </div>
       <Can permission={PERMISSIONS.PRODUCTS.LISTINGS_WRITE}>
-        <Button
-          variant="outline"
-          disabled={isPending || isError}
-          onClick={onChange}
-        >
+        <Button variant="outline" disabled={isPending || isError} onClick={onChange}>
           {markup && markup.kind !== 'NONE' ? 'Change markup' : 'Set markup'}
         </Button>
       </Can>

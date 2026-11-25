@@ -20,6 +20,7 @@ import {
   DialogTrigger,
   Field,
   Input,
+  NumberInput,
   Select,
   SelectContent,
   SelectItem,
@@ -30,7 +31,6 @@ import {
 } from '@grov/ui';
 
 import {CATEGORY_TINT_KEYS, CATEGORY_TINTS} from '../../lib/catalogue/categories';
-import {NumberInput} from '../common/number-input';
 
 const NO_PARENT = 'none';
 

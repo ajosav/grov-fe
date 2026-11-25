@@ -1,9 +1,16 @@
 import {forwardRef, useEffect, useState} from 'react';
 
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@grov/ui';
+import {
+  NumberInput,
+  type NumberInputProps,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@grov/ui';
 
 import {entryUnits, fromBaseAmount, toBaseAmount} from '../../lib/catalogue/units';
-import {NumberInput, type NumberInputProps} from './number-input';
 
 export interface QuantityInputProps extends Omit<
   NumberInputProps,

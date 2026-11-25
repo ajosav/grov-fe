@@ -23,6 +23,8 @@ export default [
     route('catalogue/products', pg('catalogue/products')),
     route('catalogue/products/new', pg('catalogue/new-product')),
     route('catalogue/products/:productId', pg('catalogue/product')),
+    route('catalogue/analytics', pg('catalogue/analytics')),
+    route('catalogue/intelligence', pg('catalogue/intelligence')),
     route('catalogue/categories', pg('catalogue/categories')),
     route('catalogue/listings', pg('catalogue/listings')),
     route('catalogue/requests', pg('catalogue/requests')),

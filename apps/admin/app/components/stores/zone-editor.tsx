@@ -202,7 +202,7 @@ export function ZoneEditor({store, canManage}: {store: AdminStoreDetail; canMana
                 {value: 'polygon', label: 'Add an area'},
                 {value: 'select', label: 'Edit'},
               ]}
-              className="[&_button]:h-8"
+              size="sm"
             />
             <p className="text-body-sm text-ink-muted">
               {drawMode === 'polygon'

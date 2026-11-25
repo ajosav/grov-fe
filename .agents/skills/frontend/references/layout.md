@@ -9,7 +9,7 @@ Apps are grouped by domain: pages in `app/pages/<area>/`, route layouts in `app/
 ```
 apps/
   website/  app/root.tsx · app/pages/* · app/site/{sections,parts}/* · site.css · site-behaviour.ts
-  app/      app/root.tsx · app/routes.ts · app/paths.ts · app/pages/** · app/layouts/** · app/components/*
+  app/      app/root.tsx · app/routes.ts · app/paths.ts · app/pages/** · app/layouts/** · app/components/<domain>/* · app/lib/<domain>/*
   admin/    app/root.tsx · app/routes.ts · app/paths.ts · app/pages/** · app/layouts/** · app/components/<domain>/* · app/lib/<domain>/* · app/stores/*
 libs/
   models/     lib/generated/api.ts (OpenAPI) · schemas.ts (aliases) · errors.ts · auth.ts · config.ts · permission-keys.generated.ts
@@ -48,20 +48,22 @@ Third-party side **[enforced: `check:arch` lib-purity]**:
 
 ## Where code goes
 
-| Code                                                            | Home                                           |
-| --------------------------------------------------------------- | ---------------------------------------------- |
-| Visual primitive with no data (button, field, dialog, chip)     | `@grov/ui` → `lib/components`                  |
-| Pure formatting helper (money, phone, dates)                    | `@grov/ui` → `lib/utils` (tested)              |
-| Type, constant, error code, config value                        | `@grov/models`                                 |
-| Function that calls an endpoint                                 | `@grov/api` → `endpoints/<resource>.ts`        |
-| Hook reading or writing server data                             | `@grov/hooks` → `lib/api/<resource>.ts`        |
-| Client-only state shared across screens                         | `@grov/store`                                  |
-| Feature used by two or more apps (auth screens, guards, shells) | `@grov/shared`                                 |
-| Page, or a component only one app uses                          | that app (`app/pages/**`, `app/components/<domain>/*`) |
+| Code                                                            | Home                                                                               |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Visual primitive with no data (button, field, dialog, chip)     | `@grov/ui` → `lib/components`                                                      |
+| Pure formatting helper (money, phone, dates)                    | `@grov/ui` → `lib/utils` (tested)                                                  |
+| Type, constant, error code, config value                        | `@grov/models`                                                                     |
+| Function that calls an endpoint                                 | `@grov/api` → `endpoints/<resource>.ts`                                            |
+| Hook reading or writing server data                             | `@grov/hooks` → `lib/api/<resource>.ts`                                            |
+| Client-only state shared across screens                         | `@grov/store`                                                                      |
+| Feature used by two or more apps (auth screens, guards, shells) | `@grov/shared`                                                                     |
+| Component used by two or more apps                              | promote it to `@grov/ui` (generic) or `@grov/shared` (auth/layout) — never copy it |
+| Page, or a component only one app uses                          | that app (`app/pages/**`, `app/components/<domain>/*`)                             |
 
 ## Helpers and shared code
 
 - Default home for a helper is **the file or app that needs it**. Promote it to a lib only when a second app needs the same thing. There are no `utils/` dumping grounds in apps; name files by what they do (`money.ts`, `route-access.ts`).
-- Before writing a helper or component, search the libs for it. A second copy is a bug: move the first to the right lib and import it from both.
+- Before writing a helper or component, search the libs for it. A second copy is a bug: move the first to the right lib and import it from both. Copying a component into another app, or forking a `@grov/ui` / `@grov/shared` component under a local name, also fails `check:arch` **[component-reuse]** — configure the shared component with a prop or variant instead (see `components.md`).
+- Promoting is a move, not a duplicate: update every import, delete the app-local file, export it from the lib's `index.ts`, and add its test (and gallery entry, for `@grov/ui`). Keep the lib free of app data: data comes in as props.
 - Money, phone and date helpers are shared and tested, and the only way to do those operations: `formatNaira`, `toE164Nigeria`, `formatNigerianPhone`; dates with `date-fns`/`Intl` in `Africa/Lagos`.
 - Prefer a plain function to a hook, and a hook to a context. Add a React context only for app-wide dependencies (API, theme, query client).

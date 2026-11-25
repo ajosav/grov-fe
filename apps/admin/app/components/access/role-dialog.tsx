@@ -21,6 +21,7 @@ import {
   Field,
   Input,
   Skeleton,
+  Switch,
   toast,
 } from '@grov/ui';
 
@@ -133,9 +134,44 @@ export function RoleDialog({trigger, role, open: controlled, onOpenChange}: Role
                       key={group.module}
                       className="grid gap-2 rounded-md border border-line p-4"
                     >
-                      <p className="text-chip uppercase tracking-wide text-ink-muted">
-                        {group.label}
-                      </p>
+                      {(() => {
+                        const usableKeys = group.permissions
+                          .map(permission => permission.key)
+                          .filter(key => isSuper || held.has(key));
+                        const selected = usableKeys.filter(key => field.value.includes(key));
+                        const allOn = usableKeys.length > 0 && selected.length === usableKeys.length;
+                        const chosen = group.permissions.filter(permission =>
+                          field.value.includes(permission.key)
+                        ).length;
+                        return (
+                          <div className="flex items-center justify-between gap-3">
+                            <label
+                              htmlFor={`group-${group.module}`}
+                              className="grid cursor-pointer gap-0.5"
+                            >
+                              <span className="text-chip uppercase tracking-wide text-ink-muted">
+                                {group.label}
+                              </span>
+                              <span className="text-body-sm text-ink-muted">
+                                {chosen} of {group.permissions.length} on
+                              </span>
+                            </label>
+                            <Switch
+                              id={`group-${group.module}`}
+                              aria-label={`Toggle all ${group.label} permissions`}
+                              checked={allOn}
+                              disabled={usableKeys.length === 0}
+                              onCheckedChange={on =>
+                                field.onChange(
+                                  on
+                                    ? [...new Set([...field.value, ...usableKeys])]
+                                    : field.value.filter(key => !usableKeys.includes(key))
+                                )
+                              }
+                            />
+                          </div>
+                        );
+                      })()}
                       {group.permissions.map(permission => {
                         const checked = field.value.includes(permission.key);
                         const usable = isSuper || held.has(permission.key);
