@@ -11,7 +11,6 @@ import {
 import {cn} from '../utils/cn';
 
 export function useWidth<T extends HTMLElement>() {
-function useWidth<T extends HTMLElement>() {
   const ref = useRef<T>(null);
   const [width, setWidth] = useState(0);
   useEffect(() => {
@@ -39,10 +38,8 @@ export function niceTicks(max: number, count = 4): number[] {
 }
 
 export interface TrendPoint {
-  /** YYYY-MM-DD or any label. */
   x: string;
   value: number;
-  /** Same position in the previous period, for comparison. */
   previous?: number;
 }
 
