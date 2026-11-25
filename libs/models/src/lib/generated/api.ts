@@ -3510,6 +3510,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/admin/product-analytics/orders/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Orders and revenue over a date range: by item type, by how orders were paid, and when people order */
+        get: operations["OrderStatsAdmin_orders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/admin/audit-logs": {
         parameters: {
             query?: never;
@@ -8262,6 +8279,69 @@ export interface components {
             at: string;
             /** Format: date-time */
             validUntil: string | null;
+        };
+        /**
+         * @description FOOD_PACKAGE: products in a package category. FOOD_PRODUCT: every other shop product.
+         * @enum {string}
+         */
+        OrderItemType: "FOOD_PACKAGE" | "FOOD_PRODUCT";
+        /**
+         * @description SAVINGS: paid from the customer food balance. PURCHASE: paid directly by card, transfer or USSD.
+         * @enum {string}
+         */
+        OrderRevenueSource: "SAVINGS" | "PURCHASE";
+        OrderStatsEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["OrderStats"];
+        };
+        OrderStats: {
+            period: components["schemas"]["AnalyticsPeriod"];
+            /** @description Orders placed (paid, not cancelled) with a matching line. */
+            orders: components["schemas"]["ComparedMetric"];
+            /** @description Kobo: the matching food lines, delivery fees excluded. With a payment filter, the share of each order paid that way. */
+            revenue: components["schemas"]["ComparedMetric"];
+            /** @description Kobo: revenue ÷ orders. */
+            averageOrder: components["schemas"]["ComparedMetric"];
+            series: components["schemas"]["OrderDayPoint"][];
+            byItemType: components["schemas"]["OrderItemTypeRow"][];
+            /** @description Each line is split by how its order was paid: pro rata between food balance and direct payment. */
+            bySource: components["schemas"]["OrderSourceRow"][];
+            /** @description When orders were placed, within the period. */
+            pattern: components["schemas"]["OrderPattern"];
+        };
+        OrderDayPoint: {
+            /** Format: date */
+            day: string;
+            orders: number;
+            revenue: components["schemas"]["Money"];
+        };
+        OrderItemTypeRow: {
+            type: components["schemas"]["OrderItemType"];
+            orders: number;
+            revenue: components["schemas"]["Money"];
+        };
+        OrderSourceRow: {
+            source: components["schemas"]["OrderRevenueSource"];
+            orders: number;
+            revenue: components["schemas"]["Money"];
+        };
+        OrderBucket: {
+            bucket: number;
+            orders: number;
+            revenue: components["schemas"]["Money"];
+        };
+        OrderPattern: {
+            /** @description Hour of the day, 0 to 23, Lagos time. Every hour is listed. */
+            day: components["schemas"]["OrderBucket"][];
+            /** @description Day of the week, 1 (Monday) to 7 (Sunday). Every day is listed. */
+            week: components["schemas"]["OrderBucket"][];
+            /** @description Day of the month, 1 to 31. Every day is listed. */
+            month: components["schemas"]["OrderBucket"][];
         };
         AuditLogPageEnvelope: {
             /** @enum {boolean} */
@@ -19093,6 +19173,55 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProductPricingEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    OrderStatsAdmin_orders: {
+        parameters: {
+            query?: {
+                /** @description First day (Lagos), inclusive. */
+                from?: string;
+                /** @description Last day (Lagos), inclusive. Defaults to today. */
+                to?: string;
+                /** @description One store. Leave out for every store you can see. */
+                storeId?: string;
+                /** @description Only lines of this kind. Leave out for all. */
+                itemType?: components["schemas"]["OrderItemType"];
+                /** @description Only the part of each order paid this way. Applies to revenue and order counts, not to the split by payment. */
+                source?: components["schemas"]["OrderRevenueSource"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderStatsEnvelope"];
                 };
             };
             /** @description Client error */

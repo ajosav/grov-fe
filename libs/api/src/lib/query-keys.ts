@@ -78,6 +78,8 @@ export const queryKeys = {
     list: (params: object) => ['admin', 'product-analytics', 'catalogue', 'list', params] as const,
     analytics: (params: object) =>
       ['admin', 'product-analytics', 'catalogue', 'analytics', params] as const,
+    orderStats: (params: object) =>
+      ['admin', 'product-analytics', 'orders', 'stats', params] as const,
     activityAll: ['admin', 'product-analytics', 'activity'] as const,
     activity: (params: object) => ['admin', 'product-analytics', 'activity', params] as const,
     productAll: ['admin', 'product-analytics', 'product'] as const,

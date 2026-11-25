@@ -44,12 +44,14 @@ export interface StatStripProps {
   className?: string;
 }
 
-interface ChangeProps {
+export interface ChangeBadgeProps {
   bps: number;
+  /** Falling is good for this number. */
   invert?: boolean;
 }
 
-function Change({bps, invert}: ChangeProps) {
+/** A change against the previous period as a small chip (also used outside the strip). */
+export function ChangeBadge({bps, invert}: ChangeBadgeProps) {
   const up = bps > 0;
   const worse = invert ? up : !up;
   const Icon = up ? ArrowUpRight : ArrowDownRight;
@@ -104,7 +106,9 @@ export function StatStrip({stats, loading, className}: StatStripProps) {
               ) : (
                 <span className="flex flex-wrap items-baseline gap-2">
                   <span className="text-title-md tabular">{stat.value}</span>
-                  {stat.changeBps ? <Change bps={stat.changeBps} invert={stat.invert} /> : null}
+                  {stat.changeBps ? (
+                    <ChangeBadge bps={stat.changeBps} invert={stat.invert} />
+                  ) : null}
                 </span>
               )}
               {stat.hint ? (
