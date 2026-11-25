@@ -93,7 +93,6 @@ function VerifyEmailGate({email}: {email: string}) {
               setChallenge(next);
               toast.success('New code sent');
             },
-            onError: error => toast.error(errorMessage(error)),
           })
         }
       >

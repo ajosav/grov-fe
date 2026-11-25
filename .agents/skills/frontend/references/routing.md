@@ -7,7 +7,7 @@ React Router 7, framework mode, config routes. `app` and `admin` are SPAs (`ssr:
 ## Add a page
 
 1. Add the URL to `app/paths.ts` and the route to `app/routes.ts` (config-based; no file-system routing). Every file named there must exist and default-export the page **[enforced: `check:arch` route-module]**.
-2. Create `app/routes/<area>/<name>.tsx`:
+2. Create `app/pages/<area>/<name>.tsx` (route layouts live in `app/layouts/`; `app/routes.ts` is the only route wiring):
 
 ```tsx
 import {useOrders} from '@grov/hooks';
@@ -53,7 +53,7 @@ Declare them on the route module; the console layout enforces them for the whole
 ```tsx
 import {PERMISSIONS} from '@grov/models';
 
-import type {AdminRouteHandle} from '../../lib/route-access';
+import type {AdminRouteHandle} from '../../lib/access/route-access';
 
 export const handle = {
   requires: {allOf: [PERMISSIONS.PRICING.READ]},

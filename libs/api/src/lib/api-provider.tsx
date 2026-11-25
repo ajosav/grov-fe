@@ -11,6 +11,15 @@ export function createApi(options: ApiClientOptions) {
     me: endpoints.meApi(client),
     config: endpoints.configApi(client),
     adminAccess: endpoints.adminAccessApi(client),
+    adminStores: endpoints.adminStoresApi(client),
+    adminCities: endpoints.adminCitiesApi(client),
+    adminProducts: endpoints.adminProductsApi(client),
+    adminCategories: endpoints.adminCategoriesApi(client),
+    adminListings: endpoints.adminListingsApi(client),
+    adminMarkups: endpoints.adminMarkupsApi(client),
+    files: endpoints.filesApi(client),
+    allergens: endpoints.allergensApi(client),
+    adminFoods: endpoints.adminFoodsApi(client),
     // gen:resource:api (yarn gen:resource adds endpoint groups above this line)
   };
 }

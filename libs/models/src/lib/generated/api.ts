@@ -417,6 +417,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/auth/invites/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * What an invite link offers, and which form to show
+         * @description Does not use up the link. 404 INVITE_INVALID, or 410 INVITE_EXPIRED / INVITE_USED / INVITE_REVOKED.
+         */
+        post: operations["AuthInvite_check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/invites/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept an invite and sign in to the admin console
+         * @description PASSWORD: confirm the account’s password, choose a first one, or (no account) send name, phone, terms version and a new password. GOOGLE: the Google account must use the invited email.
+         */
+        post: operations["AuthInvite_accept"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/me/consents": {
         parameters: {
             query?: never;
@@ -677,6 +717,226 @@ export interface paths {
          * @description The key comes from the name; a clash is a 409. You can only include permissions you hold.
          */
         post: operations["Roles_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/roles/{roleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One role with its permissions and holder count */
+        get: operations["Roles_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Rename a role, change its description or its permissions
+         * @description Permissions you add or remove must be ones you hold. Built-in roles keep their name; super admin cannot change. Holders pick up the change on their next request.
+         */
+        patch: operations["Roles_update"];
+        trace?: never;
+    };
+    "/v1/admin/roles/{roleId}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Archive a custom role
+         * @description Holders lose its permissions at once. Built-in roles cannot be archived. Archiving twice is fine.
+         */
+        post: operations["Roles_archive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/roles/{roleId}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore an archived role
+         * @description Its holders get its permissions back.
+         */
+        post: operations["Roles_restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/staff/invites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Invites by status (pending by default), newest first */
+        get: operations["Invites_list"];
+        put?: never;
+        /**
+         * Invite someone to the admin console
+         * @description Emails a single-use link valid for 7 days. The roles and stores must be ones you could grant. Someone who already has admin access, or a pending invite, is refused.
+         */
+        post: operations["Invites_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/staff/invites/{inviteId}/resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a pending or expired invite again
+         * @description Issues a new link for another 7 days; earlier links stop working. At most once a minute.
+         */
+        post: operations["Invites_resend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/staff/invites/{inviteId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Revoke a pending invite
+         * @description Its link stops working at once. Revoking twice is fine.
+         */
+        delete: operations["Invites_revoke"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/staff": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Staff with admin access, newest first
+         * @description Filter by status, role, a store (who can work in it) or part of a name or email.
+         */
+        get: operations["Staff_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/staff/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One staff member with roles and stores */
+        get: operations["Staff_get"];
+        put?: never;
+        post?: never;
+        /**
+         * Revoke a staff member’s admin access
+         * @description Removes their admin roles and stores and signs them out of the admin console. Their client account stays. To come back they need a new invite.
+         */
+        delete: operations["Staff_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/staff/{userId}/access": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set a staff member’s roles and stores
+         * @description Replaces the whole set. Every role or store added or removed must be one you could grant; "all stores" needs all-store access. Not for yourself. Takes effect on their next request.
+         */
+        put: operations["Staff_updateAccess"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/staff/{userId}/suspend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Pause a staff member’s admin access
+         * @description Signs them out of the admin console; roles and stores are kept for restoring. Their client account is unaffected.
+         */
+        post: operations["Staff_suspend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/staff/{userId}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore a suspended staff member’s access */
+        post: operations["Staff_resume"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1386,7 +1646,11 @@ export interface paths {
         get: operations["CategoriesAdmin_get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete a category nothing uses
+         * @description Returns the deleted category. A category with products, sub-categories or price markups is a 409 CATEGORY_IN_USE; deactivate it instead.
+         */
+        delete: operations["CategoriesAdmin_remove"];
         options?: never;
         head?: never;
         /** Rename, move, reorder or deactivate a category */
@@ -1442,7 +1706,7 @@ export interface paths {
         get?: never;
         /**
          * Replace the size ladder
-         * @description Sizes sent with an id are updated, new ones created, and sizes left out are retired because prices still point at them.
+         * @description Sizes sent with an id are updated, new ones created, and sizes left out are retired because prices still point at them. `priceKobo` on a size sets its price, live at once (needs access to every store).
          */
         put: operations["ProductsAdmin_replaceSizes"];
         post?: never;
@@ -1568,70 +1832,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Capture a base price for one size, as a draft
-         * @description The base price applies at every store (each store adds its markup), so this needs access to every store. Nothing is live until published. `validUntil` makes it a promo: the previous base price comes back after it.
+         * Set the price of one size
+         * @description The price applies at every store (each store adds its markup), so this needs access to every store. It is live at once; earlier prices stay as history. `validUntil` makes it a promo: the previous price comes back after it.
          */
         post: operations["PricingAdmin_capture"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/prices/drafts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Base price drafts waiting for review, newest first
-         * @description Each shows the live base price it would replace.
-         */
-        get: operations["PricingAdmin_drafts"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/prices/drafts/{snapshotId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * Discard a base price draft
-         * @description For a mistyped or unwanted capture. Published prices are history: `PRICE_DRAFT_PUBLISHED`.
-         */
-        delete: operations["PricingAdmin_discard"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/prices/publish": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Make the chosen drafts live
-         * @description Base price drafts (`snapshotIds`, needs access to every store) and store markup drafts (`markupIds`, stores you act on). Every id must be a draft, or nothing is published (`PRICE_DRAFT_NOT_FOUND`). Shopper prices are recomputed at once.
-         */
-        post: operations["PricingAdmin_publish"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1688,8 +1892,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Set a markup on the base price at your active store, as a draft
-         * @description A store price is the base price plus its markup: FIXED adds kobo (negative sells below the base), PERCENT scales it and rounds to the nearest ₦, NONE removes the markup at that scope. Scope: the whole store, a category (covers its sub-categories) or one size; the most specific wins. `validUntil` makes it a promo. Live once published.
+         * Set a markup on the base price at your active store
+         * @description A store price is the base price plus its markup: FIXED adds kobo (negative sells below the base), PERCENT scales it and rounds to the nearest ₦, NONE removes the markup at that scope. Scope: the whole store, a category (covers its sub-categories) or one size; the most specific wins. `validUntil` makes it a promo. Live at once.
          */
         post: operations["MarkupsAdmin_create"];
         delete?: never;
@@ -1705,31 +1909,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** A store's markups: in force (LIVE) or waiting for review (DRAFT) */
+        /** A store's markups in force, one per scope */
         get: operations["MarkupsAdmin_list"];
         put?: never;
         post?: never;
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/admin/markups/drafts/{markupId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * Discard a markup draft
-         * @description Published markups are history: `PRICE_DRAFT_PUBLISHED`.
-         */
-        delete: operations["MarkupsAdmin_discard"];
         options?: never;
         head?: never;
         patch?: never;
@@ -3134,6 +3318,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/admin/products/{productId}/listings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Where a product is listed
+         * @description Only stores you can act on. Delisted listings are included with active false.
+         */
+        get: operations["ProductListingsAdmin_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/products/{productId}/listings/{storeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * List, pause or resume a product at a store
+         * @description Replaces the listing, like the active-store route. The store must be one you can act on.
+         */
+        put: operations["ProductListingsAdmin_put"];
+        post?: never;
+        /**
+         * Delist a product at a store
+         * @description Keeps the row so the product can be listed again later.
+         */
+        delete: operations["ProductListingsAdmin_delist"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/products/{productId}/markup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set one markup for all sizes of a product at your active store
+         * @description Writes a size markup for each active size, so a size can still be set on its own afterwards. NONE removes them. Live at once.
+         */
+        put: operations["MarkupsAdmin_setForProduct"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3529,6 +3777,76 @@ export interface components {
             /** Format: date-time */
             expiresAt: string;
         };
+        InviteCheckEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["InviteCheck"];
+        };
+        InviteCheck: {
+            email: string;
+            invitedByName: string | null;
+            roles: string[];
+            stores: string[];
+            allStores: boolean;
+            /** Format: date-time */
+            expiresAt: string;
+            /** @description Which form to show. No account: name, phone and password. */
+            account: {
+                exists: boolean;
+                /** @description True: confirm the current password. False: choose one (or use Google). */
+                hasPassword: boolean;
+                firstName: string | null;
+            };
+        };
+        PasswordInviteAccept: {
+            /** @enum {string} */
+            method: "PASSWORD";
+            token: string;
+            /** @description At least 8 characters with a symbol (checked separately). */
+            password: string;
+            firstName?: string;
+            lastName?: string;
+            phone?: string;
+            termsVersion?: string;
+            /** @description The device this sign-in comes from. */
+            device: {
+                /**
+                 * Format: uuid
+                 * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                 */
+                id?: string;
+                /** @enum {string} */
+                platform: "IOS" | "ANDROID" | "WEB";
+                /** @example iPhone · Example app */
+                name: string;
+                pushToken?: string;
+            };
+        };
+        GoogleInviteAccept: {
+            /** @enum {string} */
+            method: "GOOGLE";
+            token: string;
+            idToken: string;
+            nonce?: string;
+            termsVersion?: string;
+            /** @description The device this sign-in comes from. */
+            device: {
+                /**
+                 * Format: uuid
+                 * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                 */
+                id?: string;
+                /** @enum {string} */
+                platform: "IOS" | "ANDROID" | "WEB";
+                /** @example iPhone · Example app */
+                name: string;
+                pushToken?: string;
+            };
+        };
         SessionListEnvelope: {
             /** @enum {boolean} */
             status: true;
@@ -3665,10 +3983,17 @@ export interface components {
             key: string;
             name: string;
             description: string | null;
+            /** @description Built in: the name is fixed and it cannot be archived. Permissions stay editable unless `locked`. */
             isSystem: boolean;
+            /** @description Super admin: every permission, nothing can be changed. */
+            locked: boolean;
             /** @enum {string} */
             status: "ACTIVE" | "ARCHIVED";
+            /** @description Goes up on every change. */
+            version: number;
             permissionKeys: string[];
+            /** @description People who hold the role now. */
+            holderCount: number;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -3682,6 +4007,169 @@ export interface components {
             /** @example Success */
             message: string;
             data: components["schemas"]["Role"];
+        };
+        AdminInvitePageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["AdminInvite"][];
+            meta: components["schemas"]["PaginationMeta"];
+        };
+        AdminInvite: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            email: string;
+            /**
+             * @description A pending invite past its expiry is EXPIRED.
+             * @enum {string}
+             */
+            status: "PENDING" | "ACCEPTED" | "REVOKED" | "EXPIRED";
+            roles: {
+                /**
+                 * Format: uuid
+                 * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                 */
+                id: string;
+                name: string;
+            }[];
+            allStores: boolean;
+            stores: components["schemas"]["StaffStore"][];
+            title: string | null;
+            invitedBy: components["schemas"]["PersonRef"] | null;
+            sendCount: number;
+            /** Format: date-time */
+            sentAt: string;
+            /** Format: date-time */
+            expiresAt: string;
+            /** Format: date-time */
+            acceptedAt: string | null;
+            /** Format: date-time */
+            revokedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** @description Whether you may resend or revoke it. */
+            canManage: boolean;
+        };
+        StaffStore: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            name: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            cityId: string;
+        };
+        PersonRef: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            name: string;
+        };
+        PaginationMeta: {
+            /** @example /v1/orders */
+            path: string;
+            /** @example 20 */
+            perPage: number;
+            nextCursor: string | null;
+            prevCursor: string | null;
+        };
+        CreateAdminInvite: {
+            /** Format: email */
+            email: string;
+            roleIds: string[];
+            storeIds?: string[];
+            /** @default false */
+            allStores: boolean;
+            title?: string;
+        };
+        AdminInviteEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 201 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["AdminInvite"];
+        };
+        StaffPageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["StaffMember"][];
+            meta: components["schemas"]["PaginationMeta"];
+        };
+        StaffMember: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            userId: string;
+            firstName: string;
+            lastName: string | null;
+            email: string;
+            title: string | null;
+            /** @enum {string} */
+            status: "ACTIVE" | "SUSPENDED";
+            isSuperAdmin: boolean;
+            /** @description Acts on every store: granted all stores, or a super admin. `stores` is then empty. */
+            allStores: boolean;
+            roles: components["schemas"]["StaffRole"][];
+            stores: components["schemas"]["StaffStore"][];
+            invitedBy: components["schemas"]["PersonRef"] | null;
+            /** Format: date-time */
+            activatedAt: string | null;
+            /** Format: date-time */
+            lastAdminSignInAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** @description Whether you may change, suspend or remove this person: false for yourself and for anyone holding access you could not grant. */
+            canManage: boolean;
+        };
+        StaffRole: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            key: string;
+            name: string;
+            isSystem: boolean;
+            /**
+             * @description An archived role stays listed but grants nothing.
+             * @enum {string}
+             */
+            status: "ACTIVE" | "ARCHIVED";
+            /** Format: date-time */
+            expiresAt: string | null;
+        };
+        StaffMemberEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["StaffMember"];
+        };
+        UpdateStaffAccess: {
+            roleIds: string[];
+            storeIds: string[];
+            allStores: boolean;
         };
         Pin: {
             /** @example 7.4429 */
@@ -3793,14 +4281,6 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-        };
-        PaginationMeta: {
-            /** @example /v1/orders */
-            path: string;
-            /** @example 20 */
-            perPage: number;
-            nextCursor: string | null;
-            prevCursor: string | null;
         };
         AdminCoverageEnvelope: {
             /** @enum {boolean} */
@@ -4615,6 +5095,12 @@ export interface components {
             prepOptions: components["schemas"]["ProductPrepOption"][];
             /** Format: date-time */
             updatedAt: string;
+            /** @description Public image paths, first is the cover. Turn them into URLs with GET /files/urls. */
+            imagePaths: string[];
+            /** @description What size quantities are counted in: g, ml or piece. Fixed when the product is added. */
+            baseUnit: string;
+            /** @description Saved but not finished. A draft is inactive, hidden from shoppers and cannot be listed; publish it with `draft: false`. */
+            draft: boolean;
         };
         ProductSize: {
             /**
@@ -4634,6 +5120,8 @@ export interface components {
             isDefault: boolean;
             sort: number;
             active: boolean;
+            /** @description The live price of this size at every store before store markups. Null until one is set. */
+            price: components["schemas"]["Money"] | null;
         };
         ProductPrepOption: {
             /**
@@ -4684,6 +5172,12 @@ export interface components {
             active: boolean;
             /** Format: date-time */
             createdAt: string;
+            /** @description Public image paths, first is the cover. Turn them into URLs with GET /files/urls. */
+            imagePaths: string[];
+            /** @description What size quantities are counted in: g, ml or piece. Fixed when the product is added. */
+            baseUnit: string;
+            /** @description Saved but not finished. A draft is inactive, hidden from shoppers and cannot be listed; publish it with `draft: false`. */
+            draft: boolean;
         };
         StoreListingPageEnvelope: {
             /** @enum {boolean} */
@@ -4800,69 +5294,6 @@ export interface components {
             validUntil: string | null;
             /** Format: date-time */
             publishedAt: string | null;
-        };
-        PriceDraftPageEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["PriceDraft"][];
-            meta: components["schemas"]["PaginationMeta"];
-        };
-        PriceDraft: {
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            id: string;
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            productId: string;
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            sizeId: string;
-            price: components["schemas"]["Money"];
-            /** @enum {string} */
-            source: "FIELD_CAPTURE" | "SUPPLIER_FEED" | "RECEIPT" | "ADMIN";
-            /** @enum {string} */
-            confidence: "HIGH" | "MEDIUM" | "LOW";
-            /**
-             * Format: uuid
-             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-             */
-            capturedBy: string | null;
-            /** Format: date-time */
-            capturedAt: string;
-            /** Format: date-time */
-            validUntil: string | null;
-            /** Format: date-time */
-            publishedAt: string | null;
-            sku: string;
-            displayName: string;
-            sizeLabel: string;
-            currentBase: components["schemas"]["Money"] | null;
-        };
-        PricePublishResultEnvelope: {
-            /** @enum {boolean} */
-            status: true;
-            /** @example 200 */
-            statusCode: number;
-            /** @example Success */
-            message: string;
-            data: components["schemas"]["PricePublishResult"];
-        };
-        PricePublishResult: {
-            snapshots: number;
-            markups: number;
-            stores: number;
-            /** Format: date-time */
-            publishedAt: string;
         };
         StalePricePageEnvelope: {
             /** @enum {boolean} */
@@ -5244,6 +5675,8 @@ export interface components {
             variableWeight: boolean;
             isDefault: boolean;
             quote: components["schemas"]["PriceQuote"];
+            /** @description Sets the size’s price, live at once (the old price stays as history). Needs access to every store. A product can only be published from draft once every size has one. */
+            priceKobo?: number;
         };
         ProductPrepView: {
             /**
@@ -7128,6 +7561,42 @@ export interface components {
             message: string;
             data: components["schemas"]["OrderEvent"][];
         };
+        ProductListing: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            storeId: string;
+            storeName: string;
+            active: boolean;
+            /** Format: date-time */
+            pausedUntil: string | null;
+            minOrderQty: string | null;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        /** @description Where one product is listed, for the stores the admin can act on. Delisted rows are included (active false). */
+        ProductListingList: {
+            items: components["schemas"]["ProductListing"][];
+        };
+        ProductListingListEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["ProductListingList"];
+        };
+        PriceMarkupListEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["PriceMarkup"][];
+        };
     };
     responses: never;
     parameters: never;
@@ -8255,6 +8724,92 @@ export interface operations {
             };
         };
     };
+    AuthInvite_check: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    token: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InviteCheckEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    AuthInvite_accept: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordInviteAccept"] | components["schemas"]["GoogleInviteAccept"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     Account_consent: {
         parameters: {
             query?: never;
@@ -8970,6 +9525,583 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RoleEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Roles_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                roleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Roles_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                roleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name?: string;
+                    description?: string | null;
+                    permissionKeys?: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Roles_archive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                roleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Roles_restore: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                roleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Invites_list: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                status?: "PENDING" | "ACCEPTED" | "REVOKED" | "EXPIRED";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminInvitePageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Invites_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAdminInvite"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminInviteEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Invites_resend: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                inviteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminInviteEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Invites_revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                inviteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Staff_list: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                status?: "ACTIVE" | "SUSPENDED";
+                /** @description Who can work in this store: granted it, all stores, or super admin. */
+                storeId?: string;
+                roleId?: string;
+                /** @description Part of a name or email. */
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffPageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Staff_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffMemberEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Staff_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Staff_updateAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateStaffAccess"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffMemberEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Staff_suspend: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffMemberEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Staff_resume: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffMemberEnvelope"];
                 };
             };
             /** @description Client error */
@@ -11463,6 +12595,46 @@ export interface operations {
             };
         };
     };
+    CategoriesAdmin_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                categoryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     CategoriesAdmin_update: {
         parameters: {
             query?: never;
@@ -11525,8 +12697,14 @@ export interface operations {
                 limit?: number;
                 cursor?: string;
                 categoryId?: string;
+                /** @description Only products with a live (not delisted) listing at this store */
+                storeId?: string;
+                /** @description With storeId: false keeps only products with no live listing there (what can still be listed); true is the default */
+                listed?: "true" | "false";
                 q?: string;
                 active?: "true" | "false";
+                /** @description true: only drafts. false: no drafts. */
+                draft?: "true" | "false";
             };
             header?: never;
             path?: never;
@@ -11573,7 +12751,8 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    sku: string;
+                    /** @description Leave out to let the system make one from the category type and the name, like GRN-OFADA-RICE-K7QX. */
+                    sku?: string;
                     displayName: string;
                     /**
                      * Format: uuid
@@ -11583,7 +12762,7 @@ export interface operations {
                     brand?: string;
                     labelAllergenIds?: string[];
                     shelfLifeDaysOverride?: number;
-                    /** @description The pitch shoppers read on the product page: why to buy this one. */
+                    /** @description The pitch shoppers read on the product page: why to buy this one. Markdown limited to paragraphs, **bold**, *italic*, lists and https links; HTML, images, headings, tables and code are refused. */
                     description?: string;
                     storageNote?: string;
                     originNote?: string;
@@ -11596,6 +12775,7 @@ export interface operations {
                     } | {
                         storeIds: string[];
                     };
+                    /** @description At least one, unless `draft` is true (a draft can be saved with none). Send `priceKobo` on each to price them. */
                     sizes: {
                         /**
                          * Format: uuid
@@ -11622,7 +12802,18 @@ export interface operations {
                         weightMaxBase?: string;
                         /** @default false */
                         isDefault?: boolean;
+                        /** @description Sets the size’s price, live at once (the old price stays as history). Needs access to every store. A product can only be published from draft once every size has one. */
+                        priceKobo?: number;
                     }[];
+                    /** @description Public image paths from POST /files, first is the cover (up to 6, each once). */
+                    imagePaths?: string[];
+                    /**
+                     * @description What size quantities are counted in: g (grams), ml (millilitres) or piece. Set when the product is added and fixed after that. Defaults to g.
+                     * @enum {string}
+                     */
+                    baseUnit?: "g" | "ml" | "piece";
+                    /** @description Save without publishing: inactive, hidden from shoppers and not listed. Sizes and prices can be incomplete. */
+                    draft?: boolean;
                 };
             };
         };
@@ -11715,9 +12906,14 @@ export interface operations {
                      * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
                      */
                     categoryId?: string;
+                    /**
+                     * @description Change what size quantities are counted in. Only while the product is a draft and not linked to a food; set the sizes again afterwards, because their amounts were in the old unit.
+                     * @enum {string}
+                     */
+                    baseUnit?: "g" | "ml" | "piece";
                     labelAllergenIds?: string[];
                     shelfLifeDaysOverride?: number | null;
-                    /** @description The pitch shoppers read on the product page: why to buy this one. */
+                    /** @description The pitch shoppers read on the product page: why to buy this one. Markdown limited to paragraphs, **bold**, *italic*, lists and https links; HTML, images, headings, tables and code are refused. */
                     description?: string | null;
                     storageNote?: string | null;
                     originNote?: string | null;
@@ -11731,6 +12927,13 @@ export interface operations {
                         storeIds: string[];
                     };
                     active?: boolean;
+                    /** @description Public image paths from POST /files, first is the cover (up to 6, each once). */
+                    imagePaths?: string[];
+                    /**
+                     * @description Publish a draft: it needs a size with a price. Sets active true and lists it where chosen.
+                     * @enum {boolean}
+                     */
+                    draft?: false;
                 };
             };
         };
@@ -11802,6 +13005,8 @@ export interface operations {
                         weightMaxBase?: string;
                         /** @default false */
                         isDefault?: boolean;
+                        /** @description Sets the size’s price, live at once (the old price stays as history). Needs access to every store. A product can only be published from draft once every size has one. */
+                        priceKobo?: number;
                     }[];
                 };
             };
@@ -12176,7 +13381,8 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    sku: string;
+                    /** @description Leave out to let the system make one from the category type and the name, like GRN-OFADA-RICE-K7QX. */
+                    sku?: string;
                     /**
                      * Format: uuid
                      * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
@@ -12263,135 +13469,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PriceSnapshotEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    PricingAdmin_drafts: {
-        parameters: {
-            query?: {
-                limit?: number;
-                cursor?: string;
-                productId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PriceDraftPageEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    PricingAdmin_discard: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                snapshotId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EmptyEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    PricingAdmin_publish: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @default [] */
-                    snapshotIds?: string[];
-                    /** @default [] */
-                    markupIds?: string[];
-                };
-            };
-        };
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PricePublishResultEnvelope"];
                 };
             };
             /** @description Client error */
@@ -12549,7 +13626,6 @@ export interface operations {
             query?: {
                 limit?: number;
                 cursor?: string;
-                state?: "DRAFT" | "LIVE";
             };
             header?: never;
             path?: never;
@@ -12564,46 +13640,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PriceMarkupPageEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    MarkupsAdmin_discard: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                markupId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EmptyEnvelope"];
                 };
             };
             /** @description Client error */
@@ -16684,6 +17720,193 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdminOrderTimelineEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    ProductListingsAdmin_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductListingListEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    ProductListingsAdmin_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @default true */
+                    active?: boolean;
+                    /**
+                     * Format: date-time
+                     * @default null
+                     */
+                    pausedUntil?: string | null;
+                    /**
+                     * @default null
+                     * @example 2.000
+                     */
+                    minOrderQty?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoreListingEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    ProductListingsAdmin_delist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoreListingEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    MarkupsAdmin_setForProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    markup: components["schemas"]["PriceMarkupValue"];
+                    /** Format: date-time */
+                    validUntil?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceMarkupListEnvelope"];
                 };
             };
             /** @description Client error */
