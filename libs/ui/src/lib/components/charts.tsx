@@ -282,7 +282,7 @@ export function BarList({
   return (
     <ul className={cn('grid gap-3', className)}>
       {items.map(item => (
-        <li key={item.key} className="grid gap-1.5">
+        <li key={item.key} className="grid grid-cols-[minmax(0,1fr)] gap-1.5">
           <div className="flex items-baseline justify-between gap-3 text-body-sm">
             <span className="min-w-0 truncate">{item.label}</span>
             <span className="shrink-0 font-semibold tabular">

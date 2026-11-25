@@ -5,6 +5,9 @@ import type {
   CatalogueSummary,
   CreateImportBody,
   ImportJob,
+  OrderItemType,
+  OrderRevenueSource,
+  OrderStats,
   ProductPerformance,
   ProductPricing,
   ProductStock,
@@ -58,6 +61,13 @@ export interface CatalogueParams extends AnalyticsPeriodParams {
   pageSize?: number;
 }
 
+export interface OrderStatsParams extends AnalyticsPeriodParams {
+  /** Only lines of this kind. */
+  itemType?: OrderItemType;
+  /** Only the part of each order paid this way. */
+  source?: OrderRevenueSource;
+}
+
 export interface ActivityParams {
   productId?: string;
   kind?: ActivityItem['kind'];
@@ -80,6 +90,9 @@ export function adminProductAnalyticsApi(client: ApiClient) {
         url: `${base}/catalogue/analytics`,
         params,
       }),
+    /** Orders and revenue over a range, by item type and payment, and when people order. */
+    orderStats: (params: OrderStatsParams = {}) =>
+      client.request<OrderStats>({method: 'get', url: `${base}/orders/stats`, params}),
     /** `{items, nextCursor}` arrives as `data: [...]` with the cursor in `meta`. */
     activity: (params: ActivityParams = {}) =>
       client.requestEnvelope<ActivityItem[]>({method: 'get', url: `${base}/activity`, params}),

@@ -1,4 +1,4 @@
-import {type ReactNode, useMemo, useState} from 'react';
+import {type ReactNode, useEffect, useMemo, useState} from 'react';
 
 import {ChevronRight, Menu, PanelLeft, Search} from 'lucide-react';
 import {Link, useLocation} from 'react-router';
@@ -10,6 +10,7 @@ import {Button, cn, Dialog, DialogContent, DialogTitle, Kbd} from '@grov/ui';
 import {activeTrail, firstPage, flattenNav, type NavTrail, visibleNav} from '../../lib/shell/nav';
 import {paths} from '../../paths';
 import {sidebarThemeProps, useSidebarTheme} from '../../stores/sidebar-theme';
+import {AskAiButton, AssistantPanel, AssistantProvider, useAssistant} from '../assistant';
 import {InboxButton, SupportPanel, SupportProvider, useSupport} from '../support';
 import {AdminSidebar} from './admin-sidebar';
 import {CommandMenu} from './command-menu';
@@ -22,7 +23,9 @@ import {CommandMenu} from './command-menu';
 export function AdminShell({children}: {children: ReactNode}) {
   return (
     <SupportProvider>
-      <Frame>{children}</Frame>
+      <AssistantProvider>
+        <Frame>{children}</Frame>
+      </AssistantProvider>
     </SupportProvider>
   );
 }
@@ -30,6 +33,7 @@ export function AdminShell({children}: {children: ReactNode}) {
 function Frame({children}: {children: ReactNode}) {
   const {check} = usePermissions();
   const support = useSupport();
+  const assistant = useAssistant();
   const [sidebarTheme] = useSidebarTheme();
   const themeProps = sidebarThemeProps(sidebarTheme);
   const wide = useMediaQuery('(min-width: 80rem)');
@@ -44,6 +48,18 @@ function Frame({children}: {children: ReactNode}) {
   // Docked = a third column from xl; narrower screens show the same panel as a sheet.
   const docked = support.mode === 'docked' && wide && !onSupportPage;
   const sheet = !onSupportPage && (support.mode === 'peek' || (support.mode === 'docked' && !wide));
+  // The assistant shares the right rail with the inbox: opening one closes the other.
+  const assistantDocked = assistant.open && wide && !onSupportPage;
+  const assistantSheet = assistant.open && !wide && !onSupportPage;
+  const rail = docked || assistantDocked;
+  const closeSupport = support.close;
+  const closeAssistant = assistant.close;
+  useEffect(() => {
+    if (assistant.open) closeSupport();
+  }, [assistant.open, closeSupport]);
+  useEffect(() => {
+    if (support.mode !== 'closed') closeAssistant();
+  }, [support.mode, closeAssistant]);
 
   const [collapsed, setCollapsed] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -54,7 +70,7 @@ function Frame({children}: {children: ReactNode}) {
       className={cn(
         'min-h-dvh bg-canvas lg:grid',
         collapsed ? 'lg:grid-cols-[minmax(0,1fr)]' : 'lg:grid-cols-[15rem_minmax(0,1fr)]',
-        docked &&
+        rail &&
           (collapsed
             ? 'xl:grid-cols-[minmax(0,1fr)_24rem]'
             : 'xl:grid-cols-[15rem_minmax(0,1fr)_24rem]')
@@ -98,6 +114,7 @@ function Frame({children}: {children: ReactNode}) {
           <Breadcrumbs trail={trail} fallback={onSupportPage ? 'Support' : undefined} />
 
           <div className="ml-auto flex items-center gap-2">
+            <AskAiButton disabled={onSupportPage} />
             <InboxButton disabled={onSupportPage} />
             <button
               type="button"
@@ -133,6 +150,21 @@ function Frame({children}: {children: ReactNode}) {
           <SupportPanel canDock />
         </aside>
       ) : null}
+      {assistantDocked ? (
+        <aside
+          aria-label="AI assistant"
+          className="sticky top-0 hidden h-dvh border-l border-line xl:block"
+        >
+          <AssistantPanel />
+        </aside>
+      ) : null}
+
+      <Dialog open={assistantSheet} onOpenChange={open => (open ? undefined : assistant.close())}>
+        <DialogContent layout="side" hideClose className="max-w-[24rem] gap-0 p-0">
+          <DialogTitle className="sr-only">AI assistant</DialogTitle>
+          <AssistantPanel />
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={sheet} onOpenChange={open => (open ? undefined : support.close())}>
         <DialogContent layout="side" hideClose className="max-w-[24rem] gap-0 p-0">

@@ -1,6 +1,7 @@
 import {
   keepPreviousData,
   useInfiniteQuery,
+  useIsFetching,
   useMutation,
   useQuery,
   useQueryClient,
@@ -10,6 +11,7 @@ import {
   type ActivityParams,
   type AnalyticsPeriodParams,
   type CatalogueParams,
+  type OrderStatsParams,
   queryKeys,
   useApi,
 } from '@grov/api';
@@ -23,6 +25,16 @@ export function useCatalogueSummary(params: AnalyticsPeriodParams = {}) {
     queryKey: keys.summary(params),
     queryFn: () => api.adminProductAnalytics.summary(params),
   });
+}
+
+/** Re-reads every catalogue figure on screen (summary, analytics, activity, product reports). */
+export function useProductAnalyticsRefresh() {
+  const queryClient = useQueryClient();
+  const refreshing = useIsFetching({queryKey: keys.all}) > 0;
+  return {
+    refreshing,
+    refresh: () => queryClient.invalidateQueries({queryKey: keys.all}),
+  };
 }
 
 /** Products with period metrics: numbered pages, sorted and filtered by the server. */
@@ -41,6 +53,20 @@ export function useCatalogueAnalytics(params: AnalyticsPeriodParams = {}) {
     queryKey: keys.analytics(params),
     queryFn: () => api.adminProductAnalytics.analytics(params),
     placeholderData: keepPreviousData,
+  });
+}
+
+/**
+ * Orders and revenue over a range: counts, revenue by item type and by how orders were paid, and
+ * when people order. Pass `enabled: false` to stay idle (no permission, or a filter with no data).
+ */
+export function useOrderStats(params: OrderStatsParams = {}, options: {enabled?: boolean} = {}) {
+  const api = useApi();
+  return useQuery({
+    queryKey: keys.orderStats(params),
+    queryFn: () => api.adminProductAnalytics.orderStats(params),
+    placeholderData: keepPreviousData,
+    enabled: options.enabled ?? true,
   });
 }
 
