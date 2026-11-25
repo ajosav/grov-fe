@@ -90,5 +90,12 @@ export const queryKeys = {
       ['admin', 'product-analytics', 'product', id, 'pricing', storeId ?? null] as const,
     importJob: (id: string) => ['admin', 'product-analytics', 'import', id] as const,
   },
+  adminAuditLogs: {
+    all: ['admin', 'audit-logs'] as const,
+    list: (params: object) => ['admin', 'audit-logs', 'list', params] as const,
+    stats: (params: object) => ['admin', 'audit-logs', 'stats', params] as const,
+    facets: (params: object) => ['admin', 'audit-logs', 'facets', params] as const,
+    detail: (id: string) => ['admin', 'audit-logs', 'detail', id] as const,
+  },
   // gen:resource:keys
 } as const;

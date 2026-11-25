@@ -49,6 +49,7 @@ export default [
 
     route('access/staff', pg('access/staff')),
     route('access/roles', pg('access/roles')),
+    route('access/audit-logs', pg('audit/audit-logs')),
     route('settings', pg('settings')),
   ]),
   // Component gallery: dev only (or VITE_SHOW_DESIGN_SYSTEM). No sign-in, no API calls.
