@@ -3,8 +3,7 @@ import {useState} from 'react';
 import {ArrowLeft, ArrowRight, ImageOff, Trash2} from 'lucide-react';
 
 import {useFileUrls, useUploadImage} from '@grov/hooks';
-import {PERMISSIONS} from '@grov/models';
-import {errorMessage, usePermissions} from '@grov/shared';
+import {errorMessage} from '@grov/shared';
 import {Alert, Badge, Button, FileUpload} from '@grov/ui';
 
 import {
@@ -14,25 +13,19 @@ import {
   PRODUCT_IMAGE_DIRECTORY,
 } from '../../lib/catalogue/products';
 
-/** grov-be's public-file policy: 5 MiB, and only these types (directory-policies.ts). */
 const ACCEPT = 'image/jpeg,image/png,image/webp,image/avif';
 const MAX_BYTES = 5 * 1024 * 1024;
 
 export interface ProductImagesProps {
-  /** Stored paths in order; the first is the cover shoppers see. */
   paths: string[];
   onChange: (paths: string[]) => void;
-  /** Disable everything (a save is running, or the admin can only read). */
   disabled?: boolean;
 }
 
 /** Add, order and remove a product's photos. Files upload as soon as they're picked; saving the product keeps the paths. */
 export function ProductImages({paths, onChange, disabled}: ProductImagesProps) {
-  const {can} = usePermissions();
-  const canUpload = can(PERMISSIONS.FILES.PUBLIC_WRITE);
   const upload = useUploadImage();
   const urls = useFileUrls(paths);
-  // A fresh upload already carries its URL, so the photo shows before the lookup returns.
   const [fresh, setFresh] = useState<Record<string, string>>({});
   const [failures, setFailures] = useState<string[]>([]);
   const [uploading, setUploading] = useState(0);
@@ -137,7 +130,7 @@ export function ProductImages({paths, onChange, disabled}: ProductImagesProps) {
         </ul>
       ) : null}
 
-      {canUpload && !disabled && room > 0 ? (
+      {!disabled && room > 0 ? (
         <FileUpload
           multiple
           accept={ACCEPT}
@@ -152,12 +145,7 @@ export function ProductImages({paths, onChange, disabled}: ProductImagesProps) {
         />
       ) : null}
 
-      {!canUpload ? (
-        <Alert tone="info" title="You can’t upload photos">
-          Uploading needs the public files permission. Ask an admin to add it to your role.
-        </Alert>
-      ) : null}
-      {canUpload && room <= 0 ? (
+      { room <= 0 ? (
         <p className="text-body-sm text-ink-muted">
           A product holds up to {MAX_PRODUCT_IMAGES} photos. Remove one to add another.
         </p>
@@ -171,7 +159,7 @@ export function ProductImages({paths, onChange, disabled}: ProductImagesProps) {
           </ul>
         </Alert>
       ) : null}
-      {paths.length === 0 && canUpload ? (
+      {paths.length === 0 ? (
         <p className="text-body-sm text-ink-muted">
           No photos yet. The first one is the cover, so add the clearest shot first.
         </p>

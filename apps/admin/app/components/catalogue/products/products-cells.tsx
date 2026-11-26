@@ -1,7 +1,7 @@
 import {Link} from 'react-router';
 
 import type {CatalogueRow, StockState} from '@grov/models';
-import {cn, formatNaira} from '@grov/ui';
+import {Badge, cn, formatNaira, Tooltip} from '@grov/ui';
 
 import {formatChange} from '../../../lib/catalogue/insight-format';
 import {productPath} from '../../../paths';
@@ -9,13 +9,41 @@ import {ProductThumb} from '../product-thumb';
 
 export const STOCK_BADGE: Record<
   StockState,
-  {label: string; tone: 'neutral' | 'palm' | 'flame' | 'sky'}
+  {label: string; tone: 'neutral' | 'palm' | 'flame' | 'sky'; hint: string}
 > = {
-  IN_STOCK: {label: 'In stock', tone: 'neutral'},
-  LOW: {label: 'Low', tone: 'palm'},
-  OUT: {label: 'Out of stock', tone: 'flame'},
-  UNTRACKED: {label: 'Not counted', tone: 'sky'},
+  IN_STOCK: {
+    label: 'In stock',
+    tone: 'neutral',
+    hint: 'Available in every store that counts this product, and above its low-stock level.',
+  },
+  LOW: {
+    label: 'Low',
+    tone: 'palm',
+    hint: 'At least one store is at or below its low-stock level, or has none available.',
+  },
+  OUT: {
+    label: 'Out of stock',
+    tone: 'flame',
+    hint: 'Nothing is available to sell in any store that counts this product.',
+  },
+  UNTRACKED: {
+    label: 'Not counted',
+    tone: 'sky',
+    hint: 'No stock has been recorded for this product in any store, so its level is unknown.',
+  },
 };
+
+/** Stock-state badge with a hover explanation. */
+export function StockStateBadge({state}: {state: StockState}) {
+  const {label, tone, hint} = STOCK_BADGE[state];
+  return (
+    <Tooltip content={hint}>
+      <Badge tone={tone} tabIndex={0} className="cursor-help">
+        {label}
+      </Badge>
+    </Tooltip>
+  );
+}
 
 export function priceText(row: CatalogueRow) {
   if (!row.priceMin) return '—';

@@ -45,12 +45,23 @@ export const PERMISSIONS = {
     REQUESTS_READ: 'shop.requests.read',
   },
   STOCK: {
+    ADJUST_APPROVE: 'stock.adjust.approve',
+    COST_READ: 'stock.cost.read',
+    COUNT: 'stock.count',
+    LOCATIONS_MANAGE: 'stock.locations.manage',
     READ: 'stock.read',
+    RECEIVE: 'stock.receive',
+    TRANSFER: 'stock.transfer',
+    TRANSFER_VERIFY: 'stock.transfer.verify',
     WRITE: 'stock.write',
   },
   STORES: {
     MANAGE: 'stores.manage',
     READ: 'stores.read',
+  },
+  SUPPLIERS: {
+    MANAGE: 'suppliers.manage',
+    READ: 'suppliers.read',
   },
 } as const;
 
@@ -80,7 +91,16 @@ export type PermissionKey =
   | 'products.read'
   | 'shop.requests.manage'
   | 'shop.requests.read'
+  | 'stock.adjust.approve'
+  | 'stock.cost.read'
+  | 'stock.count'
+  | 'stock.locations.manage'
   | 'stock.read'
+  | 'stock.receive'
+  | 'stock.transfer'
+  | 'stock.transfer.verify'
   | 'stock.write'
   | 'stores.manage'
-  | 'stores.read';
+  | 'stores.read'
+  | 'suppliers.manage'
+  | 'suppliers.read';

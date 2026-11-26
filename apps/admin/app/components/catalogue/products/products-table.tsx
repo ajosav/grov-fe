@@ -3,7 +3,6 @@ import {Link} from 'react-router';
 
 import type {CatalogueSort} from '@grov/api';
 import {
-  Badge,
   Button,
   Checkbox,
   formatNaira,
@@ -26,7 +25,7 @@ import {
   ChangeText,
   priceText,
   ProductCell,
-  STOCK_BADGE,
+  StockStateBadge,
 } from './products-cells';
 
 export interface ProductsTableProps extends CatalogueLayoutProps {
@@ -196,9 +195,7 @@ export function ProductsTable({
                   {row.availableQty === null ? '—' : formatQty(row.availableQty, row.baseUnit)}
                 </div>
                 {row.stockState !== 'IN_STOCK' ? (
-                  <Badge tone={STOCK_BADGE[row.stockState].tone}>
-                    {STOCK_BADGE[row.stockState].label}
-                  </Badge>
+                  <StockStateBadge state={row.stockState} />
                 ) : null}
               </TableCell>
             ) : null}

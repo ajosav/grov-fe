@@ -27,6 +27,7 @@ import {ProductOverviewTab} from '../../components/catalogue/product/product-ove
 import {ProductPricingTab} from '../../components/catalogue/product/product-pricing-tab';
 import {ProductTabNav} from '../../components/catalogue/product/product-tab-nav';
 import {ProductWorkspaceHeader} from '../../components/catalogue/product/product-workspace-header';
+import {PageFrame} from '../../components/common/page-frame';
 import {useUnsavedGuard} from '../../components/common/unsaved-guard';
 import type {AdminRouteHandle} from '../../lib/access/route-access';
 import {categoryPath} from '../../lib/catalogue/categories';
@@ -36,6 +37,7 @@ import type {Route} from './+types/product';
 
 export const handle = {
   requires: {allOf: [PERMISSIONS.PRODUCTS.READ]},
+  fullBleed: true,
 } satisfies AdminRouteHandle;
 
 export const meta: Route.MetaFunction = () => [{title: `Product · ${appConfig.brandName} admin`}];
@@ -66,6 +68,11 @@ function readTab(params: URLSearchParams): {tab: Tab; section: InformationSectio
   };
 }
 
+/** The page is full-bleed for the workspace, so its loading and error states pad themselves. */
+function Padded({children}: {children: ReactNode}) {
+  return <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-8">{children}</div>;
+}
+
 export default function ProductPage() {
   const {productId} = useParams();
   const product = useProduct(productId);
@@ -81,11 +88,11 @@ export default function ProductPage() {
 
   if (product.isPending) {
     return (
-      <>
+      <Padded>
         {back}
         <Skeleton className="mb-5 h-40" />
         <Skeleton className="h-96" />
-      </>
+      </Padded>
     );
   }
 
@@ -93,7 +100,7 @@ export default function ProductPage() {
     const code = isApiError(product.error) ? product.error.code : undefined;
     if (code === ErrorCode.PRODUCT_NOT_FOUND || code === ErrorCode.NOT_FOUND) {
       return (
-        <>
+        <Padded>
           {back}
           <Card>
             <EmptyState
@@ -107,16 +114,16 @@ export default function ProductPage() {
               }
             />
           </Card>
-        </>
+        </Padded>
       );
     }
     return (
-      <>
+      <Padded>
         {back}
         <Alert tone="danger" title="Couldn’t load this product">
           {errorMessage(product.error)}
         </Alert>
-      </>
+      </Padded>
     );
   }
 
@@ -189,44 +196,55 @@ function ProductWorkspace({data, back}: ProductWorkspaceProps) {
   return (
     <>
       {guard.dialog}
-      {back}
-      <Tabs value={tab} onValueChange={value => goTo(value as Tab)}>
-        <ProductWorkspaceHeader
-          product={data}
-          categoryName={categoryName}
-          coverUrl={data.imagePaths[0] ? cover.data?.get(data.imagePaths[0]) : undefined}
-          pricing={pricing.data}
-          stock={stock.data}
-          canManage={canManage}
-          editsPending={editor.dirty || sizesEditor.dirty}
-          onEdit={() => goTo('information')}
-        />
-        <ProductTabNav tabs={TABS.map(value => ({value, label: TAB_LABEL[value]}))} />
-
-        <div className="@container min-w-0">
-          <TabsContent value="overview">
-            <ProductOverviewTab {...shared} onTab={goTo} />
-          </TabsContent>
-          <TabsContent value="analytics">
-            <ProductAnalyticsTab {...shared} />
-          </TabsContent>
-          <TabsContent value="inventory">
-            <ProductInventoryTab {...shared} />
-          </TabsContent>
-          <TabsContent value="pricing">
-            <ProductPricingTab {...shared} onEditPrices={() => goTo('information', 'sizes')} />
-          </TabsContent>
-          <TabsContent value="information">
-            <ProductInformationTab
-              product={data}
-              canManage={canManage}
-              section={section}
-              onSection={next => goTo('information', next)}
-              editor={editor}
-              sizesEditor={sizesEditor}
-            />
-          </TabsContent>
-        </div>
+      <Tabs
+        value={tab}
+        onValueChange={value => goTo(value as Tab)}
+        className="flex flex-1 flex-col"
+      >
+        <PageFrame
+          contain
+          tabs={<ProductTabNav tabs={TABS.map(value => ({value, label: TAB_LABEL[value]}))} />}
+          header={
+            <div className="pb-4">
+              {back}
+              <ProductWorkspaceHeader
+                product={data}
+                categoryName={categoryName}
+                coverUrl={data.imagePaths[0] ? cover.data?.get(data.imagePaths[0]) : undefined}
+                pricing={pricing.data}
+                stock={stock.data}
+                canManage={canManage}
+                editsPending={editor.dirty || sizesEditor.dirty}
+                onEdit={() => goTo('information')}
+              />
+            </div>
+          }
+        >
+          <div className="@container min-w-0">
+            <TabsContent value="overview">
+              <ProductOverviewTab {...shared} onTab={goTo} />
+            </TabsContent>
+            <TabsContent value="analytics">
+              <ProductAnalyticsTab {...shared} />
+            </TabsContent>
+            <TabsContent value="inventory">
+              <ProductInventoryTab {...shared} />
+            </TabsContent>
+            <TabsContent value="pricing">
+              <ProductPricingTab {...shared} onEditPrices={() => goTo('information', 'sizes')} />
+            </TabsContent>
+            <TabsContent value="information">
+              <ProductInformationTab
+                product={data}
+                canManage={canManage}
+                section={section}
+                onSection={next => goTo('information', next)}
+                editor={editor}
+                sizesEditor={sizesEditor}
+              />
+            </TabsContent>
+          </div>
+        </PageFrame>
       </Tabs>
     </>
   );

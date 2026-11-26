@@ -57,6 +57,7 @@ export * from './skeleton';
 export * from './sparkline';
 export * from './spinner';
 export * from './split-button';
+export * from './stat-rail';
 export * from './stat-strip';
 export * from './status-dialog';
 export * from './step-indicator';

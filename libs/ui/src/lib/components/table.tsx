@@ -5,7 +5,7 @@ import {cn} from '../utils/cn';
 /** Dense admin tables (the admin uses calm surfaces, no wash). */
 export function Table({className, ...props}: HTMLAttributes<HTMLTableElement>) {
   return (
-    <div className="w-full overflow-x-auto rounded-lg border border-line bg-surface">
+    <div className="w-full overflow-x-auto rounded-sm border border-line bg-surface">
       <table className={cn('w-full caption-bottom text-body-sm', className)} {...props} />
     </div>
   );

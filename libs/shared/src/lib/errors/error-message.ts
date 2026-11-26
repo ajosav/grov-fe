@@ -77,6 +77,15 @@ const COPY: Partial<Record<string, string>> = {
     'This email already has an invite waiting. Resend that one instead.',
   [ErrorCode.INVITE_RESEND_TOO_SOON]: 'This invite was just sent. Wait a minute before resending.',
   [ErrorCode.INVITE_EMAIL_MISMATCH]: 'That Google account uses a different email from the invite.',
+  [ErrorCode.STOCK_INSUFFICIENT]:
+    'There isn’t enough stock for that. Check the quantity and try again.',
+  [ErrorCode.STOCK_BELOW_RESERVED]:
+    'That would take stock below what is already reserved for paid orders. Enter at least the reserved amount.',
+  [ErrorCode.STOCK_RESERVATION_MISMATCH]:
+    'More was released than is reserved. Refresh the page and check the stock again.',
+  [ErrorCode.STOCK_TRANSFER_SAME_STORE]: 'Pick a different store to move the stock to.',
+  [ErrorCode.STOCK_REF_REUSED]:
+    'This was already recorded with different details. Refresh the page and check the stock.',
   [ErrorCode.CSRF_FAILED]: 'Your session needs a refresh. Reload the page and try again.',
 };
 

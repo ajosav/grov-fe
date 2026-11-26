@@ -12,6 +12,8 @@ import type {PermissionRequirement} from '@grov/shared';
  */
 export interface AdminRouteHandle {
   requires?: PermissionRequirement;
+  /** Drops the page's width cap and padding: the page lays itself out edge to edge (`PageFrame`). */
+  fullBleed?: boolean;
 }
 
 /** Every requirement on the matched route chain, merged (parents and child all apply). */
@@ -25,4 +27,9 @@ export function useRouteRequirement(): PermissionRequirement {
     if (requires?.anyOf) anyOf.push(...requires.anyOf);
   }
   return {allOf, anyOf};
+}
+
+/** True when the matched route asks for the full-bleed frame. */
+export function useFullBleed(): boolean {
+  return useMatches().some(match => (match.handle as AdminRouteHandle | undefined)?.fullBleed);
 }

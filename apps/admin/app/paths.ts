@@ -20,8 +20,17 @@ export const paths = {
   shopperRequests: '/catalogue/requests',
 
   stockLevels: '/stock/levels',
+  /** Under Stock levels, so the breadcrumb and nav stay on Stock levels. */
+  stockMetrics: '/stock/levels/metrics',
+  stockRestock: '/stock/restock',
   stockMovements: '/stock/movements',
   stockReceipts: '/stock/receipts',
+  stockGrns: '/stock/goods-received',
+  stockBatches: '/stock/batches',
+  stockTransfers: '/stock/transfers',
+  stockCounts: '/stock/counts',
+  stockLocations: '/stock/locations',
+  suppliers: '/stock/suppliers',
 
   foods: '/meals/foods',
   meals: '/meals/library',

@@ -12,4 +12,6 @@ export * from './allergens';
 export * from './admin-foods';
 export * from './admin-product-analytics';
 export * from './admin-audit-logs';
+export * from './admin-stock';
+export * from './admin-inventory';
 // gen:resource:exports

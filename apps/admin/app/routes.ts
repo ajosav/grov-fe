@@ -30,8 +30,16 @@ export default [
     route('catalogue/requests', pg('catalogue/requests')),
 
     route('stock/levels', pg('stock/levels')),
+    route('stock/levels/metrics', pg('stock/metrics')),
+    route('stock/restock', pg('stock/restock')),
     route('stock/movements', pg('stock/movements')),
     route('stock/receipts', pg('stock/receipts')),
+    route('stock/goods-received', pg('stock/goods-received')),
+    route('stock/batches', pg('stock/batches')),
+    route('stock/transfers', pg('stock/transfers')),
+    route('stock/counts', pg('stock/counts')),
+    route('stock/locations', pg('stock/locations')),
+    route('stock/suppliers', pg('stock/suppliers')),
 
     route('meals/foods', pg('meals/foods')),
     route('meals/library', pg('meals/library')),

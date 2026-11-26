@@ -2221,6 +2221,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/admin/store/stock/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Stock with sales pace, days of cover, base price moves and what to buy
+         * @description Suggested quantity = pace × (lead time + cover target) − available. Pace is the 30-day average, or the last 7 days when demand is rising.
+         */
+        get: operations["StockAdmin_overviewList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/stock/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Counts by restock status, stock value and recent flow */
+        get: operations["StockAdmin_summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/admin/store/stock": {
         parameters: {
             query?: never;
@@ -2248,11 +2285,7 @@ export interface paths {
         /** The movement log, newest first */
         get: operations["StockAdmin_movements"];
         put?: never;
-        /**
-         * Record a receipt, a count correction or a write-off
-         * @description RECEIPT and WRITE_OFF take a positive quantity; ADJUSTMENT is signed and needs a reason. Stock never goes below zero or below what is reserved. A `ref` makes the movement apply once; the same ref with another quantity is `STOCK_REF_REUSED`.
-         */
-        post: operations["StockAdmin_record"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2272,11 +2305,106 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** Set or clear the low-stock threshold */
-        patch: operations["StockAdmin_threshold"];
+        /**
+         * Set the low-stock threshold, lead time or cover target
+         * @description Send any of the three. Null clears a setting; lead time and cover target then use the defaults.
+         */
+        patch: operations["StockAdmin_settings"];
         trace?: never;
     };
-    "/v1/admin/stock/transfers": {
+    "/v1/admin/store/inventory/locations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The locations of the active store */
+        get: operations["LedgerAdmin_listLocations"];
+        put?: never;
+        /** Add a room, cold room, bay or receiving area */
+        post: operations["LedgerAdmin_createLocation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/locations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Rename or retire a location
+         * @description System locations cannot be changed, and a location holding stock cannot be retired.
+         */
+        patch: operations["LedgerAdmin_updateLocation"];
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/batches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Batches received at the active store
+         * @description Costs are null without `stock.cost.read`.
+         */
+        get: operations["LedgerAdmin_listBatches"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/batches/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One batch with its balances by location and status */
+        get: operations["LedgerAdmin_getBatch"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/stock/{productId}/balances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The per-batch balances behind a stock row */
+        get: operations["LedgerAdmin_balances"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/status-moves": {
         parameters: {
             query?: never;
             header?: never;
@@ -2286,10 +2414,349 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Move stock between two stores
-         * @description You must act on both stores.
+         * Move stock between statuses (quarantine, release, damaged)
+         * @description Quarantined and damaged stock is not sellable. Stock cannot leave AVAILABLE below what is reserved.
          */
-        post: operations["StockAdmin_transfer"];
+        post: operations["LedgerAdmin_statusMove"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/write-offs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Write stock off with a reason code
+         * @description Lowers quantity and cost together, at the store average and the batch cost.
+         */
+        post: operations["LedgerAdmin_writeOff"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/alerts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reconciliation drift found by the nightly check */
+        get: operations["LedgerAdmin_alerts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/alerts/{id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark a drift alert resolved, with a note
+         * @description The check never repairs stock; fix the cause with an adjustment first.
+         */
+        post: operations["LedgerAdmin_resolveAlert"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/transfers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Transfers sent or received by the active store
+         * @description Filter by `direction` (`out` sent, `in` coming) and status.
+         */
+        get: operations["TransfersAdmin_list"];
+        put?: never;
+        /**
+         * Start a transfer from the active store
+         * @description Reserves the stock at the sending store. 409 STOCK_INSUFFICIENT when the shelf cannot cover it.
+         */
+        post: operations["TransfersAdmin_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/transfers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One transfer with its lines
+         * @description Costs are null without `stock.cost.read`.
+         */
+        get: operations["TransfersAdmin_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/transfers/{id}/dispatch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send the goods: stock moves to in-transit
+         * @description Sending store only. Chooses batches oldest first, prices the stock at the sender average and takes it out of sellable stock.
+         */
+        post: operations["TransfersAdmin_dispatch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/transfers/{id}/depart": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Record the carrier and arrival estimate
+         * @description Sending store only. No stock effect.
+         */
+        post: operations["TransfersAdmin_depart"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/transfers/{id}/receive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Enter what arrived, per line
+         * @description Receiving store only. Arrived stock lands quarantined; any shortfall stays in transit until the transfer is completed.
+         */
+        post: operations["TransfersAdmin_receive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/transfers/{id}/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm count and condition
+         * @description Receiving store only, and not the person who received. Accepted stock becomes sellable, the rest damaged.
+         */
+        post: operations["TransfersAdmin_verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/transfers/{id}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Close the transfer, resolving every shortfall
+         * @description Each shortfall is found (lands sellable) or written off as a transit loss at the cost it carried.
+         */
+        post: operations["TransfersAdmin_complete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/transfers/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel before dispatch
+         * @description Sending store only. Releases the reservation. Goods already sent are returned by a transfer the other way.
+         */
+        post: operations["TransfersAdmin_cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Stock counts of the active store */
+        get: operations["CountsAdmin_list"];
+        put?: never;
+        /**
+         * Open a count (draft)
+         * @description Optionally limited to one location.
+         */
+        post: operations["CountsAdmin_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/counts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One count with its lines
+         * @description Variance values are null without `stock.cost.read`.
+         */
+        get: operations["CountsAdmin_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/counts/{id}/lines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Replace the counted lines of a draft
+         * @description One line per location, product and optional batch. A line with no batch counts the product across batches in the location.
+         */
+        put: operations["CountsAdmin_putLines"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/counts/{id}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit: freeze each line against the system quantity
+         * @description `needsApproval` tells whether a large variance needs `stock.adjust.approve`.
+         */
+        post: operations["CountsAdmin_submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/counts/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approve and post the variances
+         * @description Shortages come off the oldest batches in the counted location; surpluses join the named batch or make a COUNT batch at the store average. Never below what is reserved. A large variance needs `stock.adjust.approve`.
+         */
+        post: operations["CountsAdmin_approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/inventory/counts/{id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reject a submitted count with a reason */
+        post: operations["CountsAdmin_reject"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3382,6 +3849,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/admin/orders/{id}/start-picking": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start picking a paid order
+         * @description Allowed from `CONFIRMED` or `LOCKED`; picking an order that is already `PICKING` changes nothing. Otherwise `ORDER_NOT_READY`.
+         */
+        post: operations["OrdersAdmin_startPicking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/orders/{id}/pack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark a picked order packed and take its stock off the shelf
+         * @description Allowed from `PICKING`; packing a `PACKED` order changes nothing. Otherwise `ORDER_NOT_READY`.
+         */
+        post: operations["OrdersAdmin_pack"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/admin/product-analytics/catalogue/summary": {
         parameters: {
             query?: never;
@@ -3598,6 +4105,159 @@ export interface paths {
         get: operations["AuditLogsAdmin_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/suppliers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List suppliers, newest first */
+        get: operations["Suppliers_list"];
+        put?: never;
+        /** Add a supplier */
+        post: operations["Suppliers_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/suppliers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One supplier with its farms */
+        get: operations["Suppliers_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Edit or deactivate a supplier */
+        patch: operations["Suppliers_update"];
+        trace?: never;
+    };
+    "/v1/admin/suppliers/{id}/farms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a farm to a supplier */
+        post: operations["Suppliers_createFarm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/suppliers/{id}/farms/{farmId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Edit or deactivate a farm */
+        patch: operations["Suppliers_updateFarm"];
+        trace?: never;
+    };
+    "/v1/admin/store/procurement/grns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Goods received notes of the active store */
+        get: operations["Procurement_list"];
+        put?: never;
+        /**
+         * Start a goods received note (draft)
+         * @description Supplier and farm are optional; a market purchase can carry a free-text `receivedFrom`. Accepted plus rejected must equal received, each product once. Costs are whole-kobo line totals.
+         */
+        post: operations["Procurement_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/procurement/grns/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One goods received note
+         * @description Costs are null without `stock.cost.read`.
+         */
+        get: operations["Procurement_get"];
+        put?: never;
+        post?: never;
+        /** Cancel a draft note */
+        delete: operations["Procurement_cancel"];
+        options?: never;
+        head?: never;
+        /** Replace a draft note */
+        patch: operations["Procurement_update"];
+        trace?: never;
+    };
+    "/v1/admin/store/procurement/grns/{id}/post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post a note: batches, receipts, cost and stock
+         * @description Locks the note. Posting again returns the posted note and changes nothing.
+         */
+        post: operations["Procurement_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/store/procurement/grns/{id}/charges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a late landed-cost charge to a posted note
+         * @description Allocated across the accepted lines and added as a new cost layer per batch. History is never edited.
+         */
+        post: operations["Procurement_addCharge"];
         delete?: never;
         options?: never;
         head?: never;
@@ -6052,6 +6712,117 @@ export interface components {
             /** @description Open "ask us to stock" requests that matched this food. */
             openRequests: number;
         };
+        StockOverviewPageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["StockOverviewPage"];
+        };
+        StockOverviewPage: {
+            items: components["schemas"]["StockOverviewRow"][];
+            total: number;
+            page: number;
+            pageSize: number;
+        };
+        StockOverviewRow: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string;
+            sku: string;
+            displayName: string;
+            categoryName: string;
+            coverImagePath: string | null;
+            baseUnit: string;
+            onHandQty: number;
+            reservedQty: number;
+            availableQty: number;
+            lowThresholdQty: number | null;
+            low: boolean;
+            /** @description In use: set, or the default. */
+            leadTimeDays: number;
+            leadTimeCustom: boolean;
+            /** @description In use: set, or the default. */
+            coverTargetDays: number;
+            coverTargetCustom: boolean;
+            soldQty30d: number;
+            soldQty7d: number;
+            /** @description Daily sales pace used for planning: the 30-day average, or the last 7 days when demand is rising. Base unit. */
+            perDay: number;
+            /** @description Last 7 days against the 7 before. Null with no earlier sales. */
+            trendBps: number | null;
+            /** @description Available ÷ daily pace. Null when nothing sells. */
+            coverDays: number | null;
+            status: components["schemas"]["RestockStatus"];
+            signals: components["schemas"]["RestockSignal"][];
+            /** @description Base unit. pace × (lead time + cover target used) − available, or what lifts it to the low threshold. Zero when covered. */
+            suggestedQty: number;
+            /** @description Days left to place an order. 0 means now. */
+            reorderInDays: number | null;
+            /** @description Cover target in the suggestion. Stretched by 50% while the base price is rising. */
+            coverTargetUsedDays: number;
+            /** @description The default size the prices below are for. */
+            sizeLabel: string | null;
+            basePrice: components["schemas"]["Money"] | null;
+            retailPrice: components["schemas"]["Money"] | null;
+            marginBps: number | null;
+            /** @description Last change of the base price. */
+            priceMoveBps: number | null;
+            /** Format: date-time */
+            priceMovedAt: string | null;
+            /** @description Available stock at the base price (a proxy for cost). */
+            costValue: components["schemas"]["Money"];
+            /** @description Available stock at the shopper price. */
+            retailValue: components["schemas"]["Money"];
+            /** @description Suggested quantity at the base price. */
+            restockCost: components["schemas"]["Money"];
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        /**
+         * @description OUT: nothing available. ORDER_NOW: runs out before a delivery could arrive. ORDER_SOON: order within a few days. COVERED: enough. OVERSTOCKED: far more than needed. NO_SALES: no sales in 30 days.
+         * @enum {string}
+         */
+        RestockStatus: "OUT" | "ORDER_NOW" | "ORDER_SOON" | "COVERED" | "OVERSTOCKED" | "NO_SALES";
+        /**
+         * @description Why a product is where it is. Clients turn these into copy.
+         * @enum {string}
+         */
+        RestockSignal: "RUNS_OUT_BEFORE_DELIVERY" | "BELOW_LOW_THRESHOLD" | "DEMAND_RISING" | "DEMAND_FALLING" | "PRICE_RISING" | "PRICE_FALLING" | "NO_RECENT_SALES";
+        StockSummaryEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["StockSummary"];
+        };
+        StockSummary: {
+            tracked: number;
+            out: number;
+            /** @description At or under the low threshold, not out. */
+            low: number;
+            /** @description Out, order now or order soon. */
+            needsRestock: number;
+            orderNow: number;
+            orderSoon: number;
+            covered: number;
+            overstocked: number;
+            noSales: number;
+            costValue: components["schemas"]["Money"];
+            retailValue: components["schemas"]["Money"];
+            /** @description What the suggested quantities cost at base prices. */
+            restockCost: components["schemas"]["Money"];
+            receipts7d: number;
+            writeOffValue30d: components["schemas"]["Money"];
+            leadTimeDefaultDays: number;
+            coverTargetDefaultDays: number;
+        };
         StockRowPageEnvelope: {
             /** @enum {boolean} */
             status: true;
@@ -6079,6 +6850,8 @@ export interface components {
             reservedQty: string;
             availableQty: string;
             lowThresholdQty: string | null;
+            leadTimeDays: number | null;
+            coverTargetDays: number | null;
             low: boolean;
             /** Format: date-time */
             updatedAt: string;
@@ -6109,8 +6882,11 @@ export interface components {
              * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
              */
             productId: string;
+            sku: string;
+            productName: string;
+            baseUnit: string;
             /** @enum {string} */
-            kind: "RECEIPT" | "ADJUSTMENT" | "RESERVE" | "RELEASE" | "PICK" | "TRANSFER_OUT" | "TRANSFER_IN" | "WRITE_OFF";
+            kind: "RECEIPT" | "ADJUSTMENT" | "RESERVE" | "RELEASE" | "PICK" | "TRANSFER_OUT" | "TRANSFER_IN" | "WRITE_OFF" | "STATUS_MOVE" | "CUSTOMER_RETURN" | "SUPPLIER_RETURN" | "CONSUMPTION" | "SAMPLE" | "COST_ADJUSTMENT";
             qty: string;
             reason: string | null;
             refType: string | null;
@@ -6120,30 +6896,443 @@ export interface components {
              * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
              */
             actorId: string | null;
+            actorName: string | null;
             /** Format: date-time */
             createdAt: string;
         };
         StockRowEnvelope: {
             /** @enum {boolean} */
             status: true;
-            /** @example 201 */
+            /** @example 200 */
             statusCode: number;
             /** @example Success */
             message: string;
             data: components["schemas"]["StockRow"];
         };
-        StockTransferResultEnvelope: {
+        InventoryLocationListEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["InventoryLocation"][];
+        };
+        InventoryLocation: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            storeId: string;
+            /** @enum {string} */
+            kind: "RECEIVING" | "WAREHOUSE" | "COLD_ROOM" | "BAY" | "QUARANTINE" | "IN_TRANSIT";
+            name: string;
+            /** @enum {string} */
+            temperatureClass: "AMBIENT" | "COOL" | "COLD" | "FROZEN";
+            system: boolean;
+            active: boolean;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        InventoryLocationEnvelope: {
             /** @enum {boolean} */
             status: true;
             /** @example 201 */
             statusCode: number;
             /** @example Success */
             message: string;
-            data: components["schemas"]["StockTransferResult"];
+            data: components["schemas"]["InventoryLocation"];
         };
-        StockTransferResult: {
-            from: components["schemas"]["StockRow"];
-            to: components["schemas"]["StockRow"];
+        InventoryBatchPageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["InventoryBatch"][];
+            meta: components["schemas"]["PaginationMeta"];
+        };
+        InventoryBatch: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            batchNumber: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string;
+            sku: string;
+            productName: string;
+            /** @description Unit the quantities are in: g, ml or pcs. */
+            baseUnit: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            supplierId: string | null;
+            supplierName: string | null;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            farmId: string | null;
+            farmName: string | null;
+            receivedFrom: string | null;
+            sourceType: string;
+            sourceId: string;
+            /** Format: date-time */
+            receivedAt: string;
+            /** Format: date */
+            harvestedOn: string | null;
+            /** Format: date */
+            expiresOn: string | null;
+            qtyReceived: string;
+            qtyRemaining: string;
+            remainingCost: components["schemas"]["Money"] | null;
+            totalCost: components["schemas"]["Money"] | null;
+            /** @description What was paid for the goods alone, as corrected; null without `stock.cost.read`. */
+            purchaseCost: components["schemas"]["Money"] | null;
+        };
+        InventoryBatchDetailEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["InventoryBatchDetail"];
+        };
+        InventoryBatchDetail: {
+            batch: components["schemas"]["InventoryBatch"];
+            balances: components["schemas"]["BatchBalance"][];
+        };
+        BatchBalance: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            batchId: string;
+            batchNumber: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            locationId: string;
+            locationName: string;
+            /** @enum {string} */
+            status: "AVAILABLE" | "QUARANTINED" | "DAMAGED" | "SPOILED" | "EXPIRED" | "RETURNED" | "PROCESSING" | "IN_TRANSIT";
+            qty: string;
+            allocatedQty: string;
+            cost: components["schemas"]["Money"] | null;
+        };
+        BatchBalanceListEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["BatchBalance"][];
+        };
+        LedgerResultListEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 201 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["LedgerResult"][];
+        };
+        LedgerResult: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            batchId: string;
+            /** @enum {string} */
+            status: "AVAILABLE" | "QUARANTINED" | "DAMAGED" | "SPOILED" | "EXPIRED" | "RETURNED" | "PROCESSING" | "IN_TRANSIT";
+            qty: string;
+            cost: components["schemas"]["Money"] | null;
+        };
+        StockAlertPageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["StockAlert"][];
+            meta: components["schemas"]["PaginationMeta"];
+        };
+        StockAlert: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string | null;
+            /** @enum {string} */
+            invariant: "I1" | "I2" | "I3" | "I4" | "I5";
+            expected: string;
+            actual: string;
+            /** @enum {string} */
+            status: "OPEN" | "RESOLVED";
+            resolutionNote: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            resolvedAt: string | null;
+        };
+        StockAlertEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["StockAlert"];
+        };
+        StockTransferSummaryPageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["StockTransferSummary"][];
+            meta: components["schemas"]["PaginationMeta"];
+        };
+        StockTransferSummary: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            number: string;
+            /** @enum {string} */
+            status: "INITIATED" | "DISPATCHED" | "IN_TRANSIT" | "RECEIVED" | "VERIFIED" | "COMPLETED" | "CANCELLED";
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            fromStoreId: string;
+            fromStoreName: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            toStoreId: string;
+            toStoreName: string;
+            lineCount: number;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        StockTransferEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["StockTransfer"];
+        };
+        StockTransfer: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            number: string;
+            /** @enum {string} */
+            status: "INITIATED" | "DISPATCHED" | "IN_TRANSIT" | "RECEIVED" | "VERIFIED" | "COMPLETED" | "CANCELLED";
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            fromStoreId: string;
+            fromStoreName: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            toStoreId: string;
+            toStoreName: string;
+            note: string | null;
+            carrier: string | null;
+            /** Format: date-time */
+            eta: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            dispatchedAt: string | null;
+            /** Format: date-time */
+            departedAt: string | null;
+            /** Format: date-time */
+            receivedAt: string | null;
+            /** Format: date-time */
+            verifiedAt: string | null;
+            /** Format: date-time */
+            completedAt: string | null;
+            /** Format: date-time */
+            cancelledAt: string | null;
+            lines: components["schemas"]["StockTransferLine"][];
+        };
+        StockTransferLine: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            parentLineId: string | null;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string;
+            sku: string;
+            productName: string;
+            /** @description Unit the quantities are in: g, ml or pcs. */
+            baseUnit: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            batchId: string | null;
+            batchNumber: string | null;
+            qtyRequested: string;
+            qtySent: string;
+            qtyReceived: string | null;
+            qtyAccepted: string | null;
+            qtyRejected: string;
+            qtyShort: string;
+            /** @enum {string|null} */
+            shortfallAction: "FOUND" | "WRITE_OFF" | null;
+            reasonCode: string | null;
+            cost: components["schemas"]["Money"] | null;
+        };
+        StockCountSummaryPageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["StockCountSummary"][];
+            meta: components["schemas"]["PaginationMeta"];
+        };
+        StockCountSummary: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            number: string;
+            /** @enum {string} */
+            status: "DRAFT" | "SUBMITTED" | "POSTED" | "REJECTED";
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            locationId: string | null;
+            needsApproval: boolean;
+            lineCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            decidedAt: string | null;
+        };
+        StockCountEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["StockCount"];
+        };
+        StockCount: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            number: string;
+            /** @enum {string} */
+            status: "DRAFT" | "SUBMITTED" | "POSTED" | "REJECTED";
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            storeId: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            locationId: string | null;
+            note: string | null;
+            rejectReason: string | null;
+            needsApproval: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            submittedAt: string | null;
+            /** Format: date-time */
+            decidedAt: string | null;
+            lines: components["schemas"]["StockCountLine"][];
+        };
+        StockCountLine: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            locationId: string;
+            locationName: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string;
+            sku: string;
+            productName: string;
+            /** @description Unit the quantities are in: g, ml or pcs. */
+            baseUnit: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            batchId: string | null;
+            batchNumber: string | null;
+            countedQty: string;
+            systemQty: string | null;
+            varianceQty: string | null;
+            varianceCost: components["schemas"]["Money"] | null;
         };
         MealPlanSetupEnvelope: {
             /** @enum {boolean} */
@@ -8182,7 +9371,7 @@ export interface components {
             storeId: string;
             storeName: string;
             /** @enum {string} */
-            kind: "RECEIPT" | "ADJUSTMENT" | "RESERVE" | "RELEASE" | "PICK" | "TRANSFER_OUT" | "TRANSFER_IN" | "WRITE_OFF";
+            kind: "RECEIPT" | "ADJUSTMENT" | "RESERVE" | "RELEASE" | "PICK" | "TRANSFER_OUT" | "TRANSFER_IN" | "WRITE_OFF" | "STATUS_MOVE" | "CUSTOMER_RETURN" | "SUPPLIER_RETURN" | "CONSUMPTION" | "SAMPLE" | "COST_ADJUSTMENT";
             qty: number;
             reason: string | null;
             actorName: string | null;
@@ -8541,6 +9730,196 @@ export interface components {
             field: string;
             before: string | null;
             after: string | null;
+        };
+        SupplierPageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["Supplier"][];
+            meta: components["schemas"]["PaginationMeta"];
+        };
+        Supplier: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            name: string;
+            /** @enum {string} */
+            kind: "PERSON" | "BUSINESS";
+            phone: string | null;
+            /** @enum {string} */
+            status: "ACTIVE" | "INACTIVE";
+            /** Format: date-time */
+            createdAt: string;
+            farms: components["schemas"]["SupplierFarm"][];
+        };
+        SupplierFarm: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            supplierId: string;
+            name: string;
+            state: string | null;
+            lga: string | null;
+            /** @enum {string} */
+            status: "ACTIVE" | "INACTIVE";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        SupplierEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["Supplier"];
+        };
+        SupplierFarmEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 201 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["SupplierFarm"];
+        };
+        GrnSummaryPageEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["GrnSummary"][];
+            meta: components["schemas"]["PaginationMeta"];
+        };
+        GrnSummary: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            number: string;
+            /** @enum {string} */
+            status: "DRAFT" | "POSTED" | "CANCELLED";
+            supplierName: string | null;
+            receivedFrom: string | null;
+            reference: string | null;
+            lineCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            postedAt: string | null;
+        };
+        GoodsReceivedNoteEnvelope: {
+            /** @enum {boolean} */
+            status: true;
+            /** @example 200 */
+            statusCode: number;
+            /** @example Success */
+            message: string;
+            data: components["schemas"]["GoodsReceivedNote"];
+        };
+        GoodsReceivedNote: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            number: string;
+            /** @enum {string} */
+            status: "DRAFT" | "POSTED" | "CANCELLED";
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            storeId: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            supplierId: string | null;
+            supplierName: string | null;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            farmId: string | null;
+            farmName: string | null;
+            receivedFrom: string | null;
+            reference: string | null;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            locationId: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            postedAt: string | null;
+            lines: components["schemas"]["GrnLine"][];
+            charges: components["schemas"]["GrnCharge"][];
+        };
+        GrnLine: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            productId: string;
+            sku: string;
+            productName: string;
+            /** @description Unit the quantities are in: g, ml or pcs. */
+            baseUnit: string;
+            receivedQty: string;
+            acceptedQty: string;
+            rejectedQty: string;
+            purchaseCost: components["schemas"]["Money"] | null;
+            /** Format: date */
+            harvestedOn: string | null;
+            /** Format: date */
+            expiresOn: string | null;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            locationId: string | null;
+            hold: boolean;
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            batchId: string | null;
+            batchNumber: string | null;
+        };
+        GrnCharge: {
+            /**
+             * Format: uuid
+             * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+             */
+            id: string;
+            /** @enum {string} */
+            kind: "TRANSPORT" | "LOADING" | "HANDLING" | "PACKAGING" | "INSURANCE" | "OTHER";
+            amount: components["schemas"]["Money"] | null;
+            /** @enum {string} */
+            allocateBy: "WEIGHT" | "VALUE" | "EQUAL";
+            note: string | null;
+            allocated: boolean;
         };
     };
     responses: never;
@@ -15462,6 +16841,89 @@ export interface operations {
             };
         };
     };
+    StockAdmin_overviewList: {
+        parameters: {
+            query?: {
+                q?: string;
+                view?: "all" | "needs_restock" | "out" | "low" | "covered" | "overstocked" | "no_sales";
+                sort?: "urgency" | "name" | "available" | "cover" | "sold" | "value";
+                dir?: "asc" | "desc";
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockOverviewPageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    StockAdmin_summary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockSummaryEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     StockAdmin_list: {
         parameters: {
             query?: {
@@ -15510,6 +16972,10 @@ export interface operations {
                 limit?: number;
                 cursor?: string;
                 productId?: string;
+                kind?: "RECEIPT" | "ADJUSTMENT" | "RESERVE" | "RELEASE" | "PICK" | "TRANSFER_OUT" | "TRANSFER_IN" | "WRITE_OFF" | "STATUS_MOVE" | "CUSTOMER_RETURN" | "SUPPLIER_RETURN" | "CONSUMPTION" | "SAMPLE" | "COST_ADJUSTMENT";
+                q?: string;
+                from?: string;
+                to?: string;
             };
             header?: never;
             path?: never;
@@ -15546,64 +17012,7 @@ export interface operations {
             };
         };
     };
-    StockAdmin_record: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /**
-                     * Format: uuid
-                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-                     */
-                    productId: string;
-                    /** @enum {string} */
-                    kind: "RECEIPT" | "ADJUSTMENT" | "WRITE_OFF";
-                    /** @example -1.500 */
-                    qty: string;
-                    reason?: string;
-                    ref?: {
-                        type: string;
-                        id: string;
-                    };
-                };
-            };
-        };
-        responses: {
-            /** @description Success */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StockRowEnvelope"];
-                };
-            };
-            /** @description Client error */
-            "4XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Server error */
-            "5XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-        };
-    };
-    StockAdmin_threshold: {
+    StockAdmin_settings: {
         parameters: {
             query?: never;
             header?: never;
@@ -15616,7 +17025,9 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @example 12.500 */
-                    lowThresholdQty: string | null;
+                    lowThresholdQty?: string | null;
+                    leadTimeDays?: number | null;
+                    coverTargetDays?: number | null;
                 };
             };
         };
@@ -15650,7 +17061,266 @@ export interface operations {
             };
         };
     };
-    StockAdmin_transfer: {
+    LedgerAdmin_listLocations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryLocationListEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    LedgerAdmin_createLocation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    kind: "RECEIVING" | "WAREHOUSE" | "COLD_ROOM" | "BAY";
+                    name: string;
+                    /** @enum {string} */
+                    temperatureClass?: "AMBIENT" | "COOL" | "COLD" | "FROZEN";
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryLocationEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    LedgerAdmin_updateLocation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name?: string;
+                    /** @enum {string} */
+                    temperatureClass?: "AMBIENT" | "COOL" | "COLD" | "FROZEN";
+                    active?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryLocationEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    LedgerAdmin_listBatches: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                productId?: string;
+                q?: string;
+                withStock?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryBatchPageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    LedgerAdmin_getBatch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryBatchDetailEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    LedgerAdmin_balances: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BatchBalanceListEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    LedgerAdmin_statusMove: {
         parameters: {
             query?: never;
             header?: never;
@@ -15664,20 +17334,19 @@ export interface operations {
                      * Format: uuid
                      * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
                      */
-                    fromStoreId: string;
+                    batchId: string;
                     /**
                      * Format: uuid
                      * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
                      */
-                    toStoreId: string;
-                    /**
-                     * Format: uuid
-                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
-                     */
-                    productId: string;
+                    locationId: string;
+                    /** @enum {string} */
+                    from: "AVAILABLE" | "QUARANTINED" | "DAMAGED" | "SPOILED" | "EXPIRED" | "RETURNED" | "PROCESSING" | "IN_TRANSIT";
+                    /** @enum {string} */
+                    to: "AVAILABLE" | "QUARANTINED" | "DAMAGED" | "SPOILED" | "EXPIRED" | "RETURNED" | "PROCESSING" | "IN_TRANSIT";
                     /** @example 12.500 */
                     qty: string;
-                    reason?: string;
+                    reason: string;
                 };
             };
         };
@@ -15688,7 +17357,919 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StockTransferResultEnvelope"];
+                    "application/json": components["schemas"]["LedgerResultListEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    LedgerAdmin_writeOff: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * Format: uuid
+                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                     */
+                    batchId: string;
+                    /**
+                     * Format: uuid
+                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                     */
+                    locationId: string;
+                    /** @enum {string} */
+                    status: "AVAILABLE" | "QUARANTINED" | "DAMAGED" | "SPOILED" | "EXPIRED" | "RETURNED";
+                    /** @example 12.500 */
+                    qty: string;
+                    /** @enum {string} */
+                    reasonCode: "SPOILAGE" | "DAMAGE" | "EXPIRY" | "DRYING_LOSS" | "HANDLING_LOSS" | "THEFT" | "OTHER";
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LedgerResultListEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    LedgerAdmin_alerts: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                status?: "OPEN" | "RESOLVED";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockAlertPageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    LedgerAdmin_resolveAlert: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    note: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockAlertEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    TransfersAdmin_list: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                direction?: "in" | "out";
+                status?: "INITIATED" | "DISPATCHED" | "IN_TRANSIT" | "RECEIVED" | "VERIFIED" | "COMPLETED" | "CANCELLED";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockTransferSummaryPageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    TransfersAdmin_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * Format: uuid
+                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                     */
+                    toStoreId: string;
+                    note?: string;
+                    lines: {
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        productId: string;
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        batchId?: string;
+                        /** @example 12.500 */
+                        qty: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockTransferEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    TransfersAdmin_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockTransferEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    TransfersAdmin_dispatch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockTransferEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    TransfersAdmin_depart: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    carrier?: string;
+                    /** Format: date-time */
+                    eta?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockTransferEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    TransfersAdmin_receive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    lines: {
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        lineId: string;
+                        /** @example 12.500 */
+                        receivedQty: string;
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        locationId?: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockTransferEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    TransfersAdmin_verify: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    lines: {
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        lineId: string;
+                        /** @example 12.500 */
+                        acceptedQty: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockTransferEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    TransfersAdmin_complete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @default [] */
+                    resolutions?: {
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        lineId: string;
+                        /** @enum {string} */
+                        action: "FOUND" | "WRITE_OFF";
+                        reasonCode?: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockTransferEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    TransfersAdmin_cancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockTransferEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    CountsAdmin_list: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                status?: "DRAFT" | "SUBMITTED" | "POSTED" | "REJECTED";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockCountSummaryPageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    CountsAdmin_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * Format: uuid
+                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                     */
+                    locationId?: string;
+                    note?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockCountEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    CountsAdmin_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockCountEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    CountsAdmin_putLines: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    lines: {
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        locationId: string;
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        productId: string;
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        batchId?: string;
+                        /** @example 12.500 */
+                        countedQty: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockCountEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    CountsAdmin_submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockCountEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    CountsAdmin_approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockCountEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    CountsAdmin_reject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockCountEnvelope"];
                 };
             };
             /** @description Client error */
@@ -18872,6 +21453,86 @@ export interface operations {
             };
         };
     };
+    OrdersAdmin_startPicking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminOrderEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    OrdersAdmin_pack: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminOrderEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     CatalogueAdmin_summary: {
         parameters: {
             query?: {
@@ -19399,6 +22060,693 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AuditLogDetailEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Suppliers_list: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                q?: string;
+                status?: "ACTIVE" | "INACTIVE";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierPageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Suppliers_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string;
+                    /**
+                     * @default BUSINESS
+                     * @enum {string}
+                     */
+                    kind?: "PERSON" | "BUSINESS";
+                    phone?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Suppliers_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Suppliers_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name?: string;
+                    /** @enum {string} */
+                    kind?: "PERSON" | "BUSINESS";
+                    phone?: string | null;
+                    /** @enum {string} */
+                    status?: "ACTIVE" | "INACTIVE";
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Suppliers_createFarm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string;
+                    state?: string;
+                    lga?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierFarmEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Suppliers_updateFarm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                farmId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name?: string;
+                    state?: string | null;
+                    lga?: string | null;
+                    /** @enum {string} */
+                    status?: "ACTIVE" | "INACTIVE";
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierFarmEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Procurement_list: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                status?: "DRAFT" | "POSTED" | "CANCELLED";
+                supplierId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrnSummaryPageEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Procurement_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * Format: uuid
+                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                     */
+                    supplierId?: string;
+                    /**
+                     * Format: uuid
+                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                     */
+                    farmId?: string;
+                    receivedFrom?: string;
+                    reference?: string;
+                    /**
+                     * Format: uuid
+                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                     */
+                    locationId?: string;
+                    lines: {
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        productId: string;
+                        /** @example 12.500 */
+                        receivedQty: string;
+                        /** @example 12.500 */
+                        acceptedQty: string;
+                        /** @example 12.500 */
+                        rejectedQty: string;
+                        purchaseCostKobo: number;
+                        /** Format: date */
+                        harvestedOn?: string;
+                        /** Format: date */
+                        expiresOn?: string;
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        locationId?: string;
+                        /** @default false */
+                        hold?: boolean;
+                    }[];
+                    /** @default [] */
+                    charges?: {
+                        /** @enum {string} */
+                        kind: "TRANSPORT" | "LOADING" | "HANDLING" | "PACKAGING" | "INSURANCE" | "OTHER";
+                        amountKobo: number;
+                        /** @enum {string} */
+                        allocateBy: "WEIGHT" | "VALUE" | "EQUAL";
+                        note?: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceivedNoteEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Procurement_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceivedNoteEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Procurement_cancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceivedNoteEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Procurement_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * Format: uuid
+                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                     */
+                    supplierId?: string;
+                    /**
+                     * Format: uuid
+                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                     */
+                    farmId?: string;
+                    receivedFrom?: string;
+                    reference?: string;
+                    /**
+                     * Format: uuid
+                     * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                     */
+                    locationId?: string;
+                    lines: {
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        productId: string;
+                        /** @example 12.500 */
+                        receivedQty: string;
+                        /** @example 12.500 */
+                        acceptedQty: string;
+                        /** @example 12.500 */
+                        rejectedQty: string;
+                        purchaseCostKobo: number;
+                        /** Format: date */
+                        harvestedOn?: string;
+                        /** Format: date */
+                        expiresOn?: string;
+                        /**
+                         * Format: uuid
+                         * @example 01929b7a-3c3e-7c4a-9f1e-6b2f1c9d8e7a
+                         */
+                        locationId?: string;
+                        /** @default false */
+                        hold?: boolean;
+                    }[];
+                    /** @default [] */
+                    charges?: {
+                        /** @enum {string} */
+                        kind: "TRANSPORT" | "LOADING" | "HANDLING" | "PACKAGING" | "INSURANCE" | "OTHER";
+                        amountKobo: number;
+                        /** @enum {string} */
+                        allocateBy: "WEIGHT" | "VALUE" | "EQUAL";
+                        note?: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceivedNoteEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Procurement_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceivedNoteEnvelope"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    Procurement_addCharge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    kind: "TRANSPORT" | "LOADING" | "HANDLING" | "PACKAGING" | "INSURANCE" | "OTHER";
+                    amountKobo: number;
+                    /** @enum {string} */
+                    allocateBy: "WEIGHT" | "VALUE" | "EQUAL";
+                    note?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceivedNoteEnvelope"];
                 };
             };
             /** @description Client error */
