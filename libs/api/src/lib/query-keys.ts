@@ -99,5 +99,34 @@ export const queryKeys = {
     facets: (params: object) => ['admin', 'audit-logs', 'facets', params] as const,
     detail: (id: string) => ['admin', 'audit-logs', 'detail', id] as const,
   },
+  /** Stock at the active store. `admin` first, so switching store refreshes it. */
+  adminStock: {
+    all: ['admin', 'stock'] as const,
+    overviewAll: ['admin', 'stock', 'overview'] as const,
+    overview: (params: object) => ['admin', 'stock', 'overview', params] as const,
+    summary: ['admin', 'stock', 'summary'] as const,
+    movementsAll: ['admin', 'stock', 'movements'] as const,
+    movements: (params: object) => ['admin', 'stock', 'movements', params] as const,
+  },
+  /** Inventory at the active store (suppliers are global but share the prefix for one invalidation). */
+  adminInventory: {
+    all: ['admin', 'inventory'] as const,
+    locations: ['admin', 'inventory', 'locations'] as const,
+    batchesAll: ['admin', 'inventory', 'batches'] as const,
+    batches: (params: object) => ['admin', 'inventory', 'batches', params] as const,
+    batch: (id: string) => ['admin', 'inventory', 'batch', id] as const,
+    corrections: (id: string) => ['admin', 'inventory', 'corrections', id] as const,
+    importJob: (id: string) => ['admin', 'inventory', 'import', id] as const,
+    balances: (productId: string) => ['admin', 'inventory', 'balances', productId] as const,
+    alerts: (params: object) => ['admin', 'inventory', 'alerts', params] as const,
+    grns: (params: object) => ['admin', 'inventory', 'grns', params] as const,
+    grn: (id: string) => ['admin', 'inventory', 'grn', id] as const,
+    transfers: (params: object) => ['admin', 'inventory', 'transfers', params] as const,
+    transfer: (id: string) => ['admin', 'inventory', 'transfer', id] as const,
+    counts: (params: object) => ['admin', 'inventory', 'counts', params] as const,
+    count: (id: string) => ['admin', 'inventory', 'count', id] as const,
+    suppliers: (params: object) => ['admin', 'inventory', 'suppliers', params] as const,
+    supplier: (id: string) => ['admin', 'inventory', 'supplier', id] as const,
+  },
   // gen:resource:keys
 } as const;

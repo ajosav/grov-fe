@@ -1,6 +1,6 @@
 import {useState} from 'react';
 
-import {History, Landmark, Pencil, Percent, Receipt, Tag, TrendingUp} from 'lucide-react';
+import {Pencil} from 'lucide-react';
 
 import {useProductPricing} from '@grov/hooks';
 import type {SizePricing} from '@grov/models';
@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
   Skeleton,
-  StatStrip,
+  StatRail,
   Table,
   TableBody,
   TableCell,
@@ -29,6 +29,7 @@ import {
 
 import {formatBps, formatChange, formatNairaCompact} from '../../../lib/catalogue/insight-format';
 import {formatDay, formatMoment} from '../../../lib/format/dates';
+import {PageRail} from '../../common/page-frame';
 import {type ProductReportProps, ProductReportToolbar} from './product-report-toolbar';
 
 export interface ProductPricingTabProps extends ProductReportProps {
@@ -93,6 +94,102 @@ export function ProductPricingTab({
       })),
   ]);
 
+  const rail =
+    data && size ? (
+      <StatRail
+        sections={[
+          {
+            key: 'prices',
+            title: `Prices · ${size.label}`,
+            visual: (
+              <div className="grid gap-1">
+                <span className="text-body-sm text-ink-muted">Selling price</span>
+                <span className="text-title-lg tabular">
+                  {shopper.length
+                    ? Math.min(...shopper) === Math.max(...shopper)
+                      ? formatNaira(shopper[0] ?? 0)
+                      : `${formatNaira(Math.min(...shopper))}–${formatNaira(Math.max(...shopper))}`
+                    : '—'}
+                </span>
+                <span className="text-chip text-ink-muted">
+                  {shopper.length
+                    ? `Base plus markup, at ${shopper.length} store${shopper.length === 1 ? '' : 's'}`
+                    : 'Not priced at any store'}
+                </span>
+              </div>
+            ),
+            rows: [
+              {
+                key: 'base',
+                label: 'Base price',
+                tone: 'sky',
+                value: size.base ? formatNaira(size.base.kobo) : 'Not set',
+                hint: size.baseSource ? SOURCE[size.baseSource] : undefined,
+              },
+              {
+                key: 'cost',
+                label: 'Procurement cost',
+                info: 'Landed cost isn’t tracked yet, so margin is the markup over base.',
+                value: 'Not recorded',
+              },
+            ],
+          },
+          {
+            key: 'profit',
+            title: 'Profitability',
+            rows: [
+              {
+                key: 'profit',
+                label: 'Gross profit per unit',
+                tone: 'leaf',
+                info: 'Lowest store price less base price.',
+                value:
+                  size.base && shopper.length
+                    ? formatNaira(Math.min(...shopper) - size.base.kobo)
+                    : '—',
+              },
+              {
+                key: 'margin',
+                label: 'Gross margin',
+                tone: 'palm',
+                value: margins.length
+                  ? Math.min(...margins) === Math.max(...margins)
+                    ? formatBps(margins[0])
+                    : `${formatBps(Math.min(...margins))}–${formatBps(Math.max(...margins))}`
+                  : '—',
+              },
+              {
+                key: 'change',
+                label: 'Last base change',
+                value: lastChange ? formatDay(lastChange.at) : '—',
+                hint:
+                  lastChange && previous
+                    ? `${formatChange(Math.round(((lastChange.price.kobo - previous.price.kobo) / previous.price.kobo) * 10_000))} from ${formatNaira(previous.price.kobo)}`
+                    : undefined,
+              },
+            ],
+          },
+          {
+            key: 'scheduled',
+            title: 'Scheduled changes',
+            meta: scheduled.length ? `${scheduled.length}` : undefined,
+            rows: [],
+            note: scheduled.length ? (
+              <span className="grid gap-1.5">
+                {scheduled.map(item => (
+                  <span key={item.key}>{item.text}</span>
+                ))}
+              </span>
+            ) : (
+              'None scheduled. Prices change when someone saves a new one.'
+            ),
+          },
+        ]}
+      />
+    ) : data ? null : (
+      <Skeleton className="h-64" />
+    );
+
   if (pricing.isError) {
     return (
       <Alert tone="danger" title="Couldn’t load pricing">
@@ -131,166 +228,83 @@ export function ProductPricingTab({
         ) : null}
       </ProductReportToolbar>
 
-      {!data ? (
-        <Skeleton className="h-28" />
-      ) : !size ? (
+      {data && !size ? (
         <Panel>
           <p className="text-body text-ink-muted">This product has no active sizes yet.</p>
         </Panel>
-      ) : (
-        <StatStrip
-          stats={[
-            {
-              key: 'selling',
-              icon: <Tag />,
-              tone: 'flame',
-              label: `Selling price (${size.label})`,
-              value: shopper.length
-                ? Math.min(...shopper) === Math.max(...shopper)
-                  ? formatNaira(shopper[0] ?? 0)
-                  : `${formatNaira(Math.min(...shopper))}–${formatNaira(Math.max(...shopper))}`
-                : '—',
-              hint: shopper.length
-                ? `At ${shopper.length} store${shopper.length === 1 ? '' : 's'}`
-                : 'Not priced at any store',
-            },
-            {
-              key: 'base',
-              icon: <Landmark />,
-              tone: 'sky',
-              label: 'Base price',
-              value: size.base ? formatNaira(size.base.kobo) : 'Not set',
-              hint: size.baseSource ? SOURCE[size.baseSource] : undefined,
-            },
-            {
-              key: 'cost',
-              icon: <Receipt />,
-              tone: 'neutral',
-              label: 'Procurement cost',
-              value: 'Not recorded',
-              hint: 'Landed cost isn’t tracked yet',
-            },
-            {
-              key: 'profit',
-              icon: <TrendingUp />,
-              tone: 'leaf',
-              label: 'Gross profit per unit',
-              value:
-                size.base && shopper.length
-                  ? formatNaira(Math.min(...shopper) - size.base.kobo)
-                  : '—',
-              hint: 'Lowest store price less base',
-            },
-            {
-              key: 'margin',
-              icon: <Percent />,
-              tone: 'palm',
-              label: 'Gross margin',
-              value: margins.length
-                ? Math.min(...margins) === Math.max(...margins)
-                  ? formatBps(margins[0])
-                  : `${formatBps(Math.min(...margins))}–${formatBps(Math.max(...margins))}`
-                : '—',
-            },
-            {
-              key: 'change',
-              icon: <History />,
-              tone: 'neutral',
-              label: 'Last base change',
-              value: lastChange ? formatDay(lastChange.at) : '—',
-              hint:
-                lastChange && previous
-                  ? `${formatChange(Math.round(((lastChange.price.kobo - previous.price.kobo) / previous.price.kobo) * 10_000))} from ${formatNaira(previous.price.kobo)}`
-                  : undefined,
-            },
-          ]}
-        />
-      )}
+      ) : null}
 
-      <Panel
-        title={<>Base price over time{size ? ` · ${size.label}` : ''}</>}
-        description={<>Every published base price, oldest to newest.</>}
-      >
-        {!data ? (
-          <Skeleton className="h-60" />
-        ) : history.length < 2 ? (
-          <p className="text-body text-ink-muted">
-            {history.length === 1
-              ? `One price so far: ${formatNaira(history[0]?.price.kobo ?? 0)} since ${formatDay(history[0]?.at ?? '')}.`
-              : 'No price history yet.'}
-          </p>
-        ) : (
-          <TrendChart
-            points={history.map(h => ({x: h.at, value: h.price.kobo}))}
-            label="Base price"
-            formatValue={v => formatNaira(v)}
-            formatAxis={formatNairaCompact}
-            formatX={x => formatDay(x)}
-          />
-        )}
-      </Panel>
-
-      <Panel
-        title={<>By store{size ? ` · ${size.label}` : ''}</>}
-        description={<>The shopper price at each store you can see, and the markup behind it.</>}
-      >
-        {!size || size.stores.length === 0 ? (
-          <p className="text-body text-ink-muted">No store has a live price for this size.</p>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Store</TableHead>
-                <TableHead className="text-right">Shopper price</TableHead>
-                <TableHead className="text-right">Base</TableHead>
-                <TableHead>Markup</TableHead>
-                <TableHead className="text-right">Margin</TableHead>
-                <TableHead className="text-right">Previous</TableHead>
-                <TableHead className="hidden lg:table-cell">Changed</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {size.stores.map(row => (
-                <TableRow key={row.storeId}>
-                  <TableCell className="font-semibold">{row.storeName}</TableCell>
-                  <TableCell className="text-right font-semibold tabular">
-                    {formatNaira(row.price.kobo)}
-                  </TableCell>
-                  <TableCell className="text-right tabular">{formatNaira(row.base.kobo)}</TableCell>
-                  <TableCell className="text-body-sm">{markupText(row)}</TableCell>
-                  <TableCell className="text-right tabular">{formatBps(row.marginBps)}</TableCell>
-                  <TableCell className="text-right tabular text-ink-muted">
-                    {row.previousPrice
-                      ? `${formatNaira(row.previousPrice.kobo)} (${formatChange(row.changeBps) ?? '—'})`
-                      : '—'}
-                  </TableCell>
-                  <TableCell className="hidden text-body-sm tabular lg:table-cell">
-                    {formatMoment(row.changedAt)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </Panel>
-
-      <div className="grid gap-4 @3xl:grid-cols-2">
+      <PageRail>{rail}</PageRail>
+      <div className="grid gap-4">
         <Panel
-          title={<>Scheduled changes</>}
-          description={<>Prices and markups with an end date.</>}
+          title={<>Base price over time{size ? ` · ${size.label}` : ''}</>}
+          description={<>Every published base price, oldest to newest.</>}
         >
-          {scheduled.length ? (
-            <ul className="grid gap-1 text-body-sm">
-              {scheduled.map(item => (
-                <li key={item.key}>{item.text}</li>
-              ))}
-            </ul>
-          ) : (
+          {!data ? (
+            <Skeleton className="h-60" />
+          ) : history.length < 2 ? (
             <p className="text-body text-ink-muted">
-              None scheduled. Prices change when someone saves a new one.
+              {history.length === 1
+                ? `One price so far: ${formatNaira(history[0]?.price.kobo ?? 0)} since ${formatDay(history[0]?.at ?? '')}.`
+                : 'No price history yet.'}
             </p>
+          ) : (
+            <TrendChart
+              points={history.map(h => ({x: h.at, value: h.price.kobo}))}
+              label="Base price"
+              formatValue={v => formatNaira(v)}
+              formatAxis={formatNairaCompact}
+              formatX={x => formatDay(x)}
+            />
           )}
         </Panel>
+
+        <Panel
+          title={<>By store{size ? ` · ${size.label}` : ''}</>}
+          description={<>The shopper price at each store you can see, and the markup behind it.</>}
+        >
+          {!size || size.stores.length === 0 ? (
+            <p className="text-body text-ink-muted">No store has a live price for this size.</p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Store</TableHead>
+                  <TableHead className="text-right">Shopper price</TableHead>
+                  <TableHead className="text-right">Base</TableHead>
+                  <TableHead>Markup</TableHead>
+                  <TableHead className="text-right">Margin</TableHead>
+                  <TableHead className="text-right">Previous</TableHead>
+                  <TableHead className="hidden lg:table-cell">Changed</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {size.stores.map(row => (
+                  <TableRow key={row.storeId}>
+                    <TableCell className="font-semibold">{row.storeName}</TableCell>
+                    <TableCell className="text-right font-semibold tabular">
+                      {formatNaira(row.price.kobo)}
+                    </TableCell>
+                    <TableCell className="text-right tabular">
+                      {formatNaira(row.base.kobo)}
+                    </TableCell>
+                    <TableCell className="text-body-sm">{markupText(row)}</TableCell>
+                    <TableCell className="text-right tabular">{formatBps(row.marginBps)}</TableCell>
+                    <TableCell className="text-right tabular text-ink-muted">
+                      {row.previousPrice
+                        ? `${formatNaira(row.previousPrice.kobo)} (${formatChange(row.changeBps) ?? '—'})`
+                        : '—'}
+                    </TableCell>
+                    <TableCell className="hidden text-body-sm tabular lg:table-cell">
+                      {formatMoment(row.changedAt)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </Panel>
+
         <Panel
           title={<>Price adjustments</>}
           description={<>Base price history for {size?.label ?? 'this size'}, newest first.</>}

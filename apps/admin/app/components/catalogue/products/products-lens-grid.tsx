@@ -1,13 +1,13 @@
 import {Link} from 'react-router';
 
-import {Badge, Checkbox, cn, formatNaira} from '@grov/ui';
+import {Checkbox, cn, formatNaira} from '@grov/ui';
 
 import {formatBps, formatQty} from '../../../lib/catalogue/insight-format';
 import {productPath} from '../../../paths';
 import {ActiveBadge} from '../category-badges';
 import {ProductThumb} from '../product-thumb';
 import {ProductRowActions} from './product-row-actions';
-import {type CatalogueLayoutProps, priceText, STOCK_BADGE} from './products-cells';
+import {type CatalogueLayoutProps, priceText, StockStateBadge} from './products-cells';
 
 /** Product cards: the photo leads, for browsing the range. */
 export function ProductsLensGrid({
@@ -25,18 +25,23 @@ export function ProductsLensGrid({
           <li
             key={row.id}
             className={cn(
-              'flex flex-col overflow-hidden rounded-lg border border-line bg-surface',
+              'flex min-w-0 flex-col overflow-hidden rounded-lg border border-line bg-surface',
               selected.has(row.id) && 'border-flame'
             )}
           >
-            <div className="relative aspect-[4/3] bg-surface-sunken">
+            <div className="relative aspect-[4/3] shrink-0 overflow-hidden bg-surface-sunken">
               {cover ? (
-                <img src={cover} alt="" loading="lazy" className="size-full object-cover" />
+                <img
+                  src={cover}
+                  alt=""
+                  loading="lazy"
+                  className="absolute inset-0 size-full object-cover"
+                />
               ) : (
                 <ProductThumb
                   url={undefined}
                   name={row.displayName}
-                  className="size-full rounded-none"
+                  className="absolute inset-0 size-full rounded-none"
                 />
               )}
               <div className="absolute left-2 top-2 rounded-sm bg-surface p-1">
@@ -47,14 +52,12 @@ export function ProductsLensGrid({
                 />
               </div>
               <div className="absolute right-2 top-2 flex gap-1">
-                <Badge tone={STOCK_BADGE[row.stockState].tone}>
-                  {STOCK_BADGE[row.stockState].label}
-                </Badge>
+                <StockStateBadge state={row.stockState} />
               </div>
             </div>
-            <div className="grid flex-1 gap-3 p-4">
+            <div className="grid min-w-0 flex-1 grid-cols-1 content-start gap-3 p-4">
               <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <Link
                     to={productPath(row.id)}
                     className="line-clamp-2 font-semibold underline-offset-4 hover:underline"
@@ -65,24 +68,32 @@ export function ProductsLensGrid({
                     {row.categoryName} · {row.sku}
                   </p>
                 </div>
-                <ProductRowActions row={row} {...actions} />
+                <div className="shrink-0">
+                  <ProductRowActions row={row} {...actions} />
+                </div>
               </div>
               <div className="flex items-baseline justify-between gap-2">
-                <span className="text-title-sm tabular">{priceText(row)}</span>
-                <ActiveBadge active={row.active} draft={row.draft} />
+                <span className="min-w-0 truncate text-title-sm tabular">{priceText(row)}</span>
+                <span className="shrink-0">
+                  <ActiveBadge active={row.active} draft={row.draft} />
+                </span>
               </div>
-              <dl className="grid grid-cols-3 gap-2 border-t border-line pt-3 text-body-sm">
+              <dl className="mt-auto grid grid-cols-3 gap-2 border-t border-line pt-3 text-body-sm">
                 <div>
-                  <dt className="text-ink-muted">Revenue</dt>
-                  <dd className="font-semibold tabular">{formatNaira(row.revenue.kobo)}</dd>
+                  <dt className="truncate text-ink-muted">Revenue</dt>
+                  <dd className="truncate font-semibold tabular">
+                    {formatNaira(row.revenue.kobo)}
+                  </dd>
                 </div>
                 <div>
-                  <dt className="text-ink-muted">Sold</dt>
-                  <dd className="font-semibold tabular">{formatQty(row.qtySold, row.baseUnit)}</dd>
+                  <dt className="truncate text-ink-muted">Sold</dt>
+                  <dd className="truncate font-semibold tabular">
+                    {formatQty(row.qtySold, row.baseUnit)}
+                  </dd>
                 </div>
                 <div>
-                  <dt className="text-ink-muted">Conversion</dt>
-                  <dd className="font-semibold tabular">{formatBps(row.conversionBps)}</dd>
+                  <dt className="truncate text-ink-muted">Conversion</dt>
+                  <dd className="truncate font-semibold tabular">{formatBps(row.conversionBps)}</dd>
                 </div>
               </dl>
             </div>

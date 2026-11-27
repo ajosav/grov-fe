@@ -22,6 +22,8 @@ export function createApi(options: ApiClientOptions) {
     adminFoods: endpoints.adminFoodsApi(client),
     adminProductAnalytics: endpoints.adminProductAnalyticsApi(client),
     adminAuditLogs: endpoints.adminAuditLogsApi(client),
+    adminStock: endpoints.adminStockApi(client),
+    adminInventory: endpoints.adminInventoryApi(client),
     // gen:resource:api (yarn gen:resource adds endpoint groups above this line)
   };
 }

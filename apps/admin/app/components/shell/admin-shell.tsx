@@ -7,6 +7,7 @@ import {useMediaQuery} from '@grov/hooks';
 import {usePermissions, UserMenu} from '@grov/shared';
 import {Button, cn, Dialog, DialogContent, DialogTitle, Kbd} from '@grov/ui';
 
+import {useFullBleed} from '../../lib/access/route-access';
 import {activeTrail, firstPage, flattenNav, type NavTrail, visibleNav} from '../../lib/shell/nav';
 import {paths} from '../../paths';
 import {sidebarThemeProps, useSidebarTheme} from '../../stores/sidebar-theme';
@@ -37,6 +38,7 @@ function Frame({children}: {children: ReactNode}) {
   const [sidebarTheme] = useSidebarTheme();
   const themeProps = sidebarThemeProps(sidebarTheme);
   const wide = useMediaQuery('(min-width: 80rem)');
+  const fullBleed = useFullBleed();
   const {pathname} = useLocation();
   const {groups, footer} = useMemo(() => visibleNav(check), [check]);
   const trails = useMemo(
@@ -134,8 +136,13 @@ function Frame({children}: {children: ReactNode}) {
         <main
           key={pathname}
           className={cn(
-            'mx-auto w-full flex-1',
-            onSupportPage ? 'max-w-none' : 'max-w-7xl px-4 py-6 sm:px-6 lg:px-10 lg:py-8'
+            'w-full flex-1',
+            fullBleed && !onSupportPage
+              ? 'flex flex-col'
+              : cn(
+                  'mx-auto',
+                  onSupportPage ? 'max-w-none' : 'max-w-7xl px-4 py-6 sm:px-6 lg:px-10 lg:py-8'
+                )
           )}
         >
           {children}

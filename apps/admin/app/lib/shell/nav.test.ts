@@ -19,7 +19,13 @@ describe('admin nav', () => {
     const stock = groups[1]?.entries[0];
     expect(stock?.kind === 'section' ? stock.children.map(c => c.label) : []).toEqual([
       'Stock levels',
+      'Restock planner',
       'Movements',
+      'Goods received',
+      'Batches',
+      'Transfers',
+      'Stock counts',
+      'Locations',
     ]);
   });
 

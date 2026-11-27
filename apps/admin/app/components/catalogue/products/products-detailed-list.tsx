@@ -5,7 +5,6 @@ import {Link, useNavigate} from 'react-router';
 
 import type {CatalogueRow} from '@grov/models';
 import {
-  Badge,
   Checkbox,
   cn,
   DropdownMenuItem,
@@ -20,7 +19,7 @@ import {formatDay} from '../../../lib/format/dates';
 import {productPath} from '../../../paths';
 import {ActiveBadge} from '../category-badges';
 import {ProductThumb} from '../product-thumb';
-import {type CatalogueLayoutProps, ChangeText, STOCK_BADGE} from './products-cells';
+import {type CatalogueLayoutProps, ChangeText, StockStateBadge} from './products-cells';
 
 interface MetricProps {
   label: string;
@@ -148,9 +147,7 @@ export function ProductsDetailedList({
                           : `${formatQty(row.availableQty, row.baseUnit)} available`}
                       </span>
                     ) : (
-                      <Badge tone={STOCK_BADGE[row.stockState].tone}>
-                        {STOCK_BADGE[row.stockState].label}
-                      </Badge>
+                      <StockStateBadge state={row.stockState} />
                     )}
                     <span aria-hidden className="text-ink-muted">
                       ·

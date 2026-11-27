@@ -27,7 +27,7 @@ export function CollapsibleCard({
     <Collapsible.Root
       open={open}
       onOpenChange={setOpen}
-      className={cn('rounded-lg border border-line bg-surface shadow-glass', className)}
+      className={cn('rounded-sm border border-line bg-surface shadow-glass', className)}
     >
       <Collapsible.Trigger className="flex min-h-14 w-full items-center gap-3 px-5 text-left outline-none focus-visible:outline-2 focus-visible:outline-focus">
         <span className="flex-1 text-title-sm">{title}</span>

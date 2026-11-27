@@ -134,6 +134,94 @@ export type StorePerformance = Schemas['StorePerformance'];
 export type ProductStock = Schemas['ProductStock'];
 export type ProductStoreStock = Schemas['ProductStoreStock'];
 export type ProductStockMovement = Schemas['ProductStockMovement'];
+export type StockRow = Schemas['StockRow'];
+export type StockOverviewRow = Schemas['StockOverviewRow'];
+export type StockOverviewPage = Schemas['StockOverviewPage'];
+export type StockSummary = Schemas['StockSummary'];
+export type StockMovement = Schemas['StockMovement'];
+export type StockMovementKind = StockMovement['kind'];
+export type RestockStatus = Schemas['RestockStatus'];
+export type RestockSignal = Schemas['RestockSignal'];
+export type StockSettingsBody = RequestBody<'/v1/admin/store/stock/{productId}', 'patch'>;
+
+// Inventory: locations, batches, goods received, transfers, counts, suppliers
+type Inventory = '/v1/admin/store/inventory';
+export type InventoryLocation = Schemas['InventoryLocation'];
+export type InventoryLocationKind = InventoryLocation['kind'];
+export type TemperatureClass = InventoryLocation['temperatureClass'];
+export type InventoryBatch = Schemas['InventoryBatch'];
+export type InventoryBatchDetail = Schemas['InventoryBatchDetail'];
+export type BatchBalance = Schemas['BatchBalance'];
+export type StockBalanceStatus = BatchBalance['status'];
+export type LedgerResult = Schemas['LedgerResult'];
+export type StockAlert = Schemas['StockAlert'];
+export type StockTransferSummary = Schemas['StockTransferSummary'];
+export type StockTransfer = Schemas['StockTransfer'];
+export type StockTransferLine = Schemas['StockTransferLine'];
+export type TransferStatus = StockTransfer['status'];
+export type StockCountSummary = Schemas['StockCountSummary'];
+export type StockCount = Schemas['StockCount'];
+export type StockCountLine = Schemas['StockCountLine'];
+export type CountStatus = StockCount['status'];
+export type Money = Schemas['Money'];
+export type Supplier = Schemas['Supplier'];
+export type SupplierFarm = Schemas['SupplierFarm'];
+export type GrnSummary = Schemas['GrnSummary'];
+export type GoodsReceivedNote = Schemas['GoodsReceivedNote'];
+export type GrnLine = Schemas['GrnLine'];
+export type GrnCharge = Schemas['GrnCharge'];
+export type GrnStatus = GoodsReceivedNote['status'];
+export type LandedCostKind = GrnCharge['kind'];
+/**
+ * Batch corrections (`POST/GET /v1/admin/store/inventory/batches/{id}/corrections`).
+ * Hand-written until the OpenAPI types are regenerated from the backend.
+ */
+export interface CorrectBatchBody {
+  reason: string;
+  /** `null` clears the date; leave it out to keep it. */
+  expiresOn?: string | null;
+  harvestedOn?: string | null;
+  /** The corrected total received, in the base unit. */
+  qtyReceived?: string;
+  /** The corrected purchase cost of the whole batch, whole kobo. */
+  purchaseCostKobo?: number;
+  /** Where the quantity difference sits. */
+  locationId?: string;
+  status?: Exclude<StockBalanceStatus, 'IN_TRANSIT'>;
+}
+export interface BatchCorrection {
+  id: string;
+  batchId: string;
+  reason: string;
+  actorId: string;
+  actorName: string | null;
+  createdAt: string;
+  changes: {
+    expiresOn?: {from: string | null; to: string | null};
+    harvestedOn?: {from: string | null; to: string | null};
+    qty?: {from: string; to: string};
+    /** Absent without `stock.cost.read`. */
+    purchaseCostKobo?: {from: number; to: number};
+  };
+}
+export type CreateLocationBody = RequestBody<`${Inventory}/locations`, 'post'>;
+export type UpdateLocationBody = RequestBody<`${Inventory}/locations/{id}`, 'patch'>;
+export type StatusMoveBody = RequestBody<`${Inventory}/status-moves`, 'post'>;
+export type WriteOffBody = RequestBody<`${Inventory}/write-offs`, 'post'>;
+export type CreateTransferBody = RequestBody<`${Inventory}/transfers`, 'post'>;
+export type DepartTransferBody = RequestBody<`${Inventory}/transfers/{id}/depart`, 'post'>;
+export type ReceiveTransferBody = RequestBody<`${Inventory}/transfers/{id}/receive`, 'post'>;
+export type VerifyTransferBody = RequestBody<`${Inventory}/transfers/{id}/verify`, 'post'>;
+export type CompleteTransferBody = RequestBody<`${Inventory}/transfers/{id}/complete`, 'post'>;
+export type CreateCountBody = RequestBody<`${Inventory}/counts`, 'post'>;
+export type CountLinesBody = RequestBody<`${Inventory}/counts/{id}/lines`, 'put'>;
+export type RejectCountBody = RequestBody<`${Inventory}/counts/{id}/reject`, 'post'>;
+export type CreateSupplierBody = RequestBody<'/v1/admin/suppliers', 'post'>;
+export type UpdateSupplierBody = RequestBody<'/v1/admin/suppliers/{id}', 'patch'>;
+export type CreateFarmBody = RequestBody<'/v1/admin/suppliers/{id}/farms', 'post'>;
+export type CreateGrnBody = RequestBody<'/v1/admin/store/procurement/grns', 'post'>;
+export type UpdateGrnBody = RequestBody<'/v1/admin/store/procurement/grns/{id}', 'patch'>;
+export type GrnChargeBody = RequestBody<'/v1/admin/store/procurement/grns/{id}/charges', 'post'>;
 export type ProductPricing = Schemas['ProductPricing'];
 export type SizePricing = Schemas['SizePricing'];
 export type StorePrice = Schemas['StorePrice'];
@@ -141,7 +229,10 @@ export type PriceHistoryPoint = Schemas['PriceHistoryPoint'];
 export type ActivityItem = Schemas['ActivityItem'];
 export type FieldChange = Schemas['FieldChange'];
 export type ImportJob = Schemas['Import'];
-export type CreateImportBody = RequestBody<'/v1/admin/imports', 'post'>;
+export type CreateImportBody = RequestBody<'/v1/admin/imports', 'post'> & {
+  /** For store-scoped kinds such as `procurement.stock-receipts`. */
+  storeId?: string;
+};
 export type AuditLogItem = Schemas['AuditLogItem'];
 export type AuditLogDetail = Schemas['AuditLogDetail'];
 export type AuditSubject = Schemas['AuditSubject'];
